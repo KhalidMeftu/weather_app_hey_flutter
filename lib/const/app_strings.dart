@@ -1,10 +1,13 @@
-class WeatherAppResources{
-  static String assets="assets/images/";
-  static String cloudRaining="$assets/cloud_rain.svg";
-  static String cloudy="$assets/cloudy.svg";
-  static String hazy="$assets/haze.svg";
-  static String sunny="$assets/sunny.svg";
-  static String sunnyCloud="$assets/sunny_cloud.svg";
-  static String tunderStorm="$assets/tunder_storm.svg";
+class WeatherAppString{
+  static String clearText="Clear";
+  static String humidityText="Humidity";
+  static String windText="Wind";
+  static String degreeCelsius="ºC";
+  static String cloudsText="Clouds";
+  static String mistText="Mist";
+  static String hazeText="Haze";
+  static String thunderstormText="Thunderstorm";
+  static String kmPerHour="km/h";
+  static String percentageText="%";
 
 }
