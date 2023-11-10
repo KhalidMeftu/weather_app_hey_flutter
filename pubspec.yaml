@@ -45,6 +45,11 @@ dependencies:
   flutter_svg_provider:
   # dependency injection
   get_it:
+  # internate conncetivity
+  connectivity_plus:
+  # state management
+  flutter_bloc:
+  equatable:
 
 dev_dependencies:
   flutter_test:
