@@ -51,6 +51,7 @@ dependencies:
   flutter_bloc:
   equatable:
   geolocator:
+  geocoding:
 
 dev_dependencies:
   flutter_test:

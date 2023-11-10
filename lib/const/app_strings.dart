@@ -11,5 +11,7 @@ class WeatherAppString{
   static String percentageText="%";
   static String weatherAppError="Error";
   static String weatherAppRouteNotFound="Route Not Found";
+  static String locationServicesDisabled="Location services are disabled.";
+  static String locationServicesUnableToGet="Location permissions are permanently denied, we cannot request permissions.";
 
 }
