@@ -7,9 +7,7 @@ abstract class GetSavedCitiesControllerEvent extends Equatable {
 
 class GetSavedCitiesWeather extends GetSavedCitiesControllerEvent{
   final List<String> cityNames;
-
   const GetSavedCitiesWeather(this.cityNames);
-
   @override
   // TODO: implement props
   List<Object?> get props => [cityNames];

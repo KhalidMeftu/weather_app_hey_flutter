@@ -13,10 +13,11 @@ class ServicesLocator {
   Future<void> init() async {
     sLocator.registerFactory(() => GetUserCityWeatherControllerBloc(sLocator()));
     sLocator.registerFactory(() => GetSavedCitiesControllerBloc(sLocator()));
-
     sLocator.registerLazySingleton(() =>WeatherAppUseCases(sLocator()));
     sLocator.registerLazySingleton<BaseRemoteRepository>(() => WeatherRepository(sLocator()));
     sLocator.registerLazySingleton<BaseRemoteDataSource>(() => RemoteDataSource());
+
+    /// todo for local database
 
   }
 }

@@ -9,5 +9,7 @@ class WeatherAppString{
   static String thunderstormText="Thunderstorm";
   static String kmPerHour="km/h";
   static String percentageText="%";
+  static String weatherAppError="Error";
+  static String weatherAppRouteNotFound="Route Not Found";
 
 }
