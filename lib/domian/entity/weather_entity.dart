@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-Weather weatherFromJson(String str) => Weather.fromJson(json.decode(str));
+WeatherModel weatherFromJson(String str) => WeatherModel.fromJson(json.decode(str));
 
-String weatherToJson(Weather data) => json.encode(data.toJson());
+String weatherToJson(WeatherModel data) => json.encode(data.toJson());
 
-class Weather {
+class WeatherModel {
   final Coord coord;
   final List<WeatherElement> weather;
   final String base;
@@ -19,7 +19,7 @@ class Weather {
   final String name;
   final int cod;
 
-  Weather({
+  WeatherModel({
     required this.coord,
     required this.weather,
     required this.base,
@@ -35,7 +35,7 @@ class Weather {
     required this.cod,
   });
 
-  factory Weather.fromJson(Map<String, dynamic> json) => Weather(
+  factory WeatherModel.fromJson(Map<String, dynamic> json) => WeatherModel(
     coord: Coord.fromJson(json["coord"]),
     weather: List<WeatherElement>.from(json["weather"].map((x) => WeatherElement.fromJson(x))),
     base: json["base"],
