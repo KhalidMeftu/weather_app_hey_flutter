@@ -33,6 +33,7 @@ class SavedCitiesCard extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius:
                 BorderRadius.all(Radius.circular(WeatherAppRadius.w24))),
+
         /// todo padding
         child: Row(
           children: [
@@ -117,8 +118,6 @@ class SavedCitiesCard extends StatelessWidget {
                     ),
                   ],
                 )
-
-
               ],
             ),
           ],
