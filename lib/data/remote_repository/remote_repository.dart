@@ -10,15 +10,22 @@ class WeatherRepository implements BaseRemoteRepository {
   @override
   Future<Either<String, WeatherModel>> getWeatherForAllCities(List<String> cityName) async {
     // TODO: implement getWeatherForAllCities
-    final result = await baseremoteDataSource.getWeatherForAllCities(cityName);
-    return result;
+    final weatherForAllCities = await baseremoteDataSource.getWeatherForAllCities(cityName);
+    return weatherForAllCities;
   }
 
   @override
   Future<Either<String, WeatherModel>> getWeatherForUserCity(String cityName) async {
     // TODO: implement getWeatherForUserCity
-    final result = await baseremoteDataSource.getWeatherForUserCity(cityName);
-    return result;
+    final resultForUserCity = await baseremoteDataSource.getWeatherForUserCity(cityName);
+    return resultForUserCity;
+  }
+
+  @override
+  Future<Either<String, String>> getCityImageURL(String cityName) async {
+    // TODO: implement getCityImageURL
+    final cityImageURL = await baseremoteDataSource.getCityImageURL(cityName);
+    return cityImageURL;
   }
   
 }

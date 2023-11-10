@@ -14,4 +14,8 @@ class WeatherAppUseCases {
   Future<Either<String,WeatherModel>> getSavedCitiesWeather(List<String> cityName) async{
     return await baseWeatherRepository.getWeatherForAllCities(cityName);
   }
+
+  Future<Either<String,String>> getCityImage(String cityName) async{
+    return await baseWeatherRepository.getCityImageURL(cityName);
+  }
 }

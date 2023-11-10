@@ -8,4 +8,9 @@ abstract class BaseRemoteDataSource {
   /// get weather for cities all cities users saved
   Future<Either<String, WeatherModel>> getWeatherForAllCities(List<String> cityName);
 
+
+  /// get Image URL
+
+Future<Either<String,String>> getCityImageURL(String cityName);
+
 }

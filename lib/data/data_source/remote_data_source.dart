@@ -14,5 +14,11 @@ class RemoteDataSource extends BaseRemoteDataSource {
     // TODO: implement getWeatherForUserCity
     throw UnimplementedError();
   }
+
+  @override
+  Future<Either<String, String>> getCityImageURL(String cityName) {
+    // TODO: implement getCityImageURL
+    throw UnimplementedError();
+  }
   
 }

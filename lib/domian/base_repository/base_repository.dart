@@ -8,4 +8,7 @@ abstract class BaseRemoteRepository{
   /// get weather for cities all cities users saved
   Future<Either<String, WeatherModel>> getWeatherForAllCities(List<String> cityName);
 
+  Future<Either<String,String>> getCityImageURL(String cityName);
+
+
 }
