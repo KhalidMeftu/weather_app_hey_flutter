@@ -10,7 +10,7 @@ class GetSavedCitiesControllerInitial extends GetSavedCitiesControllerState {
 }
 
 
-/// show spiner on this state
+/// show spinner on this state
 class UserSavedCityWeatherLoading extends GetSavedCitiesControllerState{
   @override
   // TODO: implement props
