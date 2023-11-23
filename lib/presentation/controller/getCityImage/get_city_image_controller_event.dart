@@ -5,8 +5,11 @@ abstract class GetCityImageControllerEvent extends Equatable {
 }
 
 class GetCityPhoto extends GetCityImageControllerEvent{
+  final String cityName;
+
+  const GetCityPhoto(this.cityName);
   @override
   // TODO: implement props
-  List<Object?> get props => [];
+  List<Object?> get props => [cityName];
 
 }

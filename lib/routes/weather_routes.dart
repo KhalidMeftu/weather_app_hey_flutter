@@ -19,7 +19,12 @@ class RouteGenerator {
       case WeatherRoutes.splashRoute:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case WeatherRoutes.homePageRoute:
-        return MaterialPageRoute(builder: (_) => const WeatherHomePage());
+        List<dynamic> args = routeSettings.arguments as List<dynamic>;
+        return MaterialPageRoute(
+            builder: (_) => WeatherHomePage(
+                  cityName: args[0],
+                  imageUrl: args[1],
+                ));
       case WeatherRoutes.userCitiesRoute:
         return MaterialPageRoute(builder: (_) => const UserCities());
 

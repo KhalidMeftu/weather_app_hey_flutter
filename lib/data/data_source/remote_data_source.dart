@@ -70,10 +70,27 @@ class RemoteDataSource extends BaseRemoteDataSource {
   }
 
   @override
-  Future<Either<String, String>> getCityImageURL(String cityName) {
-    // TODO: implement getCityImageURL
-   // getCurrentCityName();
-    throw UnimplementedError();
+  Future<Either<String, String>> getCityImageURL(String cityName) async {
+    String url = WeatherAppServices.cityImageApi + cityName + WeatherAppServices.cityImageApiImage;
+    try {
+      Response response = await dio.get(url);
+      if (response.statusCode == 200) {
+        if (response.data.containsKey('photos') && response.data['photos'].isNotEmpty) {
+          var imageData = response.data['photos'][0]['image']['mobile'];
+          return Right(imageData); // Using Either
+        } else {
+          return Left(WeatherAppString.noData); // No data found
+        }
+      } else {
+        return Left('Error: Unexpected response status code ${response.statusCode}');
+      }
+    } catch (e) {
+      if (e is DioException) {
+        return Left('DioException: ${e.message}');
+      } else {
+        return Left('Exception: ${e.toString()}');
+      }
+    }
   }
 
   Future<String> getCurrentCityName() async {
