@@ -6,5 +6,6 @@ class WeatherAppResources{
   static String sunny="$assets/sunny.svg";
   static String sunnyCloud="$assets/sunny_cloud.svg";
   static String tunderStorm="$assets/tunder_storm.svg";
-  static String splash_cloud="$assets/splash_cloud.svg";
+  static String splashCloud="$assets/splash_cloud.svg";
+  static String cityPlaceHolder="$assets/modern_city_place_holder.png";
 }

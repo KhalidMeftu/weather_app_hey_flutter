@@ -65,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen>
                 Padding(
                   padding: const EdgeInsets.all(14.0),
                   child: Image(
-                    image: Svg(WeatherAppResources.splash_cloud),
+                    image: Svg(WeatherAppResources.splashCloud),
                   ),
                 ),
                 Padding(
