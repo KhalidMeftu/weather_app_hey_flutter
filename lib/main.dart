@@ -32,8 +32,7 @@ class MyApp extends StatelessWidget {
               /// as soon as app started i need to get user current city data
               BlocProvider(
                   create: (context) =>
-                      GetUserCityWeatherControllerBloc(sLocator())
-                        ..add(const GetUserCityWeather())),
+                      GetUserCityWeatherControllerBloc(sLocator())),
               BlocProvider(
                   create: (context) =>
                       GetSavedCitiesControllerBloc(sLocator())),
@@ -85,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final myBloc = BlocProvider.of<GetUserCityWeatherControllerBloc>(context);
 
     // Call a method on the bloc
-    myBloc.add(GetUserCityWeather());
+    //myBloc.add(GetUserCityWeather());
   }
 
   @override

@@ -5,10 +5,10 @@ abstract class GetUserCityWeatherControllerEvent extends Equatable {
 }
 
 class GetUserCityWeather extends GetUserCityWeatherControllerEvent {
-
-  const GetUserCityWeather();
+ final String cityName;
+  const GetUserCityWeather(this.cityName);
 
   @override
   // TODO: implement props
-  List<Object?> get props => [];
+  List<Object?> get props => [cityName];
 }

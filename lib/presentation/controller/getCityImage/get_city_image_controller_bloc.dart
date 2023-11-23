@@ -15,8 +15,6 @@ class GetCityImageControllerBloc extends Bloc<GetCityImageControllerEvent, GetCi
       emit(CityImageLoading());
 
       final result=await getMedaUseCase.getCityImage(event.cityName);
-      print("Helloworld");
-      print(result);
       result.fold((left) => emit(CityImageLoadingError(left)),
               (right) => emit(CityImageWeatherLoaded(right)));
     });

@@ -53,6 +53,7 @@ dependencies:
   geolocator:
   geocoding:
   lottie:
+  weather_icons:
 
 dev_dependencies:
   flutter_test:

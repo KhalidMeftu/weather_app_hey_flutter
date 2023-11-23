@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterweatherapp/const/app_color.dart';
 import 'package:flutterweatherapp/const/app_resources.dart';
+import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
+
+import '../controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 
 class WeatherHomePage extends StatelessWidget {
   final String cityName;
@@ -14,6 +19,8 @@ class WeatherHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myBloc = BlocProvider.of<GetUserCityWeatherControllerBloc>(context);
+    myBloc.add(GetUserCityWeather(cityName));
     return Scaffold(
       body: Stack(
         children: [
@@ -38,13 +45,56 @@ class WeatherHomePage extends StatelessWidget {
             child: WeatherAppBar(cityName: cityName),
           ),
           SafeArea(
-            child: Column(
+            child: ListView(
               children: [
                 SizedBox(height: AppBar().preferredSize.height),
-                const Text("Test title"),
-                Text(cityName),
-                Text((imageUrl.isEmpty).toString()),
-                Container(),
+                SizedBox(
+                  height: 50.h,
+                ),
+                Center(
+                    child: Text(AppUtils().getFormattedDate(),
+                        style: WeatherAppFonts.large(
+                                fontWeight: FontWeight.w500,
+                                color: WeatherAppColor.whiteColor)
+                            .copyWith(fontSize: WeatherAppFontSize.s40))),
+                SizedBox(
+                  height: 2.h,
+                ),
+
+                /// time stamp
+                Center(
+                    child: Text(AppUtils().getFormattedDate(),
+                        style: WeatherAppFonts.large(
+                                fontWeight: FontWeight.w300,
+                                color: WeatherAppColor.whiteColor
+                                    .withOpacity(0.75))
+                            .copyWith(fontSize: WeatherAppFontSize.s16))),
+
+                /// display data from API
+                BlocBuilder<GetUserCityWeatherControllerBloc,
+                    GetUserCityWeatherControllerState>(
+                  builder: (context, state) {
+                    if (state is UserCityWeatherLoading) {
+
+                      return AppUtils().loadingSpinner;
+                    }
+                    if (state is UserCityWeatherLoaded) {
+
+                      return Column(
+                        children: [
+                          Text(state.cityWeatherInformation.weather[0].description),
+                          Image.network(state.cityWeatherInformation.weather[0].icon),
+
+                        ],
+                      );
+                    }
+                    if (state is UserCityWeatherLoadingError) {
+                      return Text(state.errorMessage);
+
+                    }
+                    return Container();
+                  },
+                )
               ],
             ),
           ),

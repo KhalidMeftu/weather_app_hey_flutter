@@ -27,6 +27,7 @@ class WeatherAppFontSize {
   static double s30 = 30.0.sp;
   static double s31 = 31.0.sp;
   static double s32 = 32.0.sp;
+  static double s40 = 40.0.sp;
   static double s48 = 48.0.sp;
 
 }

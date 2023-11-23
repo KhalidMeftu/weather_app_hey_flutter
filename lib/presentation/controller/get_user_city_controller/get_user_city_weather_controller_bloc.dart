@@ -11,10 +11,12 @@ class GetUserCityWeatherControllerBloc extends Bloc<GetUserCityWeatherController
   final WeatherAppUseCases getMedaUseCase;
 
   GetUserCityWeatherControllerBloc(this.getMedaUseCase) : super(GetUserCityWeatherControllerInitial()) {
-    on<GetUserCityWeather>((event, emit) {
-      // TODO: implement event handler
-      print("ExcutedBloc");
-      getMedaUseCase.getUserCityWeather("");
+    on<GetUserCityWeather>((event, emit) async {
+      emit(UserCityWeatherLoading());
+      final result=await getMedaUseCase.getUserCityWeather(event.cityName);
+      result.fold((left) => emit(UserCityWeatherLoadingError(left)),
+              (right) => emit(UserCityWeatherLoaded(right)));
+
     });
   }
 }
