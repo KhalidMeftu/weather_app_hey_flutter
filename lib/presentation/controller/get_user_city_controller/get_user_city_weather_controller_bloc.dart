@@ -13,6 +13,8 @@ class GetUserCityWeatherControllerBloc extends Bloc<GetUserCityWeatherController
   GetUserCityWeatherControllerBloc(this.getMedaUseCase) : super(GetUserCityWeatherControllerInitial()) {
     on<GetUserCityWeather>((event, emit) {
       // TODO: implement event handler
+      print("ExcutedBloc");
+      getMedaUseCase.getUserCityWeather("");
     });
   }
 }

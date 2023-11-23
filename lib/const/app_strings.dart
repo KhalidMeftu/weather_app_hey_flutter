@@ -1,4 +1,5 @@
 class WeatherAppString{
+  static String noData="No Data";
   static String clearText="Clear";
   static String humidityText="Humidity";
   static String windText="Wind";
@@ -11,6 +12,7 @@ class WeatherAppString{
   static String percentageText="%";
   static String weatherAppError="Error";
   static String weatherAppRouteNotFound="Route Not Found";
+  static String weatherAppEnableLocation="Please enable location services so that we can determine your location";
   static String locationServicesDisabled="Location services are disabled.";
   static String locationServicesUnableToGet="Location permissions are permanently denied, we cannot request permissions.";
 

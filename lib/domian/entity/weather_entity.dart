@@ -18,6 +18,7 @@ class WeatherModel {
   final int id;
   final String name;
   final int cod;
+   String? cityImageURL;
 
   WeatherModel({
     required this.coord,
@@ -33,6 +34,7 @@ class WeatherModel {
     required this.id,
     required this.name,
     required this.cod,
+     this.cityImageURL,
   });
 
   factory WeatherModel.fromJson(Map<String, dynamic> json) => WeatherModel(
