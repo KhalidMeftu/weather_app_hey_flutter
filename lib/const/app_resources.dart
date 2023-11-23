@@ -1,5 +1,5 @@
 class WeatherAppResources{
-  static String assets="assets/images/";
+  static String assets="assets/images";
   static String cloudRaining="$assets/cloud_rain.svg";
   static String cloudy="$assets/cloudy.svg";
   static String hazy="$assets/haze.svg";

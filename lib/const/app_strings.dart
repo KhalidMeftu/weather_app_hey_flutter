@@ -11,9 +11,12 @@ class WeatherAppString{
   static String kmPerHour="km/h";
   static String percentageText="%";
   static String weatherAppError="Error";
+  static String okay="Okay";
+  static String cancel="Cancel";
   static String weatherAppRouteNotFound="Route Not Found";
   static String weatherAppEnableLocation="Please enable location services so that we can determine your location";
   static String locationServicesDisabled="Location services are disabled.";
+  static String locationEnable="Please enable location services to use this feature.";
   static String locationServicesUnableToGet="Location permissions are permanently denied, we cannot request permissions.";
 
 }
