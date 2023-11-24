@@ -1,18 +1,18 @@
 
 import 'dart:convert';
 
-ForcastModel forcastModelFromJson(String str) => ForcastModel.fromJson(json.decode(str));
+ForecastModel forcastModelFromJson(String str) => ForecastModel.fromJson(json.decode(str));
 
-String forcastModelToJson(ForcastModel data) => json.encode(data.toJson());
+String forcastModelToJson(ForecastModel data) => json.encode(data.toJson());
 
-class ForcastModel {
+class ForecastModel {
   final double lat;
   final double lon;
   final String timezone;
   final int timezoneOffset;
   final List<Daily> daily;
 
-  ForcastModel({
+  ForecastModel({
     required this.lat,
     required this.lon,
     required this.timezone,
@@ -20,7 +20,7 @@ class ForcastModel {
     required this.daily,
   });
 
-  factory ForcastModel.fromJson(Map<String, dynamic> json) => ForcastModel(
+  factory ForecastModel.fromJson(Map<String, dynamic> json) => ForecastModel(
     lat: json["lat"]?.toDouble(),
     lon: json["lon"]?.toDouble(),
     timezone: json["timezone"],

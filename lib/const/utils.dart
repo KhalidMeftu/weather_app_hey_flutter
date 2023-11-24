@@ -93,10 +93,15 @@ class AppUtils {
       return [];
     }
 
+    DateTime currentDate = DateTime.now();
+    currentDate = currentDate.add(Duration(days: todayIndex));
+
     List<String> nextDays = [];
     for (int i = 1; i <= 4; i++) {
-      int nextIndex = (todayIndex + i) % 7;
-      nextDays.add(daysOfWeek[nextIndex]);
+      DateTime nextDate = currentDate.add(Duration(days: i));
+      String day = daysOfWeek[nextDate.weekday % 7];
+      String dayWithNumber = '$day ${nextDate.day}';
+      nextDays.add(dayWithNumber);
     }
 
     return nextDays;
