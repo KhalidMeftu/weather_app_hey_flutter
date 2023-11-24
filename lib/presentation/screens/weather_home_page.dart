@@ -1,8 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:flutterweatherapp/const/app_color.dart';
 import 'package:flutterweatherapp/const/app_resources.dart';
+import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
@@ -50,7 +54,7 @@ class WeatherHomePage extends StatelessWidget {
               children: [
                 SizedBox(height: AppBar().preferredSize.height),
                 SizedBox(
-                  height: 50.h,
+                  height: 30.h,
                 ),
                 Center(
                     child: Text(AppUtils().getFormattedDate(),
@@ -81,14 +85,105 @@ class WeatherHomePage extends StatelessWidget {
                     if (state is UserCityWeatherLoaded) {
                       return Column(
                         children: [
-                          Text(state
-                              .cityWeatherInformation.weather[0].description),
+                          SizedBox(
+                            height: 10.h,
+                          ),
                           AppUtils().getWeatherIcon(
                               state.cityWeatherInformation.weather[0].icon)!=WeatherIcons.refresh? Icon(
                             AppUtils().getWeatherIcon(
                                 state.cityWeatherInformation.weather[0].icon),
                             size: 100.0,
                           ):Image.network(AppUtils().getWeatherIconURL(state.cityWeatherInformation.weather[0].icon)),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          Text(state
+                              .cityWeatherInformation.weather[0].description, style: WeatherAppFonts.large(fontWeight: FontWeight.w700, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s30),),
+
+                          //temp
+                          Row(
+                            crossAxisAlignment:CrossAxisAlignment.center,
+                            mainAxisAlignment:MainAxisAlignment.center,
+                            children: [
+                              Text(state
+                                  .cityWeatherInformation.main.temp.toString(), style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s48),),
+                              Text(WeatherAppString.degreeCelsius, style: WeatherAppFonts.large(fontWeight: FontWeight.w700, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s24,
+                                fontFeatures: [
+                                  const FontFeature.enable('sups'),
+                                ],
+
+                              ),),
+                            ],
+                          ),
+
+                          ///
+                          /// humidty... feels like
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              //crossAxisAlignment:CrossAxisAlignment.center,
+                              mainAxisAlignment:MainAxisAlignment.spaceBetween,
+
+                              children: [
+                                Column(
+
+                                  children: [
+                                    Image(
+                                      image: Svg(WeatherAppResources.humidtyIcon),
+                                    ),
+                                    SizedBox(
+                                      height: 3.h,
+                                    ),
+                                    Text(WeatherAppString.humidityText, style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s14),),
+                                    SizedBox(
+                                      height: 3.h,
+                                    ),
+                                    Text("${state
+                                        .cityWeatherInformation.main.humidity}%", style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s14),),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Image(
+                                      image: Svg(WeatherAppResources.windIcon),
+                                    ),
+                                    SizedBox(
+                                      height: 3.h,
+                                    ),
+                                    Text(WeatherAppString.windText.toString(), style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s14),),
+                                    SizedBox(
+                                      height: 3.h,
+                                    ),
+                                    Text("${state
+                                        .cityWeatherInformation.wind.speed}km/h", style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s14),),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Image(
+                                      image: Svg(WeatherAppResources.feelsLike),
+                                    ),
+                                    SizedBox(
+                                      height: 3.h,
+                                    ),
+                                    Text(WeatherAppString.feelsLikeText, style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s14),),
+                                    SizedBox(
+                                      height: 3.h,
+                                    ),
+                                    Text(state
+                                        .cityWeatherInformation.main.feelsLike.toString(), style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s14),),
+                                  ],
+                                ),
+
+                              ],
+                            ),
+                          ),
+
+                          /// forecast
+
+
+
+
                         ],
                       );
                     }

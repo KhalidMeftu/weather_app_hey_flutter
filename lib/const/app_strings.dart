@@ -2,6 +2,7 @@ class WeatherAppString{
   static String noData="No Data";
   static String clearText="Clear";
   static String humidityText="Humidity";
+  static String feelsLikeText="Feels Like";
   static String windText="Wind";
   static String degreeCelsius="ºC";
   static String cloudsText="Clouds";
