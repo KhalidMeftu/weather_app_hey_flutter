@@ -4,8 +4,7 @@ import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/const/services.dart';
 import 'package:flutterweatherapp/domian/base_data_source/base_remote_data_source.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
+
 
 class RemoteDataSource extends BaseRemoteDataSource {
   Dio dio = Dio();
@@ -31,18 +30,20 @@ class RemoteDataSource extends BaseRemoteDataSource {
           WeatherAppServices.baseURL, queryParameters: queryParameters);
 
       if (response.statusCode == 200) {
+        print("Response is ");
+        print(response.data);
         final data = WeatherModel.fromJson(response.data);
         return Right(data);
       } else {
         return Left('Error: Server responded with status code ${response.statusCode}');
       }
     } catch (e, s) {
-      if (e is DioError) {
+      if (e is DioException) {
         return Left('Error: ${e.response?.data['message'] ?? e.message}');
       }
       // Optionally log the stack trace for debugging
       print(s);
-      return Left('Error: An unexpected error occurred');
+      return const Left('Error: An unexpected error occurred');
     }
   }
   @override

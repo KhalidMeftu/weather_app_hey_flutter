@@ -6,6 +6,7 @@ import 'package:flutterweatherapp/const/app_resources.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
+import 'package:weather_icons/weather_icons.dart';
 
 import '../controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 
@@ -75,22 +76,24 @@ class WeatherHomePage extends StatelessWidget {
                     GetUserCityWeatherControllerState>(
                   builder: (context, state) {
                     if (state is UserCityWeatherLoading) {
-
                       return AppUtils().loadingSpinner;
                     }
                     if (state is UserCityWeatherLoaded) {
-
                       return Column(
                         children: [
-                          Text(state.cityWeatherInformation.weather[0].description),
-                          Image.network(state.cityWeatherInformation.weather[0].icon),
-
+                          Text(state
+                              .cityWeatherInformation.weather[0].description),
+                          AppUtils().getWeatherIcon(
+                              state.cityWeatherInformation.weather[0].icon)!=WeatherIcons.refresh? Icon(
+                            AppUtils().getWeatherIcon(
+                                state.cityWeatherInformation.weather[0].icon),
+                            size: 100.0,
+                          ):Image.network(AppUtils().getWeatherIconURL(state.cityWeatherInformation.weather[0].icon)),
                         ],
                       );
                     }
                     if (state is UserCityWeatherLoadingError) {
                       return Text(state.errorMessage);
-
                     }
                     return Container();
                   },

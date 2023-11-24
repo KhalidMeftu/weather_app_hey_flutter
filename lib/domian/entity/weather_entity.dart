@@ -13,7 +13,6 @@ class WeatherModel {
   final Wind wind;
   final Clouds clouds;
   final int dt;
-  final Sys sys;
   final int timezone;
   final int id;
   final String name;
@@ -28,7 +27,6 @@ class WeatherModel {
     required this.wind,
     required this.clouds,
     required this.dt,
-    required this.sys,
     required this.timezone,
     required this.id,
     required this.name,
@@ -44,7 +42,6 @@ class WeatherModel {
     wind: Wind.fromJson(json["wind"]),
     clouds: Clouds.fromJson(json["clouds"]),
     dt: json["dt"],
-    sys: Sys.fromJson(json["sys"]),
     timezone: json["timezone"],
     id: json["id"],
     name: json["name"],
@@ -60,7 +57,6 @@ class WeatherModel {
     "wind": wind.toJson(),
     "clouds": clouds.toJson(),
     "dt": dt,
-    "sys": sys.toJson(),
     "timezone": timezone,
     "id": id,
     "name": name,
@@ -140,37 +136,6 @@ class Main {
   };
 }
 
-class Sys {
-  final int type;
-  final int id;
-  final String country;
-  final int sunrise;
-  final int sunset;
-
-  Sys({
-    required this.type,
-    required this.id,
-    required this.country,
-    required this.sunrise,
-    required this.sunset,
-  });
-
-  factory Sys.fromJson(Map<String, dynamic> json) => Sys(
-    type: json["type"],
-    id: json["id"],
-    country: json["country"],
-    sunrise: json["sunrise"],
-    sunset: json["sunset"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "type": type,
-    "id": id,
-    "country": country,
-    "sunrise": sunrise,
-    "sunset": sunset,
-  };
-}
 
 class WeatherElement {
   final int id;

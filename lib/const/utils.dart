@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutterweatherapp/const/services.dart';
 import 'package:weather_icons/weather_icons.dart';
-
 import 'app_color.dart';
 
 class AppUtils {
@@ -55,9 +55,20 @@ class AppUtils {
         return WeatherIcons.rain;
       case "11d":
         return WeatherIcons.thunderstorm;
-    // Add more cases for other weather condition codes as needed
-      default:
+      case "13d":
+        return WeatherIcons.snow;
+        default:
         return WeatherIcons.refresh; // A fallback icon in case of unknown code
     }
   }
+  /// some datas are missing from WEATHER ICONS SO WE MANUALLY HIT THE url
+
+  String getWeatherIconURL(String weatherCode) {
+
+        return WeatherAppServices.iconURL+weatherCode+WeatherAppServices.iconSize;
+
+
+
+  }
+
 }
