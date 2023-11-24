@@ -134,7 +134,7 @@ class WeatherHomePage extends StatelessWidget {
                                     SizedBox(
                                       height: 3.h,
                                     ),
-                                    Text(WeatherAppString.humidityText, style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s14),),
+                                    Text(AppUtils.convertTextToUpper(WeatherAppString.humidityText), style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s14),),
                                     SizedBox(
                                       height: 3.h,
                                     ),
@@ -150,7 +150,7 @@ class WeatherHomePage extends StatelessWidget {
                                     SizedBox(
                                       height: 3.h,
                                     ),
-                                    Text(WeatherAppString.windText.toString(), style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s14),),
+                                    Text(AppUtils.convertTextToUpper(WeatherAppString.windText), style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s14),),
                                     SizedBox(
                                       height: 3.h,
                                     ),
@@ -166,7 +166,7 @@ class WeatherHomePage extends StatelessWidget {
                                     SizedBox(
                                       height: 3.h,
                                     ),
-                                    Text(WeatherAppString.feelsLikeText, style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s14),),
+                                    Text(AppUtils.convertTextToUpper(WeatherAppString.feelsLikeText), style: WeatherAppFonts.large(fontWeight: FontWeight.w500, color: WeatherAppColor.whiteColor).copyWith(fontSize: WeatherAppFontSize.s14),),
                                     SizedBox(
                                       height: 3.h,
                                     ),

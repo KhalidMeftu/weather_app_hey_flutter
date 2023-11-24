@@ -10,6 +10,18 @@ class AppUtils {
     return cityName.toLowerCase();
   }
 
+  /// to upper case
+  /// a function to convert city name to lowercase to get city Image
+  static String convertTextToUpper(String text) {
+    return text.toUpperCase();
+  }
+
+
+  /// only first later to upper case for api response of current city
+  static String convertFirstTextToUpper(String text) {
+    return text[0].toUpperCase()+text.substring(1);
+  }
+
   /// on home page we have date format of Jun 07 so belows function takes todays date as an input and returns formated
 /// output
   String getFormattedDate() {
@@ -69,6 +81,25 @@ class AppUtils {
 
 
 
+  }
+
+  /// get next four days
+
+  List<String> getNextFourDays(String today) {
+    List<String> daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    int todayIndex = daysOfWeek.indexOf(today);
+
+    if (todayIndex == -1) {
+      return [];
+    }
+
+    List<String> nextDays = [];
+    for (int i = 1; i <= 4; i++) {
+      int nextIndex = (todayIndex + i) % 7;
+      nextDays.add(daysOfWeek[nextIndex]);
+    }
+
+    return nextDays;
   }
 
 }
