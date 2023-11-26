@@ -23,4 +23,11 @@ class WeatherAppUseCases {
   Future<Either<String,List<Daily>>> getDailyForecast() async{
     return await baseWeatherRepository.getDailyForecast();
   }
+
+  /// insert user city
+
+  Future<Either<String,String>> saveUserCity(WeatherModel weatherModel) async{
+    return await baseWeatherRepository.insertWeatherModel(weatherModel);
+  }
+
 }

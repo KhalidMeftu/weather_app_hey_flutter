@@ -108,30 +108,42 @@ class RemoteDataSource extends BaseRemoteDataSource {
     }
   }
 
+
+  /// delete city
   @override
   Future<Either<String, String>> deleteCities(WeatherModel weatherModel) {
     // TODO: implement deleteCities
     throw UnimplementedError();
   }
 
+  /// get all cities info
   @override
   Future<Either<String, List<WeatherModel>>>getUserCitiesWithWeather() {
     // TODO: implement getUserCitiesWithWeather
     throw UnimplementedError();
   }
 
+  /// insert ops
   @override
   Future<Either<String, String>> insertWeatherModel(WeatherModel weatherModel) async {
-    // TODO: implement insertWeatherModel
-    await cityName.add(await _db, weatherModel.toJson());
+    try {
+      await cityName.add(await _db, weatherModel.toJson());
+      return const Right('Insert successful');
+    } catch (e) {
+      // Handle specific exceptions if necessary
+      return Left('Insert failed: ${e.toString()}');
+    }
   }
 
+
+  /// search
   @override
   Future<Either<String,List<WeatherModel>>> searchCities(String query) {
     // TODO: implement searchCities
     throw UnimplementedError();
   }
 
+  /// update city
   @override
   Future<Either<String, String>> updateCitiesWeather(WeatherModel weatherModel) {
     throw UnimplementedError();

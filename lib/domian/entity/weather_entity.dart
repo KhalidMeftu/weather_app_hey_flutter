@@ -17,6 +17,8 @@ class WeatherModel {
   final int id;
   final String name;
   final int cod;
+  final DateTime updatedAt;
+
 
   WeatherModel({
     required this.coord,
@@ -31,7 +33,8 @@ class WeatherModel {
     required this.id,
     required this.name,
     required this.cod,
-  });
+    DateTime? updatedAt,
+  }): updatedAt = updatedAt ?? DateTime.now();
 
   factory WeatherModel.fromJson(Map<String, dynamic> json) => WeatherModel(
     coord: Coord.fromJson(json["coord"]),
@@ -46,6 +49,8 @@ class WeatherModel {
     id: json["id"],
     name: json["name"],
     cod: json["cod"],
+    updatedAt: json["updated_at"] != null ? DateTime.parse(json["updated_at"]) : DateTime.now(),
+
   );
 
   Map<String, dynamic> toJson() => {
@@ -61,6 +66,8 @@ class WeatherModel {
     "id": id,
     "name": name,
     "cod": cod,
+    "updated_at": updatedAt.toIso8601String(),
+
   };
 }
 
