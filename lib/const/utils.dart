@@ -85,16 +85,11 @@ class AppUtils {
 
   /// get next four days
 
-  List<String> getNextFourDays(String today) {
+  static List<String> getNextFourDays() {
     List<String> daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    int todayIndex = daysOfWeek.indexOf(today);
-
-    if (todayIndex == -1) {
-      return [];
-    }
 
     DateTime currentDate = DateTime.now();
-    currentDate = currentDate.add(Duration(days: todayIndex));
+    int todayIndex = currentDate.weekday % 7;
 
     List<String> nextDays = [];
     for (int i = 1; i <= 4; i++) {
@@ -106,5 +101,4 @@ class AppUtils {
 
     return nextDays;
   }
-
 }

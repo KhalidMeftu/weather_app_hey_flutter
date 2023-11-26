@@ -98,7 +98,9 @@ class _SplashScreenState extends State<SplashScreen>
                           cityName=place.locality!;
                         });
                         print("Location is ${place.locality}");
-                        await getCityImage(place.locality);
+                      //  await getCityImage(place.locality);
+                        await getCityImage("Addis Ababa");
+
                         /*BlocListener<GetCityImageControllerBloc,
                             GetCityImageControllerState>(
                           listener: (context, state) {

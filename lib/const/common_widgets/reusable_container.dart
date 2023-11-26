@@ -1,20 +1,18 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterweatherapp/const/app_color.dart';
-import 'package:flutterweatherapp/const/app_strings.dart';
+import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_app_radius.dart';
-import 'package:flutterweatherapp/const/weather_font_sizes.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutterweatherapp/domian/entity/forcast_entity.dart';
+import 'package:weather_icons/weather_icons.dart';
 
 class NextWeekCard extends StatelessWidget {
-  final List<String> daysOfWeek;
-  final List<String> daysWeather;
-  final List<String> temprature;
-  final List<String> windSpeed;
+  final String daysOfWeek;
+  final Daily forecastModel;
 
-  const NextWeekCard({Key? key, required this.daysOfWeek, required this.daysWeather, required this.temprature, required this.windSpeed}) : super(key: key);
+  const NextWeekCard({Key? key, required this.daysOfWeek, required this.forecastModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,91 +23,53 @@ class NextWeekCard extends StatelessWidget {
             BorderRadius.all(Radius.circular(WeatherAppRadius.w24))),
 
         /// todo padding
-        child: Row(
+        child: Column(
           children: [
-            /// display city name weather condition and humidty and wind
-            Column(
-              children: [
-                Text(
-                  "cityName",
-                  style: WeatherAppFonts.large().copyWith(
-                      color: WeatherAppColor.whiteColor,
-                      fontWeight: FontWeight.w700),
-                ),
-                Text(
-                  "weatherCondition",
-                  style: WeatherAppFonts.medium().copyWith(
-                      color: WeatherAppColor.whiteColor.withOpacity(0.8),
-                      fontWeight: FontWeight.w500,
-                      fontSize: WeatherAppFontSize.s16),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      WeatherAppString.humidityText,
-                      style: WeatherAppFonts.medium().copyWith(
-                          color: WeatherAppColor.whiteColor.withOpacity(0.8),
-                          fontWeight: FontWeight.w300,
-                          fontSize: WeatherAppFontSize.s16),
-                    ),
-                    Text(
-                      "humidity",
-                      style: WeatherAppFonts.medium().copyWith(
-                          color: WeatherAppColor.whiteColor.withOpacity(0.8),
-                          fontWeight: FontWeight.w400,
-                          fontSize: WeatherAppFontSize.s16),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text(
-                      WeatherAppString.windText,
-                      style: WeatherAppFonts.medium().copyWith(
-                          color: WeatherAppColor.whiteColor.withOpacity(0.8),
-                          fontWeight: FontWeight.w300,
-                          fontSize: WeatherAppFontSize.s16),
-                    ),
-                    Text(
-                      "windSpeed",
-                      style: WeatherAppFonts.medium().copyWith(
-                          color: WeatherAppColor.whiteColor.withOpacity(0.8),
-                          fontWeight: FontWeight.w400,
-                          fontSize: WeatherAppFontSize.s16),
-                    ),
-                  ],
-                )
-              ],
+            Text(
+              daysOfWeek,
+              style: WeatherAppFonts.large().copyWith(
+                  color: WeatherAppColor.whiteColor,
+                  fontWeight: FontWeight.w700),
             ),
-            Column(
-              children: [
-                //// image
-                SvgPicture.asset(
-                  "statusImage",
-                ),
-                Row(
-                  children: [
-                    Text(
-                      "temprature",
-                      style: WeatherAppFonts.medium().copyWith(
-                          color: WeatherAppColor.whiteColor.withOpacity(0.8),
-                          fontWeight: FontWeight.w500,
-                          fontSize: WeatherAppFontSize.s48),
-                    ),
-                    Text(
-                      WeatherAppString.degreeCelsius,
-                      style: WeatherAppFonts.medium().copyWith(
-                          color: WeatherAppColor.whiteColor.withOpacity(0.8),
-                          fontWeight: FontWeight.w400,
-                          fontFeatures: [
-                            const FontFeature.enable('sups'),
-                          ],
-                          fontSize: WeatherAppFontSize.s16),
-                    ),
-                  ],
-                )
-              ],
+            SizedBox(
+              height: 10.h,
             ),
+            ///icon
+            AppUtils().getWeatherIcon(
+              forecastModel.weather[0].icon)!=WeatherIcons.refresh? Icon(
+              AppUtils().getWeatherIcon(
+                  forecastModel.weather[0].icon),
+              size: 100.0,
+            ):Image.network(AppUtils().getWeatherIconURL( forecastModel.weather[0].icon)),
+            SizedBox(
+              height: 10.h,
+            ),
+          /// temp
+            Text(
+              forecastModel.temp.day.toString(),
+              style: WeatherAppFonts.large().copyWith(
+                  color: WeatherAppColor.whiteColor,
+                  fontWeight: FontWeight.w700),
+            ),
+            SizedBox(
+              height: 10.h,
+            ),
+
+            // wind speed
+            Text(
+              forecastModel.windSpeed.toString(),
+              style: WeatherAppFonts.large().copyWith(
+                  color: WeatherAppColor.whiteColor,
+                  fontWeight: FontWeight.w700),
+            ),
+
+            Text(
+              "km/h",
+              style: WeatherAppFonts.large().copyWith(
+                  color: WeatherAppColor.whiteColor,
+                  fontWeight: FontWeight.w700),
+            ),
+
           ],
         ));
 

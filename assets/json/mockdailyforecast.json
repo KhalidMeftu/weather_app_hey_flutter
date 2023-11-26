@@ -1,0 +1,96 @@
+{
+    "daily": [
+        {
+            "summary": "Expect a day of partly cloudy",
+            "temp": {
+                "day": 17,
+                "min": 8,
+                "max": 17.5
+            },
+            "pressure": 1016,
+            "humidity": 59,
+            "dew_point": 290.48,
+            "wind_speed": 3.98,
+            "wind_deg": 76,
+            "wind_gust": 8.92,
+            "weather": [
+                {
+                    "id": 500,
+                    "main": "Rain",
+                    "description": "light rain",
+                    "icon": "10d"
+                }
+            ]
+        },
+        {
+            "summary": "Expect a day of Sunny",
+            "temp": {
+                "day": 23,
+                "min": 20,
+                "max": 22
+            },
+            "pressure": 1016,
+            "humidity": 59,
+            "dew_point": 290.48,
+            "wind_speed": 2,
+            "wind_deg": 76,
+            "wind_gust": 8.92,
+            "weather": [
+                {
+                    "id": 500,
+                    "main": "Sunny",
+                    "description": "light rain",
+                    "icon": "01d"
+                }
+            ]
+        },
+        {
+            "summary": "Expect a day of few cloud",
+            "temp": {
+                "day": 19,
+                "min": 15,
+                "max": 19
+            },
+            "pressure": 1016,
+            "humidity": 59,
+            "dew_point": 290.48,
+            "wind_speed": 2.98,
+            "wind_deg": 76,
+            "wind_gust": 8.92,
+            "weather": [
+                {
+                    "id": 500,
+                    "main": "Rain",
+                    "description": "light rain",
+                    "icon": "02d"
+                }
+            ]
+        },
+        {
+            "summary": "Expect a day of rain",
+            "temp": {
+                "day": 10,
+                "min": 5,
+                "max": 11
+            },
+            "pressure": 1016,
+            "humidity": 59,
+            "dew_point": 290.48,
+            "wind_speed": 3.98,
+            "wind_deg": 76,
+            "wind_gust": 8.92,
+            "weather": [
+                {
+                    "id": 500,
+                    "main": "Rain",
+                    "description": "light rain",
+                    "icon": "10d"
+                }
+            ]
+        }
+    ],
+    "comments": [
+        "The forecast for the upcoming day is paid which is unsupported for Ethiopia.",
+        "Therefore, only a 4-day forecast is provided."
+    ]
+}

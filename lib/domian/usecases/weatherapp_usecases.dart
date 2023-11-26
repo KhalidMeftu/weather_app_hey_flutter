@@ -1,5 +1,6 @@
 import 'package:either_dart/either.dart';
 import 'package:flutterweatherapp/domian/base_repository/base_repository.dart';
+import 'package:flutterweatherapp/domian/entity/forcast_entity.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 
 class WeatherAppUseCases {
@@ -17,5 +18,9 @@ class WeatherAppUseCases {
 
   Future<Either<String,String>> getCityImage(String cityName) async{
     return await baseWeatherRepository.getCityImageURL(cityName);
+  }
+
+  Future<Either<String,List<Daily>>> getDailyForecast() async{
+    return await baseWeatherRepository.getDailyForecast();
   }
 }

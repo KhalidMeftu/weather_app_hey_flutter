@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:either_dart/src/either.dart';
+import 'package:flutter/services.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/const/services.dart';
 import 'package:flutterweatherapp/domian/base_data_source/base_remote_data_source.dart';
+import 'package:flutterweatherapp/domian/entity/forcast_entity.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 
 
@@ -67,6 +71,25 @@ class RemoteDataSource extends BaseRemoteDataSource {
       } else {
         return Left('Exception: ${e.toString()}');
       }
+    }
+  }
+
+  @override
+  Future<Either<String, List<Daily>>> getDailyForecast() async {
+    // TODO: implement getDailyForecast
+    try {
+      final String response = await rootBundle.loadString('assets/json/mockdailyforecast.json');
+      final data = json.decode(response);
+
+      if (data is Map<String, dynamic> && data.containsKey('daily')) {
+        final dailyData = List<Map<String, dynamic>>.from(data['daily']);
+        List<Daily> dailyList = dailyData.map((json) => Daily.fromJson(json)).toList();
+        return Right(dailyList);
+      } else {
+        return const Left('Invalid JSON format');
+      }
+    } catch (e) {
+      return Left(e.toString());
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:either_dart/src/either.dart';
 import 'package:flutterweatherapp/domian/base_data_source/base_remote_data_source.dart';
 import 'package:flutterweatherapp/domian/base_repository/base_repository.dart';
+import 'package:flutterweatherapp/domian/entity/forcast_entity.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 
 class WeatherRepository implements BaseRemoteRepository {
@@ -26,6 +27,13 @@ class WeatherRepository implements BaseRemoteRepository {
     // TODO: implement getCityImageURL
     final cityImageURL = await baseremoteDataSource.getCityImageURL(cityName);
     return cityImageURL;
+  }
+
+  @override
+  Future<Either<String, List<Daily>>> getDailyForecast() async {
+    // TODO: implement getDailyForecast
+    final dailyForeCast = await baseremoteDataSource.getDailyForecast();
+    return dailyForeCast;
   }
   
 }

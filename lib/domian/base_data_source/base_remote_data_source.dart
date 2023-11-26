@@ -1,3 +1,4 @@
+import 'package:flutterweatherapp/domian/entity/forcast_entity.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:either_dart/either.dart';
 
@@ -13,4 +14,7 @@ abstract class BaseRemoteDataSource {
 
 Future<Either<String,String>> getCityImageURL(String cityName);
 
+  /// get weather for forecast i fetch this from model tough
+
+  Future<Either<String,List<Daily>>> getDailyForecast();
 }

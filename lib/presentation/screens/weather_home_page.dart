@@ -7,9 +7,11 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:flutterweatherapp/const/app_color.dart';
 import 'package:flutterweatherapp/const/app_resources.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
+import 'package:flutterweatherapp/const/common_widgets/reusable_container.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
+import 'package:flutterweatherapp/domian/entity/forcast_entity.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
@@ -26,6 +28,11 @@ class WeatherHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final myBloc = BlocProvider.of<GetUserCityWeatherControllerBloc>(context);
     myBloc.add(GetUserCityWeather(cityName));
+    List<String> upcomingDays = AppUtils.getNextFourDays();
+   // List<Daily> dailyForecasts = forecastModel.daily;
+
+
+
     return Scaffold(
       body: Stack(
         children: [
@@ -180,6 +187,11 @@ class WeatherHomePage extends StatelessWidget {
                           ),
 
                           /// forecast
+                          ///
+
+                          for(int i = 0; i < upcomingDays.length; i++)...[
+                            NextWeekCard(daysOfWeek: upcomingDays[i],forecastModel: ,),
+                          ]
 
 
 
