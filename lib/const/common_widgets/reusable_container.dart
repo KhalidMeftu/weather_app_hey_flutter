@@ -18,56 +18,56 @@ class NextWeekCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Column(
-          children: [
-            Text(
-              daysOfWeek,
-              style: WeatherAppFonts.large().copyWith(
-                  color: WeatherAppColor.whiteColor,
-                  fontWeight: FontWeight.w400).copyWith(fontSize: WeatherAppFontSize.s14),
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
-            ///icon
-            AppUtils().getWeatherIcon(
-              forecastModel.weather[0].icon)!=WeatherIcons.refresh? Icon(
-              AppUtils().getWeatherIcon(
-                  forecastModel.weather[0].icon),
-              size: 50.0,
-            ):Image.network(AppUtils().getWeatherIconURL( forecastModel.weather[0].icon)),
-            SizedBox(
-              height: 10.h,
-            ),
-          /// temp
-            Text(
-              forecastModel.temp.day.toString(),
-              style: WeatherAppFonts.large().copyWith(
-                  color: WeatherAppColor.whiteColor,
-                  fontWeight: FontWeight.w400).copyWith(fontSize: WeatherAppFontSize.s16),
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
+    return Column(
+      children: [
+        Text(
+          daysOfWeek,
+          style: WeatherAppFonts.large().copyWith(
+              color: WeatherAppColor.whiteColor,
+              fontWeight: FontWeight.w400).copyWith(fontSize: WeatherAppFontSize.s14),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        ///icon
+        AppUtils().getWeatherIcon(
+          forecastModel.weather[0].icon)!=WeatherIcons.refresh? Icon(
+          AppUtils().getWeatherIcon(
+              forecastModel.weather[0].icon),
+          size: 50.0,
 
-            // wind speed
-            Text(
-              forecastModel.windSpeed.toString(),
-              style: WeatherAppFonts.large().copyWith(
-                  color: WeatherAppColor.whiteColor,
-                  fontWeight: FontWeight.w400).copyWith(fontSize: WeatherAppFontSize.s10),
-            ),
+        ):Image.network(AppUtils().getWeatherIconURL( forecastModel.weather[0].icon)),
+        SizedBox(
+          height: 10.h,
+        ),
+      /// temp
+        Text(
+          forecastModel.temp.day.toString(),
+          style: WeatherAppFonts.large().copyWith(
+              color: WeatherAppColor.whiteColor,
+              fontWeight: FontWeight.w400).copyWith(fontSize: WeatherAppFontSize.s16),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
 
-            Text(
-              "km/h",
-              style: WeatherAppFonts.large().copyWith(
-                  color: WeatherAppColor.whiteColor,
-                  fontWeight: FontWeight.w400).copyWith(fontSize: WeatherAppFontSize.s10),
-            ),
+        // wind speed
+        Text(
+          forecastModel.windSpeed.toString(),
+          style: WeatherAppFonts.large().copyWith(
+              color: WeatherAppColor.whiteColor,
+              fontWeight: FontWeight.w400).copyWith(fontSize: WeatherAppFontSize.s10),
+        ),
 
-          ],
-        ));
+        Text(
+          "km/h",
+          style: WeatherAppFonts.large().copyWith(
+              color: WeatherAppColor.whiteColor,
+              fontWeight: FontWeight.w400).copyWith(fontSize: WeatherAppFontSize.s10),
+        ),
+
+      ],
+    );
 
   }
 }

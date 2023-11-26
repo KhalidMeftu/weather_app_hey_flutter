@@ -26,7 +26,7 @@ class RouteGenerator {
                   imageUrl: args[1],
                 ));
       case WeatherRoutes.userCitiesRoute:
-        return MaterialPageRoute(builder: (_) => const UserCities());
+        return _createRoute( const UserCities());
 
       default:
         return unDefinedRoute();
@@ -44,5 +44,23 @@ class RouteGenerator {
                 child: Text(WeatherAppString.weatherAppRouteNotFound),
               ),
             ));
+  }
+  ///page transition animation]
+
+  static Route<dynamic> _createRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = const Offset(1.0, 0.0); // New page starts from the right
+        var end = Offset.zero;
+        var tween = Tween(begin: begin, end: end);
+        var offsetAnimation = animation.drive(tween);
+
+        return SlideTransition(
+          position: offsetAnimation,
+          child: child,
+        );
+      },
+    );
   }
 }

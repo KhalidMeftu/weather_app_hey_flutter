@@ -11,10 +11,11 @@ import 'package:flutterweatherapp/const/common_widgets/reusable_container.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
-import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/presentation/controller/get_daily_forecast/get_daily_forecast_bloc.dart';
+import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:weather_icons/weather_icons.dart';
+
 import '../controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 
 class WeatherHomePage extends StatelessWidget {
@@ -61,7 +62,9 @@ class WeatherHomePage extends StatelessWidget {
             right: 0,
             child: WeatherAppBar(cityName: cityName),
           ),
-          SafeArea(
+
+          Padding(
+            padding: EdgeInsets.only(top: 80.h),
             child: ListView(
               children: [
                 SizedBox(height: AppBar().preferredSize.height),
@@ -263,26 +266,28 @@ class WeatherHomePage extends StatelessWidget {
                               builder: (context, states) {
                             if (states is LoadingDailyForecast) {}
                             if (states is DailyForecastLoaded) {
-                              // for(int i = 0; i < upcomingDays.length; i++)...[
-                              // NextWeekCard(daysOfWeek: upcomingDays[i],forecastModel: ,),
-                              // ],
                               return Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Center(
                                   child: SizedBox(
                                     height: 200.h,
                                     child: GlassContainer(
-                                      color: WeatherAppColor.whiteColor.withOpacity(0.1),
+                                      color: WeatherAppColor.whiteColor
+                                          .withOpacity(0.1),
                                       borderRadius: BorderRadius.circular(16),
                                       child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
                                         itemCount: states.forecastList.length,
                                         itemBuilder: (context, index) {
                                           return Padding(
-                                            padding: EdgeInsets.only(left: 12.w, right: 12.w, top: 15.h),
+                                            padding: EdgeInsets.only(
+                                                left: 12.w,
+                                                right: 12.w,
+                                                top: 15.h),
                                             child: NextWeekCard(
                                               daysOfWeek: upcomingDays[index],
-                                              forecastModel: states.forecastList[index],
+                                              forecastModel:
+                                                  states.forecastList[index],
                                             ),
                                           );
                                         },
@@ -334,7 +339,15 @@ class WeatherAppBar extends StatelessWidget {
       ),
       elevation: 0,
       actions: [
-        Icon(Icons.more_vert_sharp, color: WeatherAppColor.whiteColor)
+        Padding(
+          padding: const EdgeInsets.only(right: 18.0),
+          child: InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, WeatherRoutes.userCitiesRoute);
+              },
+              child: Icon(Icons.more_vert_sharp,
+                  color: WeatherAppColor.whiteColor)),
+        )
       ], // Removes shadow
     );
   }
