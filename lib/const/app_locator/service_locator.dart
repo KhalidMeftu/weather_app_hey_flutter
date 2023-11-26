@@ -4,6 +4,7 @@ import 'package:flutterweatherapp/domian/base_data_source/base_remote_data_sourc
 import 'package:flutterweatherapp/domian/base_repository/base_repository.dart';
 import 'package:flutterweatherapp/domian/usecases/weatherapp_usecases.dart';
 import 'package:flutterweatherapp/presentation/controller/getCityImage/get_city_image_controller_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/get_daily_forecast/get_daily_forecast_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_saved_city_weather_controller/get_saved_cities_controller_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -12,6 +13,7 @@ GetIt sLocator = GetIt.instance;
 
 class ServicesLocator {
   Future<void> init() async {
+    sLocator.registerFactory(() => GetDailyForecastBloc(sLocator()));
     sLocator.registerFactory(() => GetCityImageControllerBloc(sLocator()));
     sLocator.registerFactory(() => GetUserCityWeatherControllerBloc(sLocator()));
     sLocator.registerFactory(() => GetSavedCitiesControllerBloc(sLocator()));

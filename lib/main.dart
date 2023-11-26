@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterweatherapp/presentation/controller/getCityImage/get_city_image_controller_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/get_daily_forecast/get_daily_forecast_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_saved_city_weather_controller/get_saved_cities_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/screens/splash_screen/splash_screen.dart';
@@ -30,6 +31,11 @@ class MyApp extends StatelessWidget {
           return MultiBlocProvider(
             providers: [
               /// as soon as app started i need to get user current city data
+              /// GetDailyForecastBloc
+              ///
+              BlocProvider(
+                  create: (context) =>
+                      GetDailyForecastBloc(sLocator())),
               BlocProvider(
                   create: (context) =>
                       GetUserCityWeatherControllerBloc(sLocator())),
