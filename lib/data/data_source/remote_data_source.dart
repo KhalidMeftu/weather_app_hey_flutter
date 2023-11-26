@@ -135,7 +135,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
 
   /// insert ops
   @override
-  Future<Either<String, String>> insertWeatherModel(WeatherModel weatherModel) async {
+  Future<Either<String, List<WeatherModel>>> insertWeatherModel(WeatherModel weatherModel) async {
     try {
       // Check if the cityName already exists in the database
       final existingRecords = await cityName.find(
@@ -150,7 +150,17 @@ class RemoteDataSource extends BaseRemoteDataSource {
 
       // If cityName does not exist, proceed with the insert
       await cityName.add(await _db, weatherModel.toJson());
-      return const Right('Insert successful');
+      try {
+        final recordSnapshots = await cityName.find(await _db);
+        final weatherModels = recordSnapshots.map((snapshot) {
+          return WeatherModel.fromJson(snapshot.value);
+        }).toList();
+
+        return Right(weatherModels);
+      } catch (e) {
+        // If an error occurs, return Left with the error message
+        return Left('Error fetching data: ${e.toString()}');
+      }
     } catch (e) {
       // Handle specific exceptions if necessary
       return Left('Insert failed: ${e.toString()}');

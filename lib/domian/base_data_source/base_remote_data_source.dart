@@ -26,7 +26,7 @@ Future<Either<String,String>> getCityImageURL(String cityName);
 
   Future<Either<String,List<WeatherModel>>> getUserCitiesWithWeather();
   Future<Either<String,List<WeatherModel>>> searchCities(String query);
-  Future<Either<String,String>> insertWeatherModel(WeatherModel weatherModel);
+  Future<Either<String,List<WeatherModel>>> insertWeatherModel(WeatherModel weatherModel);
   Future<Either<String,String>> deleteCities(WeatherModel weatherModel);
   Future<Either<String,String>>updateCitiesWeather(WeatherModel weatherModel);
 

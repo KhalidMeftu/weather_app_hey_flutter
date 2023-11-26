@@ -98,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen>
                         setState(() {
                           cityName = place.locality!;
                         });
-                        print("Location is ${place.locality}");
+                        //print("Location is ${place.locality}");
                         //  await getCityImage(place.locality);
                         await getCityImage("Addis Ababa");
 

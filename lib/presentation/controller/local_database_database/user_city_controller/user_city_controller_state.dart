@@ -11,12 +11,12 @@ class UserCityControllerInitial extends UserCityControllerState {
 
 /// insert
 class UserCityInsertSuccessfull extends UserCityControllerState{
-  final String successMessage;
+  final List<WeatherModel> weatherModel;
 
-  const UserCityInsertSuccessfull(this.successMessage);
+  const UserCityInsertSuccessfull(this. weatherModel);
   @override
   // TODO: implement props
-  List<Object?> get props => [successMessage];
+  List<Object?> get props => [ weatherModel];
 
 }
 

@@ -51,7 +51,7 @@ class WeatherRepository implements BaseRemoteRepository {
   }
 
   @override
-  Future<Either<String, String>> insertWeatherModel(WeatherModel weatherModel) async {
+  Future<Either<String, List<WeatherModel>>> insertWeatherModel(WeatherModel weatherModel) async {
     // TODO: implement insertWeatherModel
     final insertCityWeather = await baseremoteDataSource.insertWeatherModel(weatherModel);
     return insertCityWeather;
