@@ -117,6 +117,7 @@ class WeatherHomePage extends StatelessWidget {
                             height: 10.h,
                           ),
                           Text(
+
                             state.cityWeatherInformation.weather[0].description,
                             style: WeatherAppFonts.large(
                                     fontWeight: FontWeight.w700,

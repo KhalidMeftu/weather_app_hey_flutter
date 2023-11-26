@@ -4,14 +4,27 @@ import 'package:dio/dio.dart';
 import 'package:either_dart/src/either.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
+import 'package:flutterweatherapp/const/database/app_database.dart';
 import 'package:flutterweatherapp/const/services.dart';
 import 'package:flutterweatherapp/domian/base_data_source/base_remote_data_source.dart';
 import 'package:flutterweatherapp/domian/entity/forcast_entity.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
+import 'package:get_it/get_it.dart';
+import 'package:sembast/sembast.dart';
 
 
 class RemoteDataSource extends BaseRemoteDataSource {
+  final AppDatabase _appDatabase;
   Dio dio = Dio();
+  static const String CityName = 'cities';
+  final cityName = intMapStoreFactory.store(CityName);
+
+  // Constructor
+  RemoteDataSource() : _appDatabase = GetIt.instance<AppDatabase>();
+
+  // Access the database
+  Future<Database> get _db async => await _appDatabase.database;
+
 
   @override
   Future<Either<String, WeatherModel>> getWeatherForAllCities(
@@ -93,6 +106,35 @@ class RemoteDataSource extends BaseRemoteDataSource {
     } catch (e) {
       return Left(e.toString());
     }
+  }
+
+  @override
+  Future<Either<String, String>> deleteCities(WeatherModel weatherModel) {
+    // TODO: implement deleteCities
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<String, List<WeatherModel>>>getUserCitiesWithWeather() {
+    // TODO: implement getUserCitiesWithWeather
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<String, String>> insertWeatherModel(WeatherModel weatherModel) async {
+    // TODO: implement insertWeatherModel
+    await cityName.add(await _db, weatherModel.toJson());
+  }
+
+  @override
+  Future<Either<String,List<WeatherModel>>> searchCities(String query) {
+    // TODO: implement searchCities
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<String, String>> updateCitiesWeather(WeatherModel weatherModel) {
+    throw UnimplementedError();
   }
 
 

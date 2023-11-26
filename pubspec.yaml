@@ -55,6 +55,8 @@ dependencies:
   lottie:
   weather_icons:
   glassmorphism_ui:
+  path_provider:
+  sembast:
 
 dev_dependencies:
   flutter_test:

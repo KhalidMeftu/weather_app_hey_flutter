@@ -35,5 +35,39 @@ class WeatherRepository implements BaseRemoteRepository {
     final dailyForeCast = await baseremoteDataSource.getDailyForecast();
     return dailyForeCast;
   }
+
+  @override
+  Future<Either<String, String>> deleteCities(WeatherModel weatherModel) async {
+    // TODO: implement deleteCities
+    final deleteCities = await baseremoteDataSource.deleteCities(weatherModel);
+    return deleteCities;
+  }
+
+  @override
+  Future <Either<String,List<WeatherModel>>> getUserCitiesWithWeather() async {
+    // TODO: implement getUserCitiesWithWeather
+    final cityWeather = await baseremoteDataSource.getUserCitiesWithWeather();
+    return cityWeather;
+  }
+
+  @override
+  Future<Either<String, String>> insertWeatherModel(WeatherModel weatherModel) async {
+    // TODO: implement insertWeatherModel
+    final insertCityWeather = await baseremoteDataSource.insertWeatherModel(weatherModel);
+    return insertCityWeather;
+  }
+
+  @override
+  Future<Either<String,List<WeatherModel>>> searchCities(String query) async {
+    // TODO: implement searchCities
+    final searchCity = await baseremoteDataSource.searchCities(query);
+    return searchCity;
+  }
+
+  @override
+  Future<Either<String,String>> updateCitiesWeather(WeatherModel weatherModel) {
+    // TODO: implement updateCitiesWeather
+    throw UnimplementedError();
+  }
   
 }
