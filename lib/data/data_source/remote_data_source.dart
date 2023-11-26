@@ -78,6 +78,8 @@ class RemoteDataSource extends BaseRemoteDataSource {
   Future<Either<String, List<Daily>>> getDailyForecast() async {
     // TODO: implement getDailyForecast
     try {
+      /// a 2-second delay to mock web response
+      await Future.delayed(const Duration(seconds: 2));
       final String response = await rootBundle.loadString('assets/json/mockdailyforecast.json');
       final data = json.decode(response);
 

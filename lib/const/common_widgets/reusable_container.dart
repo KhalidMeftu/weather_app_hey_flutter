@@ -5,7 +5,9 @@ import 'package:flutterweatherapp/const/app_color.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_app_radius.dart';
+import 'package:flutterweatherapp/const/weather_font_sizes.dart';
 import 'package:flutterweatherapp/domian/entity/forcast_entity.dart';
+import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 class NextWeekCard extends StatelessWidget {
@@ -17,19 +19,13 @@ class NextWeekCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: WeatherAppColor.transParentColor,
-        decoration: BoxDecoration(
-            borderRadius:
-            BorderRadius.all(Radius.circular(WeatherAppRadius.w24))),
-
-        /// todo padding
         child: Column(
           children: [
             Text(
               daysOfWeek,
               style: WeatherAppFonts.large().copyWith(
                   color: WeatherAppColor.whiteColor,
-                  fontWeight: FontWeight.w700),
+                  fontWeight: FontWeight.w400).copyWith(fontSize: WeatherAppFontSize.s14),
             ),
             SizedBox(
               height: 10.h,
@@ -39,7 +35,7 @@ class NextWeekCard extends StatelessWidget {
               forecastModel.weather[0].icon)!=WeatherIcons.refresh? Icon(
               AppUtils().getWeatherIcon(
                   forecastModel.weather[0].icon),
-              size: 100.0,
+              size: 50.0,
             ):Image.network(AppUtils().getWeatherIconURL( forecastModel.weather[0].icon)),
             SizedBox(
               height: 10.h,
@@ -49,7 +45,7 @@ class NextWeekCard extends StatelessWidget {
               forecastModel.temp.day.toString(),
               style: WeatherAppFonts.large().copyWith(
                   color: WeatherAppColor.whiteColor,
-                  fontWeight: FontWeight.w700),
+                  fontWeight: FontWeight.w400).copyWith(fontSize: WeatherAppFontSize.s16),
             ),
             SizedBox(
               height: 10.h,
@@ -60,14 +56,14 @@ class NextWeekCard extends StatelessWidget {
               forecastModel.windSpeed.toString(),
               style: WeatherAppFonts.large().copyWith(
                   color: WeatherAppColor.whiteColor,
-                  fontWeight: FontWeight.w700),
+                  fontWeight: FontWeight.w400).copyWith(fontSize: WeatherAppFontSize.s10),
             ),
 
             Text(
               "km/h",
               style: WeatherAppFonts.large().copyWith(
                   color: WeatherAppColor.whiteColor,
-                  fontWeight: FontWeight.w700),
+                  fontWeight: FontWeight.w400).copyWith(fontSize: WeatherAppFontSize.s10),
             ),
 
           ],

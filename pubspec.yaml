@@ -54,6 +54,7 @@ dependencies:
   geocoding:
   lottie:
   weather_icons:
+  glassmorphism_ui:
 
 dev_dependencies:
   flutter_test:
