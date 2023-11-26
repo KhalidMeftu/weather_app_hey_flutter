@@ -27,6 +27,52 @@ class _UserCitiesState extends State<UserCities> {
     super.initState();
   }
 
+  /// save alert
+  String _savedText = '';
+
+  void _showSaveDialog(BuildContext context) async {
+    final result = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController _textEditingController = TextEditingController();
+
+        return AlertDialog(
+          title: const Text('Save New City'),
+          content: TextField(
+            controller: _textEditingController,
+            decoration: const InputDecoration(
+              hintText: 'Enter City',
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () {
+                String text = _textEditingController.text;
+                Navigator.of(context).pop(text);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != null) {
+      setState(() {
+        /// save it
+        print(result);
+        _savedText = result;
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,21 +179,26 @@ class _UserCitiesState extends State<UserCities> {
             bottom: 10.h,
             left: 10.w,
             right: 10.w,
-            child: Container(
-              decoration:BoxDecoration(
-                  color: WeatherAppColor.cardB,
-                  borderRadius: const BorderRadius.all(Radius.circular(24))
-              ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.add_circle_outline, size: 24,color: WeatherAppColor.whiteColor,),
-                SizedBox(width: 10.w,),
-                Text(WeatherAppString.addNew, style: WeatherAppFonts.medium(fontWeight: FontWeight.w500,).copyWith(color:WeatherAppColor.whiteColor, fontSize: WeatherAppFontSize.s24),)
+            child: InkWell(
+              onTap: (){
+                _showSaveDialog(context);
+              },
+              child: Container(
+                decoration:BoxDecoration(
+                    color: WeatherAppColor.cardB,
+                    borderRadius: const BorderRadius.all(Radius.circular(24))
+                ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add_circle_outline, size: 24,color: WeatherAppColor.whiteColor,),
+                  SizedBox(width: 10.w,),
+                  Text(WeatherAppString.addNew, style: WeatherAppFonts.medium(fontWeight: FontWeight.w500,).copyWith(color:WeatherAppColor.whiteColor, fontSize: WeatherAppFontSize.s24),)
 
-              ],
-            ),
+                ],
+              ),
+              ),
             ),
           ),
         ],
