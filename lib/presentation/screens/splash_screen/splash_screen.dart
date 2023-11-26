@@ -7,6 +7,7 @@ import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/presentation/controller/getCityImage/get_city_image_controller_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -23,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen>
   late final AnimationController _controller;
 
   bool locationPermissionEnabled = false;
-  String cityName="Uknown city";
+  String cityName = "Uknown city";
 
   @override
   void initState() {
@@ -48,15 +49,15 @@ class _SplashScreenState extends State<SplashScreen>
         if (state is CityImageWeatherLoaded) {
           Navigator.pushNamed(
               context, WeatherRoutes.homePageRoute,
-              arguments: ["Addis Ababa",""]);
+              arguments: ["Addis Ababa", ""]);
 
           //arguments: [cityName,state.imageURL]);
         }
         if (state is CityImageLoadingError) {
           Navigator.pushNamed(
               context, WeatherRoutes.homePageRoute,
-              arguments: ["Addis Ababa",""]);
-              //arguments: [cityName,""]);
+              arguments: ["Addis Ababa", ""]);
+          //arguments: [cityName,""]);
         }
       },
       child: Scaffold(
@@ -95,10 +96,10 @@ class _SplashScreenState extends State<SplashScreen>
                             position.latitude, position.longitude);
                         Placemark place = placemarks[0];
                         setState(() {
-                          cityName=place.locality!;
+                          cityName = place.locality!;
                         });
                         print("Location is ${place.locality}");
-                      //  await getCityImage(place.locality);
+                        //  await getCityImage(place.locality);
                         await getCityImage("Addis Ababa");
 
                         /*BlocListener<GetCityImageControllerBloc,

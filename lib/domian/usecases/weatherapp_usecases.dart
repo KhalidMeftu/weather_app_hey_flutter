@@ -30,4 +30,8 @@ class WeatherAppUseCases {
     return await baseWeatherRepository.insertWeatherModel(weatherModel);
   }
 
+  /// fetch user city
+  Future<Either<String,List<WeatherModel>>> loadUserCity() async{
+    return await baseWeatherRepository.getUserCitiesWithWeather();
+  }
 }

@@ -63,3 +63,13 @@ class UserCityExecute extends UserCityControllerState{
   List<Object?> get props => [];
 
 }
+
+/// user city loaded
+class UserCityLoaded extends UserCityControllerState{
+final List<WeatherModel> usermodel;
+  const UserCityLoaded(this.usermodel);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [usermodel];
+
+}

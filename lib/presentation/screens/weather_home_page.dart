@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,11 +10,12 @@ import 'package:flutterweatherapp/const/common_widgets/reusable_container.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
+import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/presentation/controller/get_daily_forecast/get_daily_forecast_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:weather_icons/weather_icons.dart';
-
 import '../controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 
 class WeatherHomePage extends StatelessWidget {
@@ -98,6 +98,7 @@ class WeatherHomePage extends StatelessWidget {
                       return AppUtils().loadingSpinner;
                     }
                     if (state is UserCityWeatherLoaded) {
+                      saveCity(state.cityWeatherInformation, context);
                       return Column(
                         children: [
                           SizedBox(
@@ -316,6 +317,12 @@ class WeatherHomePage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void saveCity(WeatherModel cityWeatherInformation, BuildContext context) {
+    BlocProvider.of<UserCityControllerBloc>(context)
+        .add(InsertUserCity(cityWeatherInformation));
+
   }
 }
 

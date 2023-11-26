@@ -38,3 +38,15 @@ class UpdateUserCity extends UserCityControllerEvent{
   List<Object?> get props => [weatherModel];
 
 }
+
+/// fetch all user data
+class FetchUserCity extends UserCityControllerEvent{
+  final List<WeatherModel> weatherModel;
+
+  const FetchUserCity(this.weatherModel);
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [weatherModel];
+
+}

@@ -5,6 +5,7 @@ import 'package:flutterweatherapp/presentation/controller/getCityImage/get_city_
 import 'package:flutterweatherapp/presentation/controller/get_daily_forecast/get_daily_forecast_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_saved_city_weather_controller/get_saved_cities_controller_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/screens/splash_screen/splash_screen.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 
@@ -32,10 +33,13 @@ class MyApp extends StatelessWidget {
             providers: [
               /// as soon as app started i need to get user current city data
               /// GetDailyForecastBloc
-              ///
+              /// UserCityControllerBloc
               BlocProvider(
                   create: (context) =>
                       GetDailyForecastBloc(sLocator())),
+              BlocProvider(
+                  create: (context) =>
+                      UserCityControllerBloc(sLocator())),
               BlocProvider(
                   create: (context) =>
                       GetUserCityWeatherControllerBloc(sLocator())),
