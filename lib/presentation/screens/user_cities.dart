@@ -9,6 +9,9 @@ class UserCities extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //FetchUserCity
+    final userCityBloc =
+    BlocProvider.of<UserCityControllerBloc>(context);
+    userCityBloc.add(const FetchUserCity());
     return Scaffold(
 
         body: Container(
@@ -19,6 +22,15 @@ class UserCities extends StatelessWidget {
             child: BlocConsumer<UserCityControllerBloc,UserCityControllerState>(
               listener: (context, state) {
                 // TODO: implement listener
+                if(state is UserCityLoaded)
+                  {
+                    print("User city Loaded");
+                    print(state.usermodel[0].name);
+                    print(state.usermodel[0].clouds);
+                    print(state.usermodel[0].updatedAt);
+
+
+                  }
               },
               builder: (context, state) {
                 return Text("HI");
