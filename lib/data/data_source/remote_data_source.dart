@@ -92,7 +92,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
     // TODO: implement getDailyForecast
     try {
       /// a 2-second delay to mock web response
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 1));
       final String response = await rootBundle.loadString('assets/json/mockdailyforecast.json');
       final data = json.decode(response);
 
@@ -119,17 +119,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
   /// get all cities info
   @override
   Future<Either<String, List<WeatherModel>>> getUserCitiesWithWeather() async {
-    try {
-      final recordSnapshots = await cityName.find(await _db);
-      final weatherModels = recordSnapshots.map((snapshot) {
-        return WeatherModel.fromJson(snapshot.value);
-      }).toList();
-
-      return Right(weatherModels);
-    } catch (e) {
-      // If an error occurs, return Left with the error message
-      return Left('Error fetching data: ${e.toString()}');
-    }
+    return await populateWeatherDatabase();
   }
 
 
@@ -142,39 +132,48 @@ class RemoteDataSource extends BaseRemoteDataSource {
         await _db,
         finder: Finder(filter: Filter.equals('name', weatherModel.name)),
       );
-
-      // If cityName already exists, don't insert and return a message
+      // If cityName already exists
       if (existingRecords.isNotEmpty) {
         return const Left('Insert failed: cityName already exists');
       }
-
       // If cityName does not exist, proceed with the insert
       await cityName.add(await _db, weatherModel.toJson());
-      try {
-        final recordSnapshots = await cityName.find(await _db);
-        final weatherModels = recordSnapshots.map((snapshot) {
-          return WeatherModel.fromJson(snapshot.value);
-        }).toList();
-
-        return Right(weatherModels);
-      } catch (e) {
-        // If an error occurs, return Left with the error message
-        return Left('Error fetching data: ${e.toString()}');
-      }
+      return await populateWeatherDatabase();
     } catch (e) {
-      // Handle specific exceptions if necessary
       return Left('Insert failed: ${e.toString()}');
     }
   }
 
 
 
+
   /// search
   @override
-  Future<Either<String,List<WeatherModel>>> searchCities(String query) {
-    // TODO: implement searchCities
-    throw UnimplementedError();
+  Future<Either<String, WeatherModel>> searchCities(String query) async {
+    print("searched text");
+    print(query);
+    try {
+      final finder = Finder(
+        filter: Filter.custom((record) {
+          final cityName = record['name'] as String;
+          return cityName.toLowerCase().contains(query.toLowerCase());
+        }),
+      );
+      final recordSnapshots = await cityName.find(await _db, finder: finder);
+
+      if (recordSnapshots.isEmpty) {
+        throw Exception("No cities found matching the query.");
+      }
+      // Assuming you want only the first match
+      final city = WeatherModel.fromJson(recordSnapshots.first.value);
+      return Right(city);
+    } catch (e) {
+      return Left(e.toString());
+    }
   }
+
+
+
 
   /// update city
   @override
@@ -183,6 +182,23 @@ class RemoteDataSource extends BaseRemoteDataSource {
   }
 
 
+  /// my common widgate
+
+  Future<Either<String, List<WeatherModel>>> populateWeatherDatabase() async {
+    try {
+      final recordSnapshots = await cityName.find(await _db);
+      final weatherModels = recordSnapshots.map((snapshot) {
+        return WeatherModel.fromJson(snapshot.value);
+      }).toList();
+
+      return Right(weatherModels);
+    } catch (e) {
+      return Left('Error fetching data: ${e.toString()}');
+    }
+  }
+
+
 
 
 }
+

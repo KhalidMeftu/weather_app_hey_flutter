@@ -38,5 +38,16 @@ class UserCityControllerBloc extends Bloc<UserCityControllerEvent, UserCityContr
       result.fold((left) => emit(UserCityAction(left)),
               (right) => emit(UserCityLoaded(right)));
     });
+
+    // search
+
+    on<SearchUserCity>((event, emit) async {
+      // TODO: implement event handler
+      emit(const UserCityExecute());
+      final result=await getMedaUseCase.searchCity(event.cityName);
+
+      result.fold((left) => emit(UserCityAction(left)),
+              (right) => emit(SearchUserCityLoaded(right)));
+    });
   }
 }

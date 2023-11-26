@@ -49,3 +49,15 @@ class FetchUserCity extends UserCityControllerEvent{
   List<Object?> get props => [];
 
 }
+
+/// search
+class SearchUserCity extends UserCityControllerEvent{
+  final String cityName;
+
+  const SearchUserCity(this.cityName);
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [cityName];
+
+}

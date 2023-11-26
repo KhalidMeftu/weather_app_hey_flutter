@@ -58,7 +58,7 @@ class WeatherRepository implements BaseRemoteRepository {
   }
 
   @override
-  Future<Either<String,List<WeatherModel>>> searchCities(String query) async {
+  Future<Either<String,WeatherModel>> searchCities(String query) async {
     // TODO: implement searchCities
     final searchCity = await baseremoteDataSource.searchCities(query);
     return searchCity;

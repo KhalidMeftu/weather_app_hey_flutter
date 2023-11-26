@@ -34,4 +34,10 @@ class WeatherAppUseCases {
   Future<Either<String,List<WeatherModel>>> loadUserCity() async{
     return await baseWeatherRepository.getUserCitiesWithWeather();
   }
+
+  /// search usercity
+
+  Future<Either<String,WeatherModel>> searchCity(String cityName) async{
+    return await baseWeatherRepository.searchCities(cityName);
+  }
 }

@@ -19,6 +19,7 @@ class UserCities extends StatefulWidget {
 
 class _UserCitiesState extends State<UserCities> {
   bool _isSearching = false;
+  TextEditingController searchTextController= TextEditingController();
 
   @override
   void initState() {
@@ -105,13 +106,22 @@ class _UserCitiesState extends State<UserCities> {
                     : Container(),
                 title: _isSearching
                     ? TextField(
-                        autofocus: true,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          hintText: WeatherAppString.search,
-                          hintStyle: const TextStyle(color: Colors.white70),
-                        ),
-                      )
+                  controller: searchTextController,
+                  autofocus: true,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: WeatherAppString.search,
+                    hintStyle: const TextStyle(color: Colors.white70),
+                  ),
+                  onSubmitted: (String searchText) {
+                    final searchUserCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
+                    searchUserCityBloc.add(SearchUserCity(searchText));
+                    setState(() {
+                      _isSearching = false;
+                    });
+                  },
+                )
+
                     : Text(
                         WeatherAppString.savedLocations,
                         style:
@@ -131,6 +141,7 @@ class _UserCitiesState extends State<UserCities> {
                       setState(() {
                         _isSearching = true;
                       });
+
                     },
                   ),
                 ],
@@ -180,7 +191,36 @@ class _UserCitiesState extends State<UserCities> {
                     }
                     if (state is UserCityDeleteSuccessfull) {}
                     if (state is UserCityUpdateSuccessfull) {}
-                    if (state is UserCityAction) {}
+                    if (state is SearchUserCityLoaded) {
+                      return Padding(
+                        padding: EdgeInsets.only(
+                            left: 12.w, right: 12.w, top: 15.h),
+                        child: SizedBox(
+                          height: 150.h,
+                          child: SavedCitiesCard(
+                            cityName: state.usermodel.name,
+                            weatherCondition:
+                            state.usermodel.weather[0].description,
+                            humidity: state.usermodel.main.humidity
+                                .toString(),
+                            windSpeed:
+                            state.usermodel.wind.speed.toString(),
+                            statusImage:
+                            state.usermodel.weather[0].icon,
+                            temprature:
+                            state.usermodel.main.temp.toString(),
+                          ),
+                        ),
+                        //),
+                      );
+
+
+                    }
+                    //UserCityAction
+
+                    if (state is UserCityAction) {
+                      return Center(child: Text("City not saved"));
+                    }
                     if (state is UserCityExecute) {}
                     if (state is UserCityLoaded) {
                       return ListView.builder(

@@ -73,3 +73,13 @@ final List<WeatherModel> usermodel;
   List<Object?> get props => [usermodel];
 
 }
+
+///search results
+class SearchUserCityLoaded extends UserCityControllerState{
+  final WeatherModel usermodel;
+  const SearchUserCityLoaded(this.usermodel);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [usermodel];
+
+}
