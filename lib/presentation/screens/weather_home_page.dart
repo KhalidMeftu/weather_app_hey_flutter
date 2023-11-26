@@ -7,6 +7,7 @@ import 'package:flutterweatherapp/const/app_color.dart';
 import 'package:flutterweatherapp/const/app_resources.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/const/common_widgets/reusable_container.dart';
+import 'package:flutterweatherapp/const/services.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
@@ -52,7 +53,7 @@ class WeatherHomePage extends StatelessWidget {
                 )
               : Positioned.fill(
                   child: Image.network(
-                    imageUrl,
+                    WeatherAppServices.iconURL+imageUrl+WeatherAppServices.iconSize,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -353,7 +354,7 @@ class WeatherAppBar extends StatelessWidget {
               onTap: () {
                 Navigator.pushNamed(context, WeatherRoutes.userCitiesRoute);
               },
-              child: Icon(Icons.more_vert_sharp,
+              child: Icon(Icons.menu,
                   color: WeatherAppColor.whiteColor)),
         )
       ], // Removes shadow

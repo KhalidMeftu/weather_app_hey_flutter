@@ -140,7 +140,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
       // Check if the cityName already exists in the database
       final existingRecords = await cityName.find(
         await _db,
-        finder: Finder(filter: Filter.equals('cityName', weatherModel.name)),
+        finder: Finder(filter: Filter.equals('name', weatherModel.name)),
       );
 
       // If cityName already exists, don't insert and return a message

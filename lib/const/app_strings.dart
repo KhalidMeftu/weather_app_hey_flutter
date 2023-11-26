@@ -14,6 +14,9 @@ class WeatherAppString{
   static String weatherAppError="Error";
   static String okay="Okay";
   static String cancel="Cancel";
+  static String addNew ="Add new";
+  static String search ="Search...";
+  static String savedLocations="Saved Locations";
   static String weatherAppRouteNotFound="Route Not Found";
   static String weatherAppEnableLocation="Please enable location services so that we can determine your location";
   static String locationServicesDisabled="Location services are disabled.";
