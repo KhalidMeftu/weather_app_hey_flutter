@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,22 +18,28 @@ import 'package:flutterweatherapp/presentation/controller/local_database_databas
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:weather_icons/weather_icons.dart';
+
 import '../controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 
 class WeatherHomePage extends StatefulWidget {
   final String cityName;
   final String imageUrl;
-  WeatherModel? weatherModel;/// this is when we come back fromsaved
+  WeatherModel? weatherModel;
 
-   WeatherHomePage(
-      {Key? key, required this.cityName, required this.imageUrl, this.weatherModel})
+  /// this is when we come back fromsaved
+
+  WeatherHomePage(
+      {Key? key,
+      required this.cityName,
+      required this.imageUrl,
+      this.weatherModel})
       : super(key: key);
+
   @override
   State<WeatherHomePage> createState() => _WeatherHomePageState();
 }
 
 class _WeatherHomePageState extends State<WeatherHomePage> {
-
   /// load next for days
   List<String> upcomingDays = AppUtils.getNextFourDays();
 
@@ -45,22 +52,19 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
     /// forecast bloc so if weather model is empty only we will do call to internate
 
-    if(widget.weatherModel==null) {
+    if (widget.weatherModel == null) {
       final userCityBloc =
-      BlocProvider.of<GetUserCityWeatherControllerBloc>(context);
+          BlocProvider.of<GetUserCityWeatherControllerBloc>(context);
       userCityBloc.add(GetUserCityWeather(widget.cityName));
-
-    }
-    else{
+    } else {
       print("model is not empty");
     }
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       body: Stack(
         children: [
@@ -74,7 +78,9 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                 )
               : Positioned.fill(
                   child: Image.network(
-                    WeatherAppServices.iconURL+widget.imageUrl+WeatherAppServices.iconSize,
+                    WeatherAppServices.iconURL +
+                        widget.imageUrl +
+                        WeatherAppServices.iconSize,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -93,65 +99,76 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                 SizedBox(
                   height: 30.h,
                 ),
+
                 /// today
                 Center(
                     child: Text(AppUtils.getFormattedDate(),
                         style: WeatherAppFonts.large(
-                            fontWeight: FontWeight.w300,
-                            color: WeatherAppColor.whiteColor
-                              )
+                                fontWeight: FontWeight.w300,
+                                color: WeatherAppColor.whiteColor)
                             .copyWith(fontSize: WeatherAppFontSize.s30))),
 
                 SizedBox(
                   height: 2.h,
                 ),
 
-
                 /// updated at
                 SizedBox(
                   height: 2.h,
                 ),
 
-                widget.weatherModel==null?Container():
-                Center(
-                    child: Text(AppUtils.formatDateTime(widget.weatherModel!.updatedAt.toIso8601String()),
-                        style: WeatherAppFonts.large(
-                            fontWeight: FontWeight.w300,
-                            color: WeatherAppColor.whiteColor
-                                .withOpacity(0.75))
-                            .copyWith(fontSize: WeatherAppFontSize.s16))),
+                widget.weatherModel == null
+                    ? Container()
+                    : Center(
+                        child: Text(
+                            AppUtils.formatDateTime(widget
+                                .weatherModel!.updatedAt
+                                .toIso8601String()),
+                            style: WeatherAppFonts.large(
+                                    fontWeight: FontWeight.w300,
+                                    color: WeatherAppColor.whiteColor
+                                        .withOpacity(0.75))
+                                .copyWith(fontSize: WeatherAppFontSize.s16))),
 
                 /// display data from API
-               widget.weatherModel==null?
-               BlocBuilder<GetUserCityWeatherControllerBloc,
-                    GetUserCityWeatherControllerState>(
-                  builder: (context, state) {
-                    if (state is UserCityWeatherLoading) {
-                      return AppUtils().loadingSpinner;
-                    }
-                    if (state is UserCityWeatherLoaded) {
-                      saveCity(state.cityWeatherInformation, context);
-                     /* return Column(
+                widget.weatherModel == null
+                    ? BlocBuilder<GetUserCityWeatherControllerBloc,
+                        GetUserCityWeatherControllerState>(
+                        builder: (context, state) {
+                          if (state is UserCityWeatherLoading) {
+                            return AppUtils().loadingSpinner;
+                          }
+                          if (state is UserCityWeatherLoaded) {
+                            saveCity(state.cityWeatherInformation, context);
+                            return WeatherDataDisplay(
+                                weatherModel: state.cityWeatherInformation);
+                          }
+                          if (state is UserCityWeatherLoadingError) {
+                            return Text(state.errorMessage);
+                          }
+                          return Container();
+                        },
+                      )
+                    : Column(
                         children: [
                           SizedBox(
                             height: 10.h,
                           ),
-                          AppUtils().getWeatherIcon(state.cityWeatherInformation
-                                      .weather[0].icon) !=
+                          AppUtils().getWeatherIcon(
+                                      widget.weatherModel!.weather[0].icon) !=
                                   WeatherIcons.refresh
                               ? Icon(
-                                  AppUtils().getWeatherIcon(state
-                                      .cityWeatherInformation.weather[0].icon),
+                                  AppUtils().getWeatherIcon(
+                                      widget.weatherModel!.weather[0].icon),
                                   size: 100.0,
                                 )
-                              : Image.network(AppUtils().getWeatherIconURL(state
-                                  .cityWeatherInformation.weather[0].icon)),
+                              : Image.network(AppUtils().getWeatherIconURL(
+                                  widget.weatherModel!.weather[0].icon)),
                           SizedBox(
                             height: 10.h,
                           ),
                           Text(
-
-                            state.cityWeatherInformation.weather[0].description,
+                            widget.weatherModel!.weather[0].description,
                             style: WeatherAppFonts.large(
                                     fontWeight: FontWeight.w700,
                                     color: WeatherAppColor.whiteColor)
@@ -163,26 +180,35 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                state.cityWeatherInformation.main.temp
-                                    .toString(),
-                                style: WeatherAppFonts.large(
-                                        fontWeight: FontWeight.w500,
-                                        color: WeatherAppColor.whiteColor)
-                                    .copyWith(fontSize: WeatherAppFontSize.s48),
-                              ),
-                              Text(
-                                WeatherAppString.degreeCelsius,
-                                style: WeatherAppFonts.large(
-                                        fontWeight: FontWeight.w700,
-                                        color: WeatherAppColor.whiteColor)
-                                    .copyWith(
-                                  fontSize: WeatherAppFontSize.s24,
-                                  fontFeatures: [
-                                    const FontFeature.enable('sups'),
+                              RichText(
+                                text: TextSpan(
+                                  children: <InlineSpan>[
+                                    TextSpan(
+                                      text: widget.weatherModel!.main.temp.toString(),
+                                      style: WeatherAppFonts.large(
+                                          fontWeight: FontWeight.w500,
+                                          color: WeatherAppColor.whiteColor)
+                                          .copyWith(fontSize: WeatherAppFontSize.s48),
+                                    ),
+                                    WidgetSpan(
+                                      child: Transform.translate(
+                                        offset: const Offset(2, -8),
+                                        child: Text(
+                                          WeatherAppString.degreeCelsius, // The superscript part
+                                          // Smaller font size for the superscript
+                                          style: WeatherAppFonts.large(
+                                              fontWeight: FontWeight.w700,
+                                              color: WeatherAppColor.whiteColor)
+                                              .copyWith(
+                                            fontSize: WeatherAppFontSize.s24,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
+
                             ],
                           ),
 
@@ -217,7 +243,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                       height: 3.h,
                                     ),
                                     Text(
-                                      "${state.cityWeatherInformation.main.humidity}%",
+                                      "${widget.weatherModel!.main.humidity}%",
                                       style: WeatherAppFonts.large(
                                               fontWeight: FontWeight.w500,
                                               color: WeatherAppColor.whiteColor)
@@ -247,7 +273,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                       height: 3.h,
                                     ),
                                     Text(
-                                      "${state.cityWeatherInformation.wind.speed}km/h",
+                                      "${widget.weatherModel!.wind.speed}km/h",
                                       style: WeatherAppFonts.large(
                                               fontWeight: FontWeight.w500,
                                               color: WeatherAppColor.whiteColor)
@@ -277,8 +303,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                       height: 3.h,
                                     ),
                                     Text(
-                                      state
-                                          .cityWeatherInformation.main.feelsLike
+                                      widget.weatherModel!.main.feelsLike
                                           .toString(),
                                       style: WeatherAppFonts.large(
                                               fontWeight: FontWeight.w500,
@@ -331,224 +356,11 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                 ),
                               );
                             }
-                            if (state is DailyForcastLoadingError) {}
+
                             return Container();
                           })
                         ],
-                      );
-                      */
-                      return WeatherDataDisplay(weatherModel:state.cityWeatherInformation);
-                    }
-                    if (state is UserCityWeatherLoadingError) {
-                      return Text(state.errorMessage);
-                    }
-                    return Container();
-                  },
-                ):
-
-               Column(
-                     children: [
-                       SizedBox(
-                         height: 10.h,
-                       ),
-                       AppUtils().getWeatherIcon(widget.weatherModel!
-                           .weather[0].icon) !=
-                           WeatherIcons.refresh
-                           ? Icon(
-                         AppUtils().getWeatherIcon(widget.weatherModel!.weather[0].icon),
-                         size: 100.0,
-                       )
-                           : Image.network(AppUtils().getWeatherIconURL(widget.weatherModel!.weather[0].icon)),
-                       SizedBox(
-                         height: 10.h,
-                       ),
-                       Text(
-
-                         widget.weatherModel!.weather[0].description,
-                         style: WeatherAppFonts.large(
-                             fontWeight: FontWeight.w700,
-                             color: WeatherAppColor.whiteColor)
-                             .copyWith(fontSize: WeatherAppFontSize.s30),
-                       ),
-
-                       //temp
-                       Row(
-                         crossAxisAlignment: CrossAxisAlignment.center,
-                         mainAxisAlignment: MainAxisAlignment.center,
-                         children: [
-                           Text(
-                             widget.weatherModel!.main.temp
-                                 .toString(),
-                             style: WeatherAppFonts.large(
-                                 fontWeight: FontWeight.w500,
-                                 color: WeatherAppColor.whiteColor)
-                                 .copyWith(fontSize: WeatherAppFontSize.s48),
-                           ),
-                           Text(
-                             WeatherAppString.degreeCelsius,
-                             style: WeatherAppFonts.large(
-                                 fontWeight: FontWeight.w700,
-                                 color: WeatherAppColor.whiteColor)
-                                 .copyWith(
-                               fontSize: WeatherAppFontSize.s24,
-                               fontFeatures: [
-                                 const FontFeature.enable('sups'),
-                               ],
-                             ),
-                           ),
-                         ],
-                       ),
-
-                       ///
-                       /// humidty... feels like
-                       Padding(
-                         padding: const EdgeInsets.all(8.0),
-                         child: Row(
-                           //crossAxisAlignment:CrossAxisAlignment.center,
-                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                           children: [
-                             Column(
-                               children: [
-                                 Image(
-                                   image:
-                                   Svg(WeatherAppResources.humidtyIcon),
-                                 ),
-                                 SizedBox(
-                                   height: 3.h,
-                                 ),
-                                 Text(
-                                   AppUtils.convertTextToUpper(
-                                       WeatherAppString.humidityText),
-                                   style: WeatherAppFonts.large(
-                                       fontWeight: FontWeight.w500,
-                                       color: WeatherAppColor.whiteColor)
-                                       .copyWith(
-                                       fontSize: WeatherAppFontSize.s14),
-                                 ),
-                                 SizedBox(
-                                   height: 3.h,
-                                 ),
-                                 Text(
-                                   "${widget.weatherModel!.main.humidity}%",
-                                   style: WeatherAppFonts.large(
-                                       fontWeight: FontWeight.w500,
-                                       color: WeatherAppColor.whiteColor)
-                                       .copyWith(
-                                       fontSize: WeatherAppFontSize.s14),
-                                 ),
-                               ],
-                             ),
-                             Column(
-                               children: [
-                                 Image(
-                                   image: Svg(WeatherAppResources.windIcon),
-                                 ),
-                                 SizedBox(
-                                   height: 3.h,
-                                 ),
-                                 Text(
-                                   AppUtils.convertTextToUpper(
-                                       WeatherAppString.windText),
-                                   style: WeatherAppFonts.large(
-                                       fontWeight: FontWeight.w500,
-                                       color: WeatherAppColor.whiteColor)
-                                       .copyWith(
-                                       fontSize: WeatherAppFontSize.s14),
-                                 ),
-                                 SizedBox(
-                                   height: 3.h,
-                                 ),
-                                 Text(
-                                   "${widget.weatherModel!.wind.speed}km/h",
-                                   style: WeatherAppFonts.large(
-                                       fontWeight: FontWeight.w500,
-                                       color: WeatherAppColor.whiteColor)
-                                       .copyWith(
-                                       fontSize: WeatherAppFontSize.s14),
-                                 ),
-                               ],
-                             ),
-                             Column(
-                               children: [
-                                 Image(
-                                   image: Svg(WeatherAppResources.feelsLike),
-                                 ),
-                                 SizedBox(
-                                   height: 3.h,
-                                 ),
-                                 Text(
-                                   AppUtils.convertTextToUpper(
-                                       WeatherAppString.feelsLikeText),
-                                   style: WeatherAppFonts.large(
-                                       fontWeight: FontWeight.w500,
-                                       color: WeatherAppColor.whiteColor)
-                                       .copyWith(
-                                       fontSize: WeatherAppFontSize.s14),
-                                 ),
-                                 SizedBox(
-                                   height: 3.h,
-                                 ),
-                                 Text(
-                                   widget.weatherModel!.main.feelsLike
-                                       .toString(),
-                                   style: WeatherAppFonts.large(
-                                       fontWeight: FontWeight.w500,
-                                       color: WeatherAppColor.whiteColor)
-                                       .copyWith(
-                                       fontSize: WeatherAppFontSize.s14),
-                                 ),
-                               ],
-                             ),
-                           ],
-                         ),
-                       ),
-
-                       /// forecast
-                       ///
-
-                       BlocBuilder<GetDailyForecastBloc,
-                           GetDailyForecastState>(
-                           builder: (context, states) {
-                             if (states is LoadingDailyForecast) {}
-                             if (states is DailyForecastLoaded) {
-                               return Padding(
-                                 padding: const EdgeInsets.all(16.0),
-                                 child: Center(
-                                   child: SizedBox(
-                                     height: 200.h,
-                                     child: GlassContainer(
-                                       color: WeatherAppColor.whiteColor
-                                           .withOpacity(0.1),
-                                       borderRadius: BorderRadius.circular(16),
-                                       child: ListView.builder(
-                                         scrollDirection: Axis.horizontal,
-                                         itemCount: states.forecastList.length,
-                                         itemBuilder: (context, index) {
-                                           return Padding(
-                                             padding: EdgeInsets.only(
-                                                 left: 12.w,
-                                                 right: 12.w,
-                                                 top: 15.h),
-                                             child: NextWeekCard(
-                                               daysOfWeek: upcomingDays[index],
-                                               forecastModel:
-                                               states.forecastList[index],
-                                             ),
-                                           );
-                                         },
-                                       ),
-                                     ),
-                                   ),
-                                 ),
-                               );
-                             }
-
-                             return Container();
-                           })
-                     ],
-                   )
-
+                      )
               ],
             ),
           ),
@@ -560,7 +372,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   void saveCity(WeatherModel cityWeatherInformation, BuildContext context) {
     BlocProvider.of<UserCityControllerBloc>(context)
         .add(InsertUserCity(cityWeatherInformation));
-
   }
 }
 
@@ -591,18 +402,18 @@ class WeatherAppBar extends StatelessWidget {
               onTap: () {
                 Navigator.pushNamed(context, WeatherRoutes.userCitiesRoute);
               },
-              child: Icon(Icons.menu,
-                  color: WeatherAppColor.whiteColor)),
+              child: Icon(Icons.menu, color: WeatherAppColor.whiteColor)),
         )
       ], // Removes shadow
     );
   }
 }
 
-
 class WeatherDataDisplay extends StatelessWidget {
   final WeatherModel weatherModel;
-  const WeatherDataDisplay({Key? key, required this.weatherModel}) : super(key: key);
+
+  const WeatherDataDisplay({Key? key, required this.weatherModel})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -613,23 +424,22 @@ class WeatherDataDisplay extends StatelessWidget {
         SizedBox(
           height: 10.h,
         ),
-        AppUtils().getWeatherIcon(weatherModel
-            .weather[0].icon) !=
-            WeatherIcons.refresh
+        AppUtils().getWeatherIcon(weatherModel.weather[0].icon) !=
+                WeatherIcons.refresh
             ? Icon(
-          AppUtils().getWeatherIcon(weatherModel.weather[0].icon),
-          size: 100.0,
-        )
-            : Image.network(AppUtils().getWeatherIconURL(weatherModel.weather[0].icon)),
+                AppUtils().getWeatherIcon(weatherModel.weather[0].icon),
+                size: 100.0,
+              )
+            : Image.network(
+                AppUtils().getWeatherIconURL(weatherModel.weather[0].icon)),
         SizedBox(
           height: 10.h,
         ),
         Text(
-
           weatherModel.weather[0].description,
           style: WeatherAppFonts.large(
-              fontWeight: FontWeight.w700,
-              color: WeatherAppColor.whiteColor)
+                  fontWeight: FontWeight.w700,
+                  color: WeatherAppColor.whiteColor)
               .copyWith(fontSize: WeatherAppFontSize.s30),
         ),
 
@@ -638,26 +448,35 @@ class WeatherDataDisplay extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              weatherModel.main.temp
-                  .toString(),
-              style: WeatherAppFonts.large(
-                  fontWeight: FontWeight.w500,
-                  color: WeatherAppColor.whiteColor)
-                  .copyWith(fontSize: WeatherAppFontSize.s48),
-            ),
-            Text(
-              WeatherAppString.degreeCelsius,
-              style: WeatherAppFonts.large(
-                  fontWeight: FontWeight.w700,
-                  color: WeatherAppColor.whiteColor)
-                  .copyWith(
-                fontSize: WeatherAppFontSize.s24,
-                fontFeatures: [
-                  const FontFeature.enable('sups'),
+            RichText(
+              text: TextSpan(
+                children: <InlineSpan>[
+                  TextSpan(
+                    text: weatherModel.main.temp.toString(),
+                    style: WeatherAppFonts.large(
+                            fontWeight: FontWeight.w500,
+                            color: WeatherAppColor.whiteColor)
+                        .copyWith(fontSize: WeatherAppFontSize.s48),
+                  ),
+                  WidgetSpan(
+                    child: Transform.translate(
+                      offset: const Offset(2, -8),
+                      child: Text(
+                        WeatherAppString.degreeCelsius, // The superscript part
+                        // Smaller font size for the superscript
+                        style: WeatherAppFonts.large(
+                                fontWeight: FontWeight.w700,
+                                color: WeatherAppColor.whiteColor)
+                            .copyWith(
+                          fontSize: WeatherAppFontSize.s24,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
+
           ],
         ),
 
@@ -673,20 +492,17 @@ class WeatherDataDisplay extends StatelessWidget {
               Column(
                 children: [
                   Image(
-                    image:
-                    Svg(WeatherAppResources.humidtyIcon),
+                    image: Svg(WeatherAppResources.humidtyIcon),
                   ),
                   SizedBox(
                     height: 3.h,
                   ),
                   Text(
-                    AppUtils.convertTextToUpper(
-                        WeatherAppString.humidityText),
+                    AppUtils.convertTextToUpper(WeatherAppString.humidityText),
                     style: WeatherAppFonts.large(
-                        fontWeight: FontWeight.w500,
-                        color: WeatherAppColor.whiteColor)
-                        .copyWith(
-                        fontSize: WeatherAppFontSize.s14),
+                            fontWeight: FontWeight.w500,
+                            color: WeatherAppColor.whiteColor)
+                        .copyWith(fontSize: WeatherAppFontSize.s14),
                   ),
                   SizedBox(
                     height: 3.h,
@@ -694,10 +510,9 @@ class WeatherDataDisplay extends StatelessWidget {
                   Text(
                     "${weatherModel.main.humidity}%",
                     style: WeatherAppFonts.large(
-                        fontWeight: FontWeight.w500,
-                        color: WeatherAppColor.whiteColor)
-                        .copyWith(
-                        fontSize: WeatherAppFontSize.s14),
+                            fontWeight: FontWeight.w500,
+                            color: WeatherAppColor.whiteColor)
+                        .copyWith(fontSize: WeatherAppFontSize.s14),
                   ),
                 ],
               ),
@@ -710,13 +525,11 @@ class WeatherDataDisplay extends StatelessWidget {
                     height: 3.h,
                   ),
                   Text(
-                    AppUtils.convertTextToUpper(
-                        WeatherAppString.windText),
+                    AppUtils.convertTextToUpper(WeatherAppString.windText),
                     style: WeatherAppFonts.large(
-                        fontWeight: FontWeight.w500,
-                        color: WeatherAppColor.whiteColor)
-                        .copyWith(
-                        fontSize: WeatherAppFontSize.s14),
+                            fontWeight: FontWeight.w500,
+                            color: WeatherAppColor.whiteColor)
+                        .copyWith(fontSize: WeatherAppFontSize.s14),
                   ),
                   SizedBox(
                     height: 3.h,
@@ -724,10 +537,9 @@ class WeatherDataDisplay extends StatelessWidget {
                   Text(
                     "${weatherModel.wind.speed}km/h",
                     style: WeatherAppFonts.large(
-                        fontWeight: FontWeight.w500,
-                        color: WeatherAppColor.whiteColor)
-                        .copyWith(
-                        fontSize: WeatherAppFontSize.s14),
+                            fontWeight: FontWeight.w500,
+                            color: WeatherAppColor.whiteColor)
+                        .copyWith(fontSize: WeatherAppFontSize.s14),
                   ),
                 ],
               ),
@@ -740,25 +552,21 @@ class WeatherDataDisplay extends StatelessWidget {
                     height: 3.h,
                   ),
                   Text(
-                    AppUtils.convertTextToUpper(
-                        WeatherAppString.feelsLikeText),
+                    AppUtils.convertTextToUpper(WeatherAppString.feelsLikeText),
                     style: WeatherAppFonts.large(
-                        fontWeight: FontWeight.w500,
-                        color: WeatherAppColor.whiteColor)
-                        .copyWith(
-                        fontSize: WeatherAppFontSize.s14),
+                            fontWeight: FontWeight.w500,
+                            color: WeatherAppColor.whiteColor)
+                        .copyWith(fontSize: WeatherAppFontSize.s14),
                   ),
                   SizedBox(
                     height: 3.h,
                   ),
                   Text(
-                    weatherModel.main.feelsLike
-                        .toString(),
+                    weatherModel.main.feelsLike.toString(),
                     style: WeatherAppFonts.large(
-                        fontWeight: FontWeight.w500,
-                        color: WeatherAppColor.whiteColor)
-                        .copyWith(
-                        fontSize: WeatherAppFontSize.s14),
+                            fontWeight: FontWeight.w500,
+                            color: WeatherAppColor.whiteColor)
+                        .copyWith(fontSize: WeatherAppFontSize.s14),
                   ),
                 ],
               ),
@@ -769,47 +577,41 @@ class WeatherDataDisplay extends StatelessWidget {
         /// forecast
         ///
 
-        BlocBuilder<GetDailyForecastBloc,
-            GetDailyForecastState>(
+        BlocBuilder<GetDailyForecastBloc, GetDailyForecastState>(
             builder: (context, states) {
-              if (states is LoadingDailyForecast) {}
-              if (states is DailyForecastLoaded) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: SizedBox(
-                      height: 200.h,
-                      child: GlassContainer(
-                        color: WeatherAppColor.whiteColor
-                            .withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(16),
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: states.forecastList.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                  left: 12.w,
-                                  right: 12.w,
-                                  top: 15.h),
-                              child: NextWeekCard(
-                                daysOfWeek: upcomingDays[index],
-                                forecastModel:
-                                states.forecastList[index],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+          if (states is LoadingDailyForecast) {}
+          if (states is DailyForecastLoaded) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: SizedBox(
+                  height: 200.h,
+                  child: GlassContainer(
+                    color: WeatherAppColor.whiteColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: states.forecastList.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                              left: 12.w, right: 12.w, top: 15.h),
+                          child: NextWeekCard(
+                            daysOfWeek: upcomingDays[index],
+                            forecastModel: states.forecastList[index],
+                          ),
+                        );
+                      },
                     ),
                   ),
-                );
-              }
-              if (states is DailyForcastLoadingError) {}
-              return Container();
-            })
+                ),
+              ),
+            );
+          }
+          if (states is DailyForcastLoadingError) {}
+          return Container();
+        })
       ],
     );
   }
 }
-
