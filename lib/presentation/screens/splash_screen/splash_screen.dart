@@ -19,22 +19,66 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   late final AnimationController _controller;
 
   bool locationPermissionEnabled = false;
   String cityName = "Uknown city";
+  bool showPersmissionText=false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this);
+    WidgetsBinding.instance!.addObserver(this);
+    checkAndRequestLocationService();
+   // askForLocationPermission();
+
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
     _controller.dispose();
     super.dispose();
+  }
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    print("App Stata is");
+    print(state);
+    if (state == AppLifecycleState.resumed) {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (serviceEnabled) {
+        // Location service is enabled, proceed with location request
+        //checkAndRequestLocationService();
+        askForLocationPermission();
+
+      } else {
+        // Location service is still disabled, show alert or handle accordingly
+      }
+
+    }
+  }
+  Future<void> askForLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        setState(() {
+          showPersmissionText = true;
+        });
+        permissionDialog(context);
+      } else {
+        getUserPos();
+      }
+    } else if (permission == LocationPermission.deniedForever) {
+      setState(() {
+        showPersmissionText = true;
+      });
+    } else {
+      getUserPos();
+    }
   }
 
   @override
@@ -72,98 +116,79 @@ class _SplashScreenState extends State<SplashScreen>
                     image: Svg(WeatherAppResources.splashCloud),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    WeatherAppString.weatherAppEnableLocation,
-                    style: WeatherAppFonts.medium(
-                        color: WeatherAppColor.russianViolateColorColor,
-                        fontWeight: FontWeight.w500),
-                  ),
-                ),
-                Switch(
-                  value: locationPermissionEnabled,
-                  activeColor: WeatherAppColor.russianViolateColorColor,
-                  onChanged: (bool value) async {
-                    setState(() {
-                      locationPermissionEnabled = value;
-                    });
-                    if (value == true) {
-                      try {
-                        Position position = await getCurrentPosition();
-                        List<Placemark> placemarks =
-                        await placemarkFromCoordinates(
-                            position.latitude, position.longitude);
-                        Placemark place = placemarks[0];
-                        setState(() {
-                          cityName = place.locality!;
-                        });
-                        //print("Location is ${place.locality}");
-                        //  await getCityImage(place.locality);
-                        await getCityImage("Addis Ababa");
 
-                        /*BlocListener<GetCityImageControllerBloc,
-                            GetCityImageControllerState>(
-                          listener: (context, state) {
-                            if (state is CityImageLoading) {
-                              print("Loading city Image");
-                            }
-                            if (state is CityImageWeatherLoaded) {
-                              Navigator.pushNamed(
-                                  context, WeatherRoutes.homePageRoute,
-                                  arguments: [state.imageURL]);
-                            }
-                            if (state is CityImageLoadingError) {
-                              Navigator.pushNamed(
-                                  context, WeatherRoutes.homePageRoute,
-                                  arguments: [""]);
-                            }
-                          },
-                        );
-                        */
-                      } catch (e) {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title:
-                              Text(WeatherAppString.locationServicesDisabled),
-                              content: Text(WeatherAppString.locationEnable),
-                              actions: <Widget>[
-                                MaterialButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      locationPermissionEnabled = false;
-                                    });
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      GestureDetector(
-                                          onTap: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text(WeatherAppString.okay)),
-                                      GestureDetector(
-                                          onTap: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text(WeatherAppString.cancel)),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    }
-                  },
-                )
               ])),
     );
+  }
+
+
+  void permissionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(WeatherAppString.locationServicesDisabled),
+          content: Text(WeatherAppString.locationEnable),
+          actions: <Widget>[
+            MaterialButton(
+              onPressed: () {
+                setState(() {
+                  locationPermissionEnabled = false;
+                });
+                Navigator.of(context).pop();
+                getUserPos();
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(WeatherAppString.okay),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(WeatherAppString.cancel),
+                  ),
+                ],
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> getUserPosition() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        showPersmissionText = true;
+      });
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      setState(() {
+        showPersmissionText = true;
+      });
+      return;
+    }
+
+    Position position = await getCurrentPosition();
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+    Placemark place = placemarks[0];
+    setState(() {
+      cityName = place.locality!;
+    });
+    await getCityImage("Addis Ababa");
   }
 
   Future<Position> getCurrentPosition() async {
@@ -195,5 +220,45 @@ class _SplashScreenState extends State<SplashScreen>
   Future getCityImage(String? locality) async {
     BlocProvider.of<GetCityImageControllerBloc>(context)
         .add(GetCityPhoto(AppUtils.convertTextToLower(locality!)));
+  }
+
+  Future<void> getUserPos() async {
+    try {
+      await getUserPosition();
+
+    } catch (e) {
+      setState(() {
+        showPersmissionText=true;
+      });
+      permissionDialog(context);
+    }
+  }
+
+  Future<void> checkAndRequestLocationService() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      // Show a dialog informing the user that the location services are not enabled
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Location Service Disabled"),
+            content: Text("Please enable location services to use this feature."),
+            actions: <Widget>[
+              GestureDetector(
+                  onTap: (){
+                    Geolocator.openLocationSettings();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Open Settings"))
+
+            ],
+          );
+        },
+      );
+    } else {
+      getUserPos();
+    }
   }
 }

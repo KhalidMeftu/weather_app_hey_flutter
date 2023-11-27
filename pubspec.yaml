@@ -58,7 +58,8 @@ dependencies:
   path_provider:
   sembast:
   intl:
-  shared_preferences: ^2.2.2
+  shared_preferences:
+  permission_handler:
 
 dev_dependencies:
   flutter_test:
