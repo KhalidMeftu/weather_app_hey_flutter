@@ -23,7 +23,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   bool locationPermissionEnabled = false;
   String cityName = "Uknown city";
-  bool showPersmissionText=false;
 
   @override
   void initState() {
@@ -31,7 +30,6 @@ class _SplashScreenState extends State<SplashScreen>
     _controller = AnimationController(vsync: this);
     WidgetsBinding.instance!.addObserver(this);
     checkAndRequestLocationService();
-   // askForLocationPermission();
 
   }
 
@@ -48,8 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (state == AppLifecycleState.resumed) {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (serviceEnabled) {
-        // Location service is enabled, proceed with location request
-        //checkAndRequestLocationService();
+
         askForLocationPermission();
 
       } else {
@@ -64,17 +61,13 @@ class _SplashScreenState extends State<SplashScreen>
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        setState(() {
-          showPersmissionText = true;
-        });
+
         permissionDialog(context);
       } else {
         getUserPos();
       }
     } else if (permission == LocationPermission.deniedForever) {
-      setState(() {
-        showPersmissionText = true;
-      });
+
     } else {
       getUserPos();
     }
@@ -164,17 +157,13 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> getUserPosition() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      setState(() {
-        showPersmissionText = true;
-      });
+
       return;
     }
 
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
-      setState(() {
-        showPersmissionText = true;
-      });
+
       return;
     }
 
@@ -226,18 +215,14 @@ class _SplashScreenState extends State<SplashScreen>
       await getUserPosition();
 
     } catch (e) {
-      setState(() {
-        showPersmissionText=true;
-      });
+
       permissionDialog(context);
     }
   }
 
   Future<void> checkAndRequestLocationService() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
     if (!serviceEnabled) {
-      // Show a dialog informing the user that the location services are not enabled
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -256,7 +241,8 @@ class _SplashScreenState extends State<SplashScreen>
           );
         },
       );
-    } else {
+    }
+    else {
       getUserPos();
     }
   }

@@ -62,10 +62,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
         Stack(
           children: [
-
-
             /// some city's image not found example addis ababa so if we have null image we will display default city image
-
               widget.imageUrl.isEmpty
                   ? Positioned.fill(
                 child: Image.asset(

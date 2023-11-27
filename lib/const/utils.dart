@@ -40,7 +40,7 @@ class AppUtils {
 
   /// spinner to load data
 
-  Widget loadingSpinner =  Center(
+ Widget loadingSpinner =  Center(
     child: SizedBox(
         width: 24,
         height: 24,
