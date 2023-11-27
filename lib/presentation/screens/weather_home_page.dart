@@ -18,8 +18,8 @@ import 'package:flutterweatherapp/presentation/controller/local_database_databas
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:weather_icons/weather_icons.dart';
-
 import '../controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
+import 'package:flutterweatherapp/const/app_extensions.dart';
 
 class WeatherHomePage extends StatefulWidget {
   final String cityName;
@@ -96,9 +96,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
             child: ListView(
               children: [
                 SizedBox(height: AppBar().preferredSize.height),
-                SizedBox(
-                  height: 30.h,
-                ),
+                30.0.sizeHeight,
+
 
                 /// today
                 Center(
@@ -108,14 +107,12 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                 color: WeatherAppColor.whiteColor)
                             .copyWith(fontSize: WeatherAppFontSize.s30))),
 
-                SizedBox(
-                  height: 2.h,
-                ),
+                2.0.sizeHeight,
+
 
                 /// updated at
-                SizedBox(
-                  height: 2.h,
-                ),
+                2.0.sizeHeight,
+
 
                 widget.weatherModel == null
                     ? Container()
@@ -151,9 +148,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                       )
                     : Column(
                         children: [
-                          SizedBox(
-                            height: 10.h,
-                          ),
+                          10.0.sizeHeight,
+
                           AppUtils().getWeatherIcon(
                                       widget.weatherModel!.weather[0].icon) !=
                                   WeatherIcons.refresh
@@ -164,9 +160,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                 )
                               : Image.network(AppUtils().getWeatherIconURL(
                                   widget.weatherModel!.weather[0].icon)),
-                          SizedBox(
-                            height: 10.h,
-                          ),
+                          10.0.sizeHeight,
+
                           Text(
                             widget.weatherModel!.weather[0].description,
                             style: WeatherAppFonts.large(
@@ -227,9 +222,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                       image:
                                           Svg(WeatherAppResources.humidtyIcon),
                                     ),
-                                    SizedBox(
-                                      height: 3.h,
-                                    ),
+                                   3.0.sizeHeight,
                                     Text(
                                       AppUtils.convertTextToUpper(
                                           WeatherAppString.humidityText),
@@ -239,9 +232,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                           .copyWith(
                                               fontSize: WeatherAppFontSize.s14),
                                     ),
-                                    SizedBox(
-                                      height: 3.h,
-                                    ),
+                                    3.0.sizeHeight,
+
                                     Text(
                                       "${widget.weatherModel!.main.humidity}%",
                                       style: WeatherAppFonts.large(
@@ -257,9 +249,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                     Image(
                                       image: Svg(WeatherAppResources.windIcon),
                                     ),
-                                    SizedBox(
-                                      height: 3.h,
-                                    ),
+                                    3.0.sizeHeight,
+
                                     Text(
                                       AppUtils.convertTextToUpper(
                                           WeatherAppString.windText),
@@ -269,9 +260,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                           .copyWith(
                                               fontSize: WeatherAppFontSize.s14),
                                     ),
-                                    SizedBox(
-                                      height: 3.h,
-                                    ),
+                                    3.0.sizeHeight,
+
                                     Text(
                                       "${widget.weatherModel!.wind.speed}km/h",
                                       style: WeatherAppFonts.large(
@@ -287,9 +277,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                     Image(
                                       image: Svg(WeatherAppResources.feelsLike),
                                     ),
-                                    SizedBox(
-                                      height: 3.h,
-                                    ),
+                                    3.0.sizeHeight,
+
                                     Text(
                                       AppUtils.convertTextToUpper(
                                           WeatherAppString.feelsLikeText),
@@ -299,9 +288,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                           .copyWith(
                                               fontSize: WeatherAppFontSize.s14),
                                     ),
-                                    SizedBox(
-                                      height: 3.h,
-                                    ),
+                                    3.0.sizeHeight,
+
                                     Text(
                                       widget.weatherModel!.main.feelsLike
                                           .toString(),
@@ -421,9 +409,8 @@ class WeatherDataDisplay extends StatelessWidget {
 
     return Column(
       children: [
-        SizedBox(
-          height: 10.h,
-        ),
+        10.0.sizeHeight,
+
         AppUtils().getWeatherIcon(weatherModel.weather[0].icon) !=
                 WeatherIcons.refresh
             ? Icon(
@@ -432,9 +419,8 @@ class WeatherDataDisplay extends StatelessWidget {
               )
             : Image.network(
                 AppUtils().getWeatherIconURL(weatherModel.weather[0].icon)),
-        SizedBox(
-          height: 10.h,
-        ),
+        10.0.sizeHeight,
+
         Text(
           weatherModel.weather[0].description,
           style: WeatherAppFonts.large(
@@ -494,9 +480,8 @@ class WeatherDataDisplay extends StatelessWidget {
                   Image(
                     image: Svg(WeatherAppResources.humidtyIcon),
                   ),
-                  SizedBox(
-                    height: 3.h,
-                  ),
+                  3.0.sizeHeight,
+
                   Text(
                     AppUtils.convertTextToUpper(WeatherAppString.humidityText),
                     style: WeatherAppFonts.large(
@@ -504,9 +489,8 @@ class WeatherDataDisplay extends StatelessWidget {
                             color: WeatherAppColor.whiteColor)
                         .copyWith(fontSize: WeatherAppFontSize.s14),
                   ),
-                  SizedBox(
-                    height: 3.h,
-                  ),
+                  3.0.sizeHeight,
+
                   Text(
                     "${weatherModel.main.humidity}%",
                     style: WeatherAppFonts.large(
@@ -521,9 +505,8 @@ class WeatherDataDisplay extends StatelessWidget {
                   Image(
                     image: Svg(WeatherAppResources.windIcon),
                   ),
-                  SizedBox(
-                    height: 3.h,
-                  ),
+                  3.0.sizeHeight,
+
                   Text(
                     AppUtils.convertTextToUpper(WeatherAppString.windText),
                     style: WeatherAppFonts.large(
@@ -531,9 +514,8 @@ class WeatherDataDisplay extends StatelessWidget {
                             color: WeatherAppColor.whiteColor)
                         .copyWith(fontSize: WeatherAppFontSize.s14),
                   ),
-                  SizedBox(
-                    height: 3.h,
-                  ),
+                  3.0.sizeHeight,
+
                   Text(
                     "${weatherModel.wind.speed}km/h",
                     style: WeatherAppFonts.large(
@@ -548,9 +530,8 @@ class WeatherDataDisplay extends StatelessWidget {
                   Image(
                     image: Svg(WeatherAppResources.feelsLike),
                   ),
-                  SizedBox(
-                    height: 3.h,
-                  ),
+                  3.0.sizeHeight,
+
                   Text(
                     AppUtils.convertTextToUpper(WeatherAppString.feelsLikeText),
                     style: WeatherAppFonts.large(
@@ -558,9 +539,8 @@ class WeatherDataDisplay extends StatelessWidget {
                             color: WeatherAppColor.whiteColor)
                         .copyWith(fontSize: WeatherAppFontSize.s14),
                   ),
-                  SizedBox(
-                    height: 3.h,
-                  ),
+                  3.0.sizeHeight,
+
                   Text(
                     weatherModel.main.feelsLike.toString(),
                     style: WeatherAppFonts.large(
