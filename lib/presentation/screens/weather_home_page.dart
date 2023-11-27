@@ -22,10 +22,10 @@ import '../controller/get_user_city_controller/get_user_city_weather_controller_
 class WeatherHomePage extends StatelessWidget {
   final String cityName;
   final String imageUrl;
-  final WeatherModel weatherModel;/// this is when we come back fromsaved
+  WeatherModel? weatherModel;/// this is when we come back fromsaved
 
-  const WeatherHomePage(
-      {Key? key, required this.cityName, required this.imageUrl, required this.weatherModel})
+   WeatherHomePage(
+      {Key? key, required this.cityName, required this.imageUrl, this.weatherModel})
       : super(key: key);
 
   @override
@@ -35,7 +35,7 @@ class WeatherHomePage extends StatelessWidget {
 
     /// forecast bloc so if weather model is empty only we will do call to internate
 
-    if(weatherModel.name.isEmpty) {
+    if(weatherModel==null) {
       final userCityBloc =
       BlocProvider.of<GetUserCityWeatherControllerBloc>(context);
       userCityBloc.add(GetUserCityWeather(cityName));
@@ -99,9 +99,9 @@ class WeatherHomePage extends StatelessWidget {
                   height: 2.h,
                 ),
 
-                weatherModel.name.isEmpty?Container():
+                weatherModel==null?Container():
                 Center(
-                    child: Text(AppUtils.formatDateTime(weatherModel.updatedAt.toIso8601String()),
+                    child: Text(AppUtils.formatDateTime(weatherModel!.updatedAt.toIso8601String()),
                         style: WeatherAppFonts.large(
                             fontWeight: FontWeight.w300,
                             color: WeatherAppColor.whiteColor
@@ -109,7 +109,7 @@ class WeatherHomePage extends StatelessWidget {
                             .copyWith(fontSize: WeatherAppFontSize.s16))),
 
                 /// display data from API
-               weatherModel.name.isEmpty?
+               weatherModel==null?
                BlocBuilder<GetUserCityWeatherControllerBloc,
                     GetUserCityWeatherControllerState>(
                   builder: (context, state) {
@@ -336,20 +336,20 @@ class WeatherHomePage extends StatelessWidget {
                        SizedBox(
                          height: 10.h,
                        ),
-                       AppUtils().getWeatherIcon(weatherModel
+                       AppUtils().getWeatherIcon(weatherModel!
                            .weather[0].icon) !=
                            WeatherIcons.refresh
                            ? Icon(
-                         AppUtils().getWeatherIcon(weatherModel.weather[0].icon),
+                         AppUtils().getWeatherIcon(weatherModel!.weather[0].icon),
                          size: 100.0,
                        )
-                           : Image.network(AppUtils().getWeatherIconURL(weatherModel.weather[0].icon)),
+                           : Image.network(AppUtils().getWeatherIconURL(weatherModel!.weather[0].icon)),
                        SizedBox(
                          height: 10.h,
                        ),
                        Text(
 
-                         weatherModel.weather[0].description,
+                         weatherModel!.weather[0].description,
                          style: WeatherAppFonts.large(
                              fontWeight: FontWeight.w700,
                              color: WeatherAppColor.whiteColor)
@@ -362,7 +362,7 @@ class WeatherHomePage extends StatelessWidget {
                          mainAxisAlignment: MainAxisAlignment.center,
                          children: [
                            Text(
-                             weatherModel.main.temp
+                             weatherModel!.main.temp
                                  .toString(),
                              style: WeatherAppFonts.large(
                                  fontWeight: FontWeight.w500,
@@ -415,7 +415,7 @@ class WeatherHomePage extends StatelessWidget {
                                    height: 3.h,
                                  ),
                                  Text(
-                                   "${weatherModel.main.humidity}%",
+                                   "${weatherModel!.main.humidity}%",
                                    style: WeatherAppFonts.large(
                                        fontWeight: FontWeight.w500,
                                        color: WeatherAppColor.whiteColor)
@@ -445,7 +445,7 @@ class WeatherHomePage extends StatelessWidget {
                                    height: 3.h,
                                  ),
                                  Text(
-                                   "${weatherModel.wind.speed}km/h",
+                                   "${weatherModel!.wind.speed}km/h",
                                    style: WeatherAppFonts.large(
                                        fontWeight: FontWeight.w500,
                                        color: WeatherAppColor.whiteColor)
@@ -475,7 +475,7 @@ class WeatherHomePage extends StatelessWidget {
                                    height: 3.h,
                                  ),
                                  Text(
-                                   weatherModel.main.feelsLike
+                                   weatherModel!.main.feelsLike
                                        .toString(),
                                    style: WeatherAppFonts.large(
                                        fontWeight: FontWeight.w500,

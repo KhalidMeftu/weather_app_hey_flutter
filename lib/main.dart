@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
                 useMaterial3: true,
               ),
               onGenerateRoute: RouteGenerator.getRoute,
-              initialRoute: WeatherRoutes.userCitiesRoute,//WeatherRoutes.splashRoute,
+              initialRoute:WeatherRoutes.splashRoute, //WeatherRoutes.userCitiesRoute,//WeatherRoutes.splashRoute,
             ),
           );
         });
