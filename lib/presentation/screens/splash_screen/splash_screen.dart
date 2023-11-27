@@ -49,14 +49,14 @@ class _SplashScreenState extends State<SplashScreen>
         if (state is CityImageWeatherLoaded) {
           Navigator.pushNamed(
               context, WeatherRoutes.homePageRoute,
-              arguments: ["Addis Ababa", ""]);
+              arguments: ["Addis Ababa", "",]);
 
           //arguments: [cityName,state.imageURL]);
         }
         if (state is CityImageLoadingError) {
           Navigator.pushNamed(
               context, WeatherRoutes.homePageRoute,
-              arguments: ["Addis Ababa", ""]);
+              arguments: ["Addis Ababa", "",]);
           //arguments: [cityName,""]);
         }
       },

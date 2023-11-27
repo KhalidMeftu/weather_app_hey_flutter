@@ -9,6 +9,7 @@ import 'package:flutterweatherapp/const/weather_font_sizes.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
+import 'package:flutterweatherapp/routes/weather_routes.dart';
 
 class UserCities extends StatefulWidget {
   const UserCities({Key? key}) : super(key: key);
@@ -197,18 +198,25 @@ class _UserCitiesState extends State<UserCities> {
                             left: 12.w, right: 12.w, top: 15.h),
                         child: SizedBox(
                           height: 150.h,
-                          child: SavedCitiesCard(
-                            cityName: state.usermodel.name,
-                            weatherCondition:
-                            state.usermodel.weather[0].description,
-                            humidity: state.usermodel.main.humidity
-                                .toString(),
-                            windSpeed:
-                            state.usermodel.wind.speed.toString(),
-                            statusImage:
-                            state.usermodel.weather[0].icon,
-                            temprature:
-                            state.usermodel.main.temp.toString(),
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.pushNamed(
+                                  context, WeatherRoutes.homePageRoute,
+                                  arguments: [state.usermodel.name, "",state.usermodel]);
+                            },
+                            child: SavedCitiesCard(
+                              cityName: state.usermodel.name,
+                              weatherCondition:
+                              state.usermodel.weather[0].description,
+                              humidity: state.usermodel.main.humidity
+                                  .toString(),
+                              windSpeed:
+                              state.usermodel.wind.speed.toString(),
+                              statusImage:
+                              state.usermodel.weather[0].icon,
+                              temprature:
+                              state.usermodel.main.temp.toString(),
+                            ),
                           ),
                         ),
                         //),
@@ -229,25 +237,32 @@ class _UserCitiesState extends State<UserCities> {
                           return Padding(
                             padding: EdgeInsets.only(
                                 left: 12.w, right: 12.w, top: 15.h),
-                            child: SavedCitiesCard(
-                              cityName: state.usermodel[index].name,
-                              weatherCondition:
-                                  state.usermodel[index].weather[0].description,
-                              humidity: state.usermodel[index].main.humidity
-                                  .toString(),
-                              windSpeed:
-                                  state.usermodel[index].wind.speed.toString(),
-                              statusImage:
-                                  state.usermodel[index].weather[0].icon,
-                              temprature:
-                                  state.usermodel[index].main.temp.toString(),
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigator.pushNamed(
+                                    context, WeatherRoutes.homePageRoute,
+                                    arguments: [state.usermodel[index].name, "",state.usermodel[index]]);
+                              },
+                              child: SavedCitiesCard(
+                                cityName: state.usermodel[index].name,
+                                weatherCondition:
+                                    state.usermodel[index].weather[0].description,
+                                humidity: state.usermodel[index].main.humidity
+                                    .toString(),
+                                windSpeed:
+                                    state.usermodel[index].wind.speed.toString(),
+                                statusImage:
+                                    state.usermodel[index].weather[0].icon,
+                                temprature:
+                                    state.usermodel[index].main.temp.toString(),
+                              ),
                             ),
                             //),
                           );
                         },
                       );
                     }
-                    return Text("HI");
+                    return Container();
                   },
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterweatherapp/const/services.dart';
+import 'package:intl/intl.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'app_color.dart';
 
@@ -24,7 +25,7 @@ class AppUtils {
 
   /// on home page we have date format of Jun 07 so belows function takes todays date as an input and returns formated
 /// output
-  String getFormattedDate() {
+  static String getFormattedDate() {
     DateTime now = DateTime.now();
     ///  months
     List<String> monthNames = [
@@ -103,6 +104,12 @@ class AppUtils {
   }
 
 
+/// time stamp formater
 
+  static String formatDateTime(String timestamp) {
+    DateTime dateTime = DateTime.parse(timestamp);
+    String formattedDateTime = DateFormat('M/d/yyyy h:mm a').format(dateTime);
+    return formattedDateTime;
+  }
 
 }

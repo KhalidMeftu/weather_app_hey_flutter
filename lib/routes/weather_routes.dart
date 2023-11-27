@@ -24,6 +24,7 @@ class RouteGenerator {
             builder: (_) => WeatherHomePage(
                   cityName: args[0],
                   imageUrl: args[1],
+                  weatherModel: args[2],
                 ));
       case WeatherRoutes.userCitiesRoute:
         return _createRoute( const UserCities());

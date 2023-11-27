@@ -57,6 +57,7 @@ dependencies:
   glassmorphism_ui:
   path_provider:
   sembast:
+  intl:
 
 dev_dependencies:
   flutter_test:
