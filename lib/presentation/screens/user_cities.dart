@@ -76,6 +76,7 @@ class _UserCitiesState extends State<UserCities> {
       listener: (context, state) {
         // TODO: implement listener
         if (state is UserCityWeatherLoaded) {
+          print("UserCityLoaded");
 
           WeatherModel newModel = state.cityWeatherInformation;
           newModel.cityImageURL=state.cityImageURL;

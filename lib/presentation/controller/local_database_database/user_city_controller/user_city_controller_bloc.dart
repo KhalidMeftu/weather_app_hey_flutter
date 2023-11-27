@@ -32,7 +32,6 @@ class UserCityControllerBloc extends Bloc<UserCityControllerEvent, UserCityContr
     on<FetchUserCity>((event, emit) async {
       // TODO: implement event handler
       emit(const UserCityExecute());
-
       final result=await getMedaUseCase.loadUserCity();
       result.fold((left) => emit(UserCityAction(left)),
               (right) => emit(UserCityLoaded(right)));

@@ -127,16 +127,23 @@ class RemoteDataSource extends BaseRemoteDataSource {
   @override
   Future<Either<String, List<WeatherModel>>> insertWeatherModel(WeatherModel weatherModel) async {
     try {
-      // Check if the cityName already exists in the database
+      // Normalize and lowercase the cityName
+      final cityNameNormalized = normalizeCityName(weatherModel.name);
+
+      // Check if the cityName already exists in the database (case-insensitive)
       final existingRecords = await cityName.find(
         await _db,
-        finder: Finder(filter: Filter.equals('name', weatherModel.name)),
+        finder: Finder(filter: Filter.custom((record) {
+          final recordNameNormalized = normalizeCityName(record['name'] as String);
+          return recordNameNormalized == cityNameNormalized;
+        })),
       );
+
       // If cityName already exists
       if (existingRecords.isNotEmpty) {
         return const Left('Insert failed: cityName already exists');
       }
-      // If cityName does not exist, proceed with the insert
+
       await cityName.add(await _db, weatherModel.toJson());
       return await populateWeatherDatabase();
     } catch (e) {
@@ -146,12 +153,14 @@ class RemoteDataSource extends BaseRemoteDataSource {
 
 
 
+  String normalizeCityName(String name) {
+    return name.toLowerCase().trim();
+  }
 
   /// search
   @override
   Future<Either<String, WeatherModel>> searchCities(String query) async {
-    print("searched text");
-    print(query);
+
     try {
       final finder = Finder(
         filter: Filter.custom((record) {

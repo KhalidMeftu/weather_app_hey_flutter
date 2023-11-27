@@ -44,8 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
-    print("App Stata is");
-    print(state);
+
     if (state == AppLifecycleState.resumed) {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (serviceEnabled) {
@@ -54,10 +53,11 @@ class _SplashScreenState extends State<SplashScreen>
         askForLocationPermission();
 
       } else {
-        // Location service is still disabled, show alert or handle accordingly
+        checkAndRequestLocationService();
       }
 
     }
+
   }
   Future<void> askForLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
