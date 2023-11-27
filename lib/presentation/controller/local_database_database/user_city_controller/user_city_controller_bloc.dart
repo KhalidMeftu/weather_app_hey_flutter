@@ -15,7 +15,6 @@ class UserCityControllerBloc extends Bloc<UserCityControllerEvent, UserCityContr
     on<InsertUserCity>((event, emit) async {
       // TODO: implement event handler
       emit(const UserCityExecute());
-
       final result=await getMedaUseCase.saveUserCity(event.weatherModel);
       result.fold((left) => emit(UserCityAction(left)),
               (right) => emit(UserCityInsertSuccessfull(right)));

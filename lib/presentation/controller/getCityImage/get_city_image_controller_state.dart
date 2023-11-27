@@ -17,11 +17,30 @@ class CityImageLoading extends GetCityImageControllerState{
 
 }
 
+/// show spinner on this state
+class CityImageLoadingLDB extends GetCityImageControllerState{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+
+}
+
 /// data is loaded show data
 class CityImageWeatherLoaded extends GetCityImageControllerState{
   final String imageURL;
 
   const CityImageWeatherLoaded(this.imageURL);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [imageURL];
+
+}
+
+/// data is loaded show data
+class CityImageWeatherLoadedLDB extends GetCityImageControllerState{
+  final String imageURL;
+
+  const CityImageWeatherLoadedLDB(this.imageURL);
   @override
   // TODO: implement props
   List<Object?> get props => [imageURL];

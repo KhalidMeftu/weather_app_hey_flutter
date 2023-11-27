@@ -47,8 +47,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
           WeatherAppServices.baseURL, queryParameters: queryParameters);
 
       if (response.statusCode == 200) {
-        print("Response is ");
-        print(response.data);
+
         final data = WeatherModel.fromJson(response.data);
         return Right(data);
       } else {
@@ -71,6 +70,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
       if (response.statusCode == 200) {
         if (response.data.containsKey('photos') && response.data['photos'].isNotEmpty) {
           var imageData = response.data['photos'][0]['image']['mobile'];
+
           return Right(imageData); // Using Either
         } else {
           return Left(WeatherAppString.noData); // No data found

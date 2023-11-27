@@ -5,7 +5,6 @@ import 'package:flutterweatherapp/const/app_color.dart';
 import 'package:flutterweatherapp/const/app_resources.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/const/utils.dart';
-import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/presentation/controller/getCityImage/get_city_image_controller_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:geocoding/geocoding.dart';
@@ -93,14 +92,14 @@ class _SplashScreenState extends State<SplashScreen>
 
           Navigator.pushNamed(
               context, WeatherRoutes.homePageRoute,
-              arguments: ["Addis Ababa", "",null]);
+              arguments: [cityName, state.imageURL,null]);
 
           //arguments: [cityName,state.imageURL]);
         }
         if (state is CityImageLoadingError) {
           Navigator.pushNamed(
               context, WeatherRoutes.homePageRoute,
-              arguments: ["Addis Ababa", "",null]);
+              arguments: [cityName, "",null]);
           //arguments: [cityName,""]);
         }
       },
@@ -188,7 +187,7 @@ class _SplashScreenState extends State<SplashScreen>
     setState(() {
       cityName = place.locality!;
     });
-    await getCityImage("Addis Ababa");
+    await getCityImage(cityName);
   }
 
   Future<Position> getCurrentPosition() async {

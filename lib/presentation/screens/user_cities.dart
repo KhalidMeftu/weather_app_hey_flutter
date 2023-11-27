@@ -76,7 +76,10 @@ class _UserCitiesState extends State<UserCities> {
       listener: (context, state) {
         // TODO: implement listener
         if (state is UserCityWeatherLoaded) {
-          saveCity(state.cityWeatherInformation, context);
+
+          WeatherModel newModel = state.cityWeatherInformation;
+          newModel.cityImageURL=state.cityImageURL;
+          saveCity(newModel, context);
         }
       },
       child: Scaffold(
@@ -171,18 +174,25 @@ class _UserCitiesState extends State<UserCities> {
                           return Padding(
                             padding: EdgeInsets.only(
                                 left: 12.w, right: 12.w, top: 15.h),
-                            child: SavedCitiesCard(
-                              cityName: state.weatherModel[index].name,
-                              weatherCondition:
-                              state.weatherModel[index].weather[0].description,
-                              humidity: state.weatherModel[index].main.humidity
-                                  .toString(),
-                              windSpeed:
-                              state.weatherModel[index].wind.speed.toString(),
-                              statusImage:
-                              state.weatherModel[index].weather[0].icon,
-                              temprature:
-                              state.weatherModel[index].main.temp.toString(),
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigator.pushNamed(
+                                    context, WeatherRoutes.homePageRoute,
+                                    arguments: [state.weatherModel[index].name, state.weatherModel[index].cityImageURL ?? "No url",state.weatherModel]);
+                              },
+                              child: SavedCitiesCard(
+                                cityName: state.weatherModel[index].name,
+                                weatherCondition:
+                                state.weatherModel[index].weather[0].description,
+                                humidity: state.weatherModel[index].main.humidity
+                                    .toString(),
+                                windSpeed:
+                                state.weatherModel[index].wind.speed.toString(),
+                                statusImage:
+                                state.weatherModel[index].weather[0].icon,
+                                temprature:
+                                state.weatherModel[index].main.temp.toString(),
+                              ),
                             ),
                             //),
                           );
@@ -202,7 +212,7 @@ class _UserCitiesState extends State<UserCities> {
                             onTap: (){
                               Navigator.pushNamed(
                                   context, WeatherRoutes.homePageRoute,
-                                  arguments: [state.usermodel.name, "",state.usermodel]);
+                                  arguments: [state.usermodel.name, state.usermodel.cityImageURL ?? "No url",state.usermodel]);
                             },
                             child: SavedCitiesCard(
                               cityName: state.usermodel.name,
@@ -241,7 +251,7 @@ class _UserCitiesState extends State<UserCities> {
                               onTap: (){
                                 Navigator.pushNamed(
                                     context, WeatherRoutes.homePageRoute,
-                                    arguments: [state.usermodel[index].name, "",state.usermodel[index]]);
+                                    arguments: [state.usermodel[index].name, state.usermodel[index].cityImageURL ?? "NO URL",state.usermodel[index]]);
                               },
                               child: SavedCitiesCard(
                                 cityName: state.usermodel[index].name,

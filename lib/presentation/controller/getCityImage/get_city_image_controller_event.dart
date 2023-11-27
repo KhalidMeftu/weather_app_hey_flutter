@@ -13,3 +13,13 @@ class GetCityPhoto extends GetCityImageControllerEvent{
   List<Object?> get props => [cityName];
 
 }
+
+class GetCityPhotoLDB extends GetCityImageControllerEvent{
+  final String cityName;
+
+  const GetCityPhotoLDB(this.cityName);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [cityName];
+
+}

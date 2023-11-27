@@ -21,11 +21,12 @@ class UserCityWeatherLoading extends GetUserCityWeatherControllerState{
 /// data is loaded show data
 class UserCityWeatherLoaded extends GetUserCityWeatherControllerState{
   final WeatherModel cityWeatherInformation;
+  final String cityImageURL;
 
-  const UserCityWeatherLoaded(this.cityWeatherInformation);
+  const UserCityWeatherLoaded(this.cityWeatherInformation, this.cityImageURL);
   @override
   // TODO: implement props
-  List<Object?> get props => [cityWeatherInformation];
+  List<Object?> get props => [cityWeatherInformation, cityImageURL];
 
 }
 

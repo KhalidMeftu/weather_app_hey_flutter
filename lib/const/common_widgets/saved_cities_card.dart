@@ -23,7 +23,7 @@ class SavedCitiesCard extends StatelessWidget {
       required this.humidity,
       required this.windSpeed,
       required this.statusImage,
-      required this.temprature})
+      required this.temprature,})
       : super(key: key);
 
   @override
@@ -33,7 +33,6 @@ class SavedCitiesCard extends StatelessWidget {
           color: WeatherAppColor.cardB,
           borderRadius: const BorderRadius.all(Radius.circular(16))
         ),
-        //borderRadius: BorderRadius.circular(16),
         child: Row(
           children: [
             /// display city name weather condition and humidity and wind

@@ -18,5 +18,7 @@ class GetCityImageControllerBloc extends Bloc<GetCityImageControllerEvent, GetCi
       result.fold((left) => emit(CityImageLoadingError(left)),
               (right) => emit(CityImageWeatherLoaded(right)));
     });
+
+
   }
 }
