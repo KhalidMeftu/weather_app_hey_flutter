@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
   late final AnimationController _controller;
 
   bool locationPermissionEnabled = false;
-  String cityName = "Uknown city";
+  String cityName = "";
 
   @override
   void initState() {

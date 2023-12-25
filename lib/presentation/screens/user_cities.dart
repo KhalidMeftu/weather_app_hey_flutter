@@ -12,6 +12,18 @@ import 'package:flutterweatherapp/presentation/controller/get_user_city_controll
 import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 
+
+class CitiesList extends StatelessWidget {
+  const CitiesList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
+    userCityBloc.add(const FetchUserCity());
+    return const UserCities();
+  }
+}
+
 class UserCities extends StatefulWidget {
   const UserCities({Key? key}) : super(key: key);
 
@@ -23,13 +35,7 @@ class _UserCitiesState extends State<UserCities> {
   bool _isSearching = false;
   TextEditingController searchTextController = TextEditingController();
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
-    userCityBloc.add(const FetchUserCity());
-    super.initState();
-  }
+
 
   /// save alert
   void _showSaveDialog(BuildContext context) async {
@@ -208,7 +214,6 @@ class _UserCitiesState extends State<UserCities> {
                             },
                           );
                         }
-
                         if (state is SearchUserCityLoaded) {
                           return Padding(
                             padding: EdgeInsets.only(
@@ -241,8 +246,6 @@ class _UserCitiesState extends State<UserCities> {
                             //),
                           );
                         }
-                        //UserCityAction
-
                         if (state is UserCityAction) {
                           return Center(child: AppUtils().loadingSpinner);
                         }
@@ -345,7 +348,21 @@ class _UserCitiesState extends State<UserCities> {
   }
 
   void saveCity(WeatherModel cityWeatherInformation, BuildContext context) {
-    BlocProvider.of<UserCityControllerBloc>(context)
-        .add(InsertUserCity(cityWeatherInformation));
+    final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
+    var currentState = userCityBloc.state;
+    if (currentState is UserCityLoaded) {
+      bool cityExists = currentState.usermodel.any(
+            (city) => city.name.toLowerCase() == cityWeatherInformation.name.toLowerCase(),
+      );
+
+      if (!cityExists) {
+        userCityBloc.add(InsertUserCity(cityWeatherInformation));
+      } else {
+
+        print("Duplicate Values");
+
+      }
+    }
   }
+
 }
