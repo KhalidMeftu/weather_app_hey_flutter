@@ -61,7 +61,6 @@ class _SplashScreenState extends State<SplashScreen>
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-
         permissionDialog(context);
       } else {
         getUserPos();

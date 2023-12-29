@@ -39,12 +39,12 @@ class LocalStorageServices {
   }
 
   /// save is user first time
-  Future<bool> setUserLanguage(bool isFirstTime) {
+  Future<bool> setFirstTimeVisit(bool isFirstTime) {
     return _saveData('firstTimeVisit', isFirstTime);
   }
 
   /// get is firstTime
-  Bool? getUserLanguage() {
+  Bool? getFirstTimeVisit() {
     var status = _getData('firstTimeVisit');
     if (status == null) {
       return null;

@@ -42,19 +42,19 @@ class _UserCitiesState extends State<UserCities> {
     final result = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        TextEditingController _textEditingController = TextEditingController();
+        TextEditingController textEditingController = TextEditingController();
 
         return AlertDialog(
           title: const Text('Save New City'),
           content: TextField(
-            controller: _textEditingController,
+            controller: textEditingController,
             decoration: const InputDecoration(
               hintText: 'Enter City',
             ),
           ),
           actions: [
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -62,7 +62,7 @@ class _UserCitiesState extends State<UserCities> {
             TextButton(
               child: const Text('Save'),
               onPressed: () {
-                String text = _textEditingController.text;
+                String text = textEditingController.text;
                 Navigator.of(context).pop(text);
               },
             ),
@@ -72,6 +72,8 @@ class _UserCitiesState extends State<UserCities> {
     );
 
     if (result != null) {
+      print("Kalid Meftu loading1");
+      print("Adding to database");
       saveToDatabase(result, context);
     }
   }
@@ -81,7 +83,8 @@ class _UserCitiesState extends State<UserCities> {
     return BlocListener<GetUserCityWeatherControllerBloc,
         GetUserCityWeatherControllerState>(
       listener: (context, state) {
-        // TODO: implement listener
+        print("Kalid Meftu loading2");
+        print(state);
         if (state is UserCityWeatherLoaded) {
           WeatherModel newModel = state.cityWeatherInformation;
           newModel.cityImageURL = state.cityImageURL;
@@ -89,7 +92,8 @@ class _UserCitiesState extends State<UserCities> {
         }
       },
       child: Scaffold(
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
+          key: const ValueKey("user_city_widget"),
           body: Container(
             decoration: BoxDecoration(
               gradient: WeatherAppColor.linearGradientBackground,

@@ -30,6 +30,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// test rebuild
+    print("Khalid Meftu Home page");
+    print(weatherModel);
     return weatherModel!=null?WeatherHomePage(cityName: cityName, imageUrl: imageUrl,weatherModel: weatherModel,):
     WeatherHomeLivePage(cityName: cityName, imageUrl: imageUrl);
   }
@@ -291,16 +294,27 @@ class WeatherHomePage extends StatefulWidget {
 class _WeatherHomePageState extends State<WeatherHomePage> {
   /// load next for days
   List<String> upcomingDays = AppUtils.getNextFourDays();
+  late AppLifecycleState _appLifecycleState;
 
   ///
   @override
   void initState() {
-
-    final forecastBloc = BlocProvider.of<GetDailyForecastBloc>(context);
-    forecastBloc.add(GetDailyForCast());
     HomeWidget.setAppGroupId(appGroupId);
     super.initState();
   }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this as WidgetsBindingObserver);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _appLifecycleState = state;
+    });
+  }
+
 
   void updateHomeScreenWidget(WeatherModel weatherModel) {
 
@@ -317,7 +331,10 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final forecastBloc = BlocProvider.of<GetDailyForecastBloc>(context);
+    forecastBloc.add(GetDailyForCast());
     return Scaffold(
+      key: const ValueKey("home_widget"),
       body:
 
       Stack(
@@ -599,7 +616,7 @@ class WeatherHomeLivePage extends StatefulWidget {
   final String cityName;
   final String imageUrl;
 
-  WeatherHomeLivePage({Key? key,
+  const WeatherHomeLivePage({Key? key,
     required this.cityName,
     required this.imageUrl,
     })
@@ -612,6 +629,7 @@ class WeatherHomeLivePage extends StatefulWidget {
 class _WeatherHomeLivePageState extends State<WeatherHomeLivePage> {
   /// load next for days
   List<String> upcomingDays = AppUtils.getNextFourDays();
+  late AppLifecycleState _appLifecycleState;
 
   ///
   @override
@@ -623,6 +641,18 @@ class _WeatherHomeLivePageState extends State<WeatherHomeLivePage> {
       userCityBloc.add(GetUserCityWeather(widget.cityName));
       HomeWidget.setAppGroupId(appGroupId);
     super.initState();
+  }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this as WidgetsBindingObserver);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _appLifecycleState = state;
+    });
   }
 
   void updateHomeScreenWidget(WeatherModel weatherModel) {
@@ -641,6 +671,8 @@ class _WeatherHomeLivePageState extends State<WeatherHomeLivePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: const ValueKey("home_widget_option"),
+
       body:
 
       Stack(
@@ -731,3 +763,7 @@ class _WeatherHomeLivePageState extends State<WeatherHomeLivePage> {
         .add(InsertUserCity(newModel));
   }
 }
+
+
+
+/// todo when saving data home page rebuilds 14 to 15 times
