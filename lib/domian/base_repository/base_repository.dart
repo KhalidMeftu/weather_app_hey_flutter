@@ -17,12 +17,13 @@ abstract class BaseRemoteRepository{
 
 
   /// local database
-
   Future<Either<String,List<WeatherModel>>> getUserCitiesWithWeather();
   Future<Either<String,WeatherModel>> searchCities(String query);
   Future<Either<String,List<WeatherModel>>> insertWeatherModel(WeatherModel weatherModel);
   Future<Either<String,String>> deleteCities(WeatherModel weatherModel);
   Future<Either<String,String>>updateCitiesWeather(WeatherModel weatherModel);
+
+
 
 
 

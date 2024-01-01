@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:flutterweatherapp/const/app_color.dart';
+import 'package:flutterweatherapp/const/app_locator/service_locator.dart';
 import 'package:flutterweatherapp/const/app_resources.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
-import 'package:flutterweatherapp/const/utils.dart';
-import 'package:flutterweatherapp/presentation/controller/getCityImage/get_city_image_controller_bloc.dart';
+import 'package:flutterweatherapp/const/sharedPrefs/sharedprefsservice.dart';
+import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
+import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -42,7 +44,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
-
     if (state == AppLifecycleState.resumed) {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (serviceEnabled) {
@@ -74,25 +75,13 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<GetCityImageControllerBloc,
-        GetCityImageControllerState>(
-      listener: (context, state) {
-        if (state is CityImageLoading) {
-          print("Loading city Image");
-        }
-        if (state is CityImageWeatherLoaded) {
-
-          Navigator.pushNamed(
-              context, WeatherRoutes.homePageRoute,
-              arguments: [cityName, state.imageURL,null]);
-
-          //arguments: [cityName,state.imageURL]);
-        }
-        if (state is CityImageLoadingError) {
-          Navigator.pushNamed(
-              context, WeatherRoutes.homePageRoute,
-              arguments: [cityName, "",null]);
-          //arguments: [cityName,""]);
+    return BlocListener<GetUserCityWeatherControllerBloc,
+        GetUserCityWeatherControllerState>(
+      listener: (context, state1) {
+        if (state1 is UserCityWeatherLoaded) {
+          WeatherModel newModel = state1.cityWeatherInformation;
+          newModel.isCurrentCity = true;
+          saveCityToSharedPrefs(newModel, context);
         }
       },
       child: Scaffold(
@@ -205,23 +194,30 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future getCityImage(String? locality) async {
-    BlocProvider.of<GetCityImageControllerBloc>(context)
-        .add(GetCityPhoto(AppUtils.convertTextToLower(locality!)));
+    final userCityBloc =  BlocProvider.of<GetUserCityWeatherControllerBloc>(context);
+    userCityBloc.add(GetUserCityWeather(locality!));
   }
 
   Future<void> getUserPos() async {
     try {
       await getUserPosition();
-
     } catch (e) {
-
+      if (!mounted) {
+        return;
+      }
       permissionDialog(context);
     }
   }
 
+
   Future<void> checkAndRequestLocationService() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      if (!mounted) {
+        // If the widget is no longer in the widget tree, do not continue
+        return;
+      }
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -229,20 +225,38 @@ class _SplashScreenState extends State<SplashScreen>
             title: Text("Location Service Disabled"),
             content: Text("Please enable location services to use this feature."),
             actions: <Widget>[
-              GestureDetector(
-                  onTap: (){
-                    Geolocator.openLocationSettings();
+              TextButton(
+                  onPressed: () async {
+                    await Geolocator.openLocationSettings();
                     Navigator.of(context).pop();
                   },
-                  child: Text("Open Settings"))
-
+                  child: Text("Open Settings")
+              )
             ],
           );
         },
       );
-    }
-    else {
+    } else {
       getUserPos();
     }
   }
+
+  Future<void> saveCityToSharedPrefs(WeatherModel newModel, BuildContext context) async {
+    LocalStorageServices localStorageServices = sLocator<LocalStorageServices>();
+    bool saveResult = await localStorageServices.saveCurrentCity(newModel);
+
+    if (!mounted) {
+      /// note If the widget is no longer in the widget tree, do not continue
+      return;
+    }
+
+    if (saveResult) {
+      Navigator.pushNamed(context, WeatherRoutes.homePageRoute, arguments: [newModel]);
+    } else {
+      // Handle error
+    }
+  }
+
 }
+
+

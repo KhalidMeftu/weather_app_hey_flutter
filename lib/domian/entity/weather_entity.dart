@@ -19,6 +19,7 @@ class WeatherModel {
   final int cod;
   final DateTime updatedAt;
   String? cityImageURL;
+  bool? isCurrentCity;
 
 
   WeatherModel({
@@ -35,6 +36,7 @@ class WeatherModel {
     required this.name,
     required this.cod,
     this.cityImageURL,
+    this.isCurrentCity,
     DateTime? updatedAt,
   }): updatedAt = updatedAt ?? DateTime.now();
 
@@ -51,7 +53,8 @@ class WeatherModel {
     id: json["id"],
     name: json["name"],
     cod: json["cod"],
-    cityImageURL: json["cityImageURL"], // Add this line
+    cityImageURL: json["cityImageURL"],
+    isCurrentCity: json["isCurrentCity"],
     updatedAt: json["updated_at"] != null ? DateTime.parse(json["updated_at"]) : DateTime.now(),
 
   );
@@ -69,7 +72,8 @@ class WeatherModel {
     "id": id,
     "name": name,
     "cod": cod,
-    "cityImageURL": cityImageURL, // Add this line
+    "cityImageURL": cityImageURL,
+    "isCurrentCity": isCurrentCity,
     "updated_at": updatedAt.toIso8601String(),
 
   };

@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/domian/usecases/weatherapp_usecases.dart';
+import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 
 part 'user_city_controller_event.dart';
 part 'user_city_controller_state.dart';
@@ -36,6 +37,8 @@ class UserCityControllerBloc extends Bloc<UserCityControllerEvent, UserCityContr
       result.fold((left) => emit(UserCityAction(left)),
               (right) => emit(UserCityLoaded(right)));
     });
+
+
 
     // search
 

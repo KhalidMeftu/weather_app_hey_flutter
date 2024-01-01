@@ -69,5 +69,5 @@ class WeatherRepository implements BaseRemoteRepository {
     // TODO: implement updateCitiesWeather
     throw UnimplementedError();
   }
-  
+
 }

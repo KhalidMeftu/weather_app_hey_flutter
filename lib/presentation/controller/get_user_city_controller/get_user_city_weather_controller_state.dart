@@ -29,6 +29,30 @@ class UserCityWeatherLoaded extends GetUserCityWeatherControllerState{
   List<Object?> get props => [cityWeatherInformation, cityImageURL];
 
 }
+/// new user city loaded
+
+class NewUserCityWeatherLoaded extends GetUserCityWeatherControllerState{
+  final WeatherModel cityWeatherInformation;
+  final String cityImageURL;
+
+  const NewUserCityWeatherLoaded(this.cityWeatherInformation, this.cityImageURL);
+  @override
+  List<Object?> get props => [cityWeatherInformation, cityImageURL];
+
+}
+
+///splash screen
+class UserCityWeatherLoadedSplashScreen extends GetUserCityWeatherControllerState{
+  final WeatherModel cityWeatherInformation;
+  final String cityImageURL;
+
+  const UserCityWeatherLoadedSplashScreen(this.cityWeatherInformation, this.cityImageURL);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [cityWeatherInformation, cityImageURL];
+
+}
+
 
 /// data loading error
 class UserCityWeatherLoadingError extends GetUserCityWeatherControllerState{

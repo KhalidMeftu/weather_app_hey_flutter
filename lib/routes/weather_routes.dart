@@ -22,12 +22,10 @@ class RouteGenerator {
         List<dynamic> args = routeSettings.arguments as List<dynamic>;
         return MaterialPageRoute(
             builder: (_) => HomePage(
-                  cityName: args[0],
-                  imageUrl: args[1],
-                  weatherModel: args[2],
+                  model: args[0],
                 ));
       case WeatherRoutes.userCitiesRoute:
-        return _createRoute( const CitiesList());
+        return _createRoute(const CitiesList());
 
       default:
         return unDefinedRoute();
@@ -46,6 +44,7 @@ class RouteGenerator {
               ),
             ));
   }
+
   ///page transition animation]
 
   static Route<dynamic> _createRoute(Widget page) {

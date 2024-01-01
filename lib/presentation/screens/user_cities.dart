@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterweatherapp/const/app_color.dart';
+import 'package:flutterweatherapp/const/app_locator/service_locator.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/const/common_widgets/saved_cities_card.dart';
+import 'package:flutterweatherapp/const/sharedPrefs/sharedprefsservice.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
@@ -74,6 +76,7 @@ class _UserCitiesState extends State<UserCities> {
     if (result != null) {
       print("Kalid Meftu loading1");
       print("Adding to database");
+      print(result.toString());
       saveToDatabase(result, context);
     }
   }
@@ -83,12 +86,12 @@ class _UserCitiesState extends State<UserCities> {
     return BlocListener<GetUserCityWeatherControllerBloc,
         GetUserCityWeatherControllerState>(
       listener: (context, state) {
-        print("Kalid Meftu loading2");
-        print(state);
-        if (state is UserCityWeatherLoaded) {
+        if (state is NewUserCityWeatherLoaded) {
           WeatherModel newModel = state.cityWeatherInformation;
           newModel.cityImageURL = state.cityImageURL;
+          newModel.isCurrentCity=false;
           saveCity(newModel, context);
+          //saveCityToSharedPrefs2(newModel, context);
         }
       },
       child: Scaffold(
@@ -190,9 +193,6 @@ class _UserCitiesState extends State<UserCities> {
                                     Navigator.pushNamed(
                                         context, WeatherRoutes.homePageRoute,
                                         arguments: [
-                                          state.weatherModel[index].name,
-                                          state.weatherModel[index].cityImageURL ??
-                                              "NO URL",
                                           state.weatherModel[index]
                                         ]);
                                   },
@@ -228,9 +228,7 @@ class _UserCitiesState extends State<UserCities> {
                                 onTap: () {
                                   Navigator.pushNamed(context,
                                     WeatherRoutes.homePageRoute, arguments: [
-                                    state.usermodel.name,
-                                    state.usermodel.cityImageURL ?? "No url",
-                                    state.usermodel
+                                      state.usermodel
                                   ]);
                                 },
                                 child: SavedCitiesCard(
@@ -268,9 +266,6 @@ class _UserCitiesState extends State<UserCities> {
                                     Navigator.pushNamed(
                                         context, WeatherRoutes.homePageRoute,
                                         arguments: [
-                                          state.usermodel[index].name,
-                                          state.usermodel[index].cityImageURL ??
-                                              "NO URL",
                                           state.usermodel[index]
                                         ]);
                                   },
@@ -348,7 +343,7 @@ class _UserCitiesState extends State<UserCities> {
   void saveToDatabase(String result, BuildContext context) {
     final userCityBloc =
         BlocProvider.of<GetUserCityWeatherControllerBloc>(context);
-    userCityBloc.add(GetUserCityWeather(result));
+    userCityBloc.add(GetSavedCityWeather(result));
   }
 
   void saveCity(WeatherModel cityWeatherInformation, BuildContext context) {
@@ -367,6 +362,11 @@ class _UserCitiesState extends State<UserCities> {
 
       }
     }
+  }
+
+  Future<void> saveCityToSharedPrefs2(WeatherModel newModel, BuildContext context) async {
+    LocalStorageServices localStorageServices = sLocator<LocalStorageServices>();
+    await localStorageServices.saveCurrentCity(newModel);
   }
 
 }

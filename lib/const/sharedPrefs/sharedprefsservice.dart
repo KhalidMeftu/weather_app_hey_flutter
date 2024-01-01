@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:ffi';
 
+import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageServices {
@@ -30,6 +32,10 @@ class LocalStorageServices {
     if (value is List<String>) {
       return _preferences!.setStringList(key, value);
     }
+    /// weather model
+    if (value is WeatherModel) {
+      return _preferences!.setString(key, json.encode(value.toJson()));
+    }
     throw  Exception('Unsupported value type');
   }
 
@@ -43,13 +49,20 @@ class LocalStorageServices {
     return _saveData('firstTimeVisit', isFirstTime);
   }
 
-  /// get is firstTime
-  Bool? getFirstTimeVisit() {
-    var status = _getData('firstTimeVisit');
-    if (status == null) {
-      return null;
-    }
-    return status;
+  /// save is user first time
+  Future<bool> saveCurrentCity(WeatherModel weatherModel) {
+    return _saveData('currentCity', weatherModel);
   }
+
+  /// get weather model
+
+  Future<WeatherModel> getCurrentCityWeather(String key) async {
+    final String? weatherModelString = _preferences!.getString(key);
+         return WeatherModel.fromJson(json.decode(weatherModelString!));
+
+  }
+
+
+  /// save data
 
 }
