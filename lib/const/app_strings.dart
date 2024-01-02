@@ -22,7 +22,6 @@ class WeatherAppString{
   static String locationServicesDisabled="Location services are disabled.";
   static String locationEnable="Please enable location services to use this feature.";
   static String locationServicesUnableToGet="Location permissions are permanently denied, we cannot request permissions.";
-
   static String locationDisabled="Location Service Disabled";
   static String pleaseEnableLocation="Please enable location services to use this feature.";
   static String openSettings="Open Settings";

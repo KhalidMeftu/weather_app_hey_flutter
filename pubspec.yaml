@@ -61,6 +61,7 @@ dependencies:
   shared_preferences:
   permission_handler:
   home_widget: ^0.4.1
+  localization: ^2.1.1
 
 dev_dependencies:
   flutter_test:
