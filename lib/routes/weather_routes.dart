@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/presentation/screens/splash_screen/splash_screen.dart';
-import 'package:flutterweatherapp/presentation/screens/user_cities.dart';
-import 'package:flutterweatherapp/presentation/screens/weather_home_page.dart';
+import 'package:flutterweatherapp/presentation/screens/cities_list/user_cities.dart';
+import 'package:flutterweatherapp/presentation/screens/home/weather_home_page.dart';
 
 class WeatherRoutes {
   static const String splashRoute = '/';
@@ -17,15 +17,16 @@ class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case WeatherRoutes.splashRoute:
-        return MaterialPageRoute(builder: (_) => const SplashScreen());
+        //return MaterialPageRoute(builder: (_) => const SplashScreen());
+        return routingTransition(const SplashScreen());
+
       case WeatherRoutes.homePageRoute:
         List<dynamic> args = routeSettings.arguments as List<dynamic>;
-        return MaterialPageRoute(
-            builder: (_) => HomePage(
-                  model: args[0],
-                ));
+        //return MaterialPageRoute(
+        //   builder: (_) => HomePage(model: args[0]));
+        return routingTransition(HomePage(model: args[0]));
       case WeatherRoutes.userCitiesRoute:
-        return _createRoute(const CitiesList());
+        return routingTransition(const CitiesList());
 
       default:
         return unDefinedRoute();
@@ -47,17 +48,35 @@ class RouteGenerator {
 
   ///page transition animation]
 
-  static Route<dynamic> _createRoute(Widget page) {
+  static Route<dynamic> routingTransition(Widget page) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = const Offset(1.0, 0.0); // New page starts from the right
+        var begin = const Offset(1.0, 0.0);
         var end = Offset.zero;
-        var tween = Tween(begin: begin, end: end);
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: Curves.ease));
         var offsetAnimation = animation.drive(tween);
+        var delayedAnimation = animation.drive(
+          Tween(begin: 0.0, end: 1.0).chain(
+            CurveTween(
+                curve: const Interval(0.2, 1.0,
+                    curve: Curves.ease)), // Adjust the delay timing here
+          ),
+        );
 
-        return SlideTransition(
-          position: offsetAnimation,
+        return AnimatedBuilder(
+          animation: delayedAnimation,
+          builder: (context, child) {
+            return SlideTransition(
+              position: offsetAnimation,
+              child: Opacity(
+                opacity: delayedAnimation.value,
+                // Apply the delay effect to the opacity
+                child: child,
+              ),
+            );
+          },
           child: child,
         );
       },

@@ -24,14 +24,10 @@ class WeatherAppUseCases {
     return await baseWeatherRepository.getDailyForecast();
   }
 
-
-
-
-
   /// insert user city
 
   Future<Either<String,List<WeatherModel>>> saveUserCity(WeatherModel weatherModel) async{
-    return await baseWeatherRepository.insertWeatherModel(weatherModel);
+    return await baseWeatherRepository.SaveUserCityData(weatherModel);
   }
 
   /// fetch user city
@@ -43,6 +39,13 @@ class WeatherAppUseCases {
 
   Future<Either<String,WeatherModel>> searchCity(String cityName) async{
     return await baseWeatherRepository.searchCities(cityName);
+  }
+
+
+  /// current city
+
+  Future<Either<String,WeatherModel>> saveUserCurrentCity(WeatherModel weatherModel) async{
+    return await baseWeatherRepository.SaveCurrentUserCityData(weatherModel);
   }
 
 

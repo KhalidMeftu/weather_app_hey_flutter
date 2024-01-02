@@ -13,12 +13,12 @@ class UserCityControllerBloc extends Bloc<UserCityControllerEvent, UserCityContr
   final WeatherAppUseCases getMedaUseCase;
 
   UserCityControllerBloc(this.getMedaUseCase) : super(UserCityControllerInitial()) {
-    on<InsertUserCity>((event, emit) async {
+    on<SaveUserCity>((event, emit) async {
       // TODO: implement event handler
-      emit(const UserCityExecute());
+      emit(const UserActionLoading());
       final result=await getMedaUseCase.saveUserCity(event.weatherModel);
       result.fold((left) => emit(UserCityAction(left)),
-              (right) => emit(UserCityInsertSuccessfull(right)));
+              (right) => emit(UserCitySaveSuccessfull(right)));
     });
 
     on<DeleteUserCity>((event, emit) {
@@ -32,23 +32,30 @@ class UserCityControllerBloc extends Bloc<UserCityControllerEvent, UserCityContr
     /// fetch user city
     on<FetchUserCity>((event, emit) async {
       // TODO: implement event handler
-      emit(const UserCityExecute());
+      emit(const UserActionLoading());
       final result=await getMedaUseCase.loadUserCity();
       result.fold((left) => emit(UserCityAction(left)),
               (right) => emit(UserCityLoaded(right)));
     });
 
-
-
     // search
-
     on<SearchUserCity>((event, emit) async {
       // TODO: implement event handler
-      emit(const UserCityExecute());
+      emit(const UserActionLoading());
       final result=await getMedaUseCase.searchCity(event.cityName);
 
       result.fold((left) => emit(UserCityAction(left)),
               (right) => emit(SearchUserCityLoaded(right)));
+    });
+
+
+    /// save current city
+    on<SaveCurrentCity>((event, emit) async {
+      // TODO: implement event handler
+      emit(const UserActionLoading());
+      final result=await getMedaUseCase.saveUserCurrentCity(event.weatherModel);
+      result.fold((left) => emit(CurrentCitySavingResponse(left)),
+              (right) => emit(CurrentCitySaveSuccessfull(right)));
     });
   }
 }

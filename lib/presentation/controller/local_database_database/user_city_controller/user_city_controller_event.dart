@@ -4,10 +4,24 @@ abstract class UserCityControllerEvent extends Equatable {
   const UserCityControllerEvent();
 }
 /// insert
-class InsertUserCity extends UserCityControllerEvent{
+class SaveUserCity extends UserCityControllerEvent{
   final WeatherModel weatherModel;
 
-  const InsertUserCity(this.weatherModel);
+  const SaveUserCity(this.weatherModel);
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [weatherModel];
+
+}
+
+/// save current city
+
+/// insert
+class SaveCurrentCity extends UserCityControllerEvent{
+  final WeatherModel weatherModel;
+
+  const SaveCurrentCity(this.weatherModel);
 
   @override
   // TODO: implement props

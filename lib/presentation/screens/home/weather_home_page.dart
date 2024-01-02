@@ -7,12 +7,12 @@ import 'package:flutterweatherapp/const/app_extensions.dart';
 import 'package:flutterweatherapp/const/app_locator/service_locator.dart';
 import 'package:flutterweatherapp/const/app_resources.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
-import 'package:flutterweatherapp/const/common_widgets/reusable_container.dart';
 import 'package:flutterweatherapp/const/sharedPrefs/sharedprefsservice.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
+import 'package:flutterweatherapp/presentation/common_widgets/reusable_container.dart';
 import 'package:flutterweatherapp/presentation/controller/get_daily_forecast/get_daily_forecast_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:glassmorphism_ui/glassmorphism_ui.dart';
@@ -70,9 +70,6 @@ class _WeatherHomePageDataState extends State<WeatherHomePageData> with WidgetsB
   @override
   void initState() {
     HomeWidget.setAppGroupId(appGroupId);
-    print("Home page ui opended");
-    print("Datas is${widget.model.name}");
-    print("Datas is${widget.model.cityImageURL}");
     super.initState();
   }
 
@@ -90,7 +87,6 @@ class _WeatherHomePageDataState extends State<WeatherHomePageData> with WidgetsB
     HomeWidget.saveWidgetData<String>(
         'temprature', weatherModel.main.temp.toString());
     HomeWidget.saveWidgetData<String>("weather_icon_url","https://openweathermap.org/img/wn/${weatherModel.weather[0].icon}@2x.png");
-    //https://openweathermap.org/img/wn/03d+@2x.png
     HomeWidget.updateWidget(
       iOSName: iOSWidgetName,
       androidName: androidWidgetName,
@@ -107,8 +103,7 @@ class _WeatherHomePageDataState extends State<WeatherHomePageData> with WidgetsB
 
       Stack(
         children: [
-          /// some city's image not found example addis ababa so if we have null image we will display default city image
-          widget.model.cityImageURL==null
+          widget.model.cityImageURL!.isEmpty
               ? Positioned.fill(
             child: Image.asset(
               WeatherAppResources.cityPlaceHolder,
@@ -337,13 +332,15 @@ class _WeatherHomePageDataState extends State<WeatherHomePageData> with WidgetsB
                                       itemBuilder: (context, index) {
                                         return Padding(
                                           padding: EdgeInsets.only(
-                                              left: 12.w,
-                                              right: 12.w,
-                                              top: 15.h),
-                                          child: NextWeekCard(
-                                            daysOfWeek: upcomingDays[index],
-                                            forecastModel:
-                                            states.forecastList[index],
+                                              left: 17.w,
+                                              right: 17.w,
+                                              top: 20.h),
+                                          child: Center(
+                                            child: NextWeekCard(
+                                              daysOfWeek: upcomingDays[index],
+                                              forecastModel:
+                                              states.forecastList[index],
+                                            ),
                                           ),
                                         );
                                       },

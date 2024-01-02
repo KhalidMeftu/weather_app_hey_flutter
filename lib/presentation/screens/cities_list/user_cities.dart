@@ -4,16 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterweatherapp/const/app_color.dart';
 import 'package:flutterweatherapp/const/app_locator/service_locator.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
-import 'package:flutterweatherapp/const/common_widgets/saved_cities_card.dart';
 import 'package:flutterweatherapp/const/sharedPrefs/sharedprefsservice.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
+import 'package:flutterweatherapp/presentation/common_widgets/saved_cities_card.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
-
 
 class CitiesList extends StatelessWidget {
   const CitiesList({super.key});
@@ -36,8 +35,6 @@ class UserCities extends StatefulWidget {
 class _UserCitiesState extends State<UserCities> {
   bool _isSearching = false;
   TextEditingController searchTextController = TextEditingController();
-
-
 
   /// save alert
   void _showSaveDialog(BuildContext context) async {
@@ -89,9 +86,9 @@ class _UserCitiesState extends State<UserCities> {
         if (state is NewUserCityWeatherLoaded) {
           WeatherModel newModel = state.cityWeatherInformation;
           newModel.cityImageURL = state.cityImageURL;
-          newModel.isCurrentCity=false;
+          newModel.isCurrentCity = false;
           saveCity(newModel, context);
-          //saveCityToSharedPrefs2(newModel, context);
+          saveCityToSharedPrefs2(newModel, context);
         }
       },
       child: Scaffold(
@@ -122,7 +119,7 @@ class _UserCitiesState extends State<UserCities> {
                             },
                           )
                         : Container(),
-                        title: _isSearching
+                    title: _isSearching
                         ? TextField(
                             controller: searchTextController,
                             autofocus: true,
@@ -173,15 +170,17 @@ class _UserCitiesState extends State<UserCities> {
                     child: BlocConsumer<UserCityControllerBloc,
                         UserCityControllerState>(
                       listener: (context, state) {
+                        print("Consumer status");
+                        print(state);
                         // TODO: implement listener
-                        if (state is UserCityInsertSuccessfull) {}
+                        if (state is UserCitySaveSuccessfull) {}
                         if (state is UserCityDeleteSuccessfull) {}
                         if (state is UserCityUpdateSuccessfull) {}
                         if (state is UserCityAction) {}
-                        if (state is UserCityExecute) {}
+                        if (state is UserActionLoading) {}
                       },
                       builder: (context, state) {
-                        if (state is UserCityInsertSuccessfull) {
+                        if (state is UserCitySaveSuccessfull) {
                           return ListView.builder(
                             itemCount: state.weatherModel.length,
                             itemBuilder: (context, index) {
@@ -192,9 +191,7 @@ class _UserCitiesState extends State<UserCities> {
                                   onTap: () {
                                     Navigator.pushNamed(
                                         context, WeatherRoutes.homePageRoute,
-                                        arguments: [
-                                          state.weatherModel[index]
-                                        ]);
+                                        arguments: [state.weatherModel[index]]);
                                   },
                                   child: SavedCitiesCard(
                                     cityName: state.weatherModel[index].name,
@@ -211,6 +208,8 @@ class _UserCitiesState extends State<UserCities> {
                                     temprature: state
                                         .weatherModel[index].main.temp
                                         .toString(),
+                                    isHomeCity: state.weatherModel[index].isCurrentCity ??false,
+
                                   ),
                                 ),
                                 //),
@@ -226,10 +225,9 @@ class _UserCitiesState extends State<UserCities> {
                               height: 150.h,
                               child: GestureDetector(
                                 onTap: () {
-                                  Navigator.pushNamed(context,
-                                    WeatherRoutes.homePageRoute, arguments: [
-                                      state.usermodel
-                                  ]);
+                                  Navigator.pushNamed(
+                                      context, WeatherRoutes.homePageRoute,
+                                      arguments: [state.usermodel]);
                                 },
                                 child: SavedCitiesCard(
                                   cityName: state.usermodel.name,
@@ -242,6 +240,7 @@ class _UserCitiesState extends State<UserCities> {
                                   statusImage: state.usermodel.weather[0].icon,
                                   temprature:
                                       state.usermodel.main.temp.toString(),
+                                  isHomeCity: state.usermodel.isCurrentCity ??false,
                                 ),
                               ),
                             ),
@@ -251,7 +250,7 @@ class _UserCitiesState extends State<UserCities> {
                         if (state is UserCityAction) {
                           return Center(child: AppUtils().loadingSpinner);
                         }
-                        if (state is UserCityExecute) {
+                        if (state is UserActionLoading) {
                           return Center(child: AppUtils().loadingSpinner);
                         }
                         if (state is UserCityLoaded) {
@@ -265,9 +264,7 @@ class _UserCitiesState extends State<UserCities> {
                                   onTap: () {
                                     Navigator.pushNamed(
                                         context, WeatherRoutes.homePageRoute,
-                                        arguments: [
-                                          state.usermodel[index]
-                                        ]);
+                                        arguments: [state.usermodel[index]]);
                                   },
                                   child: SavedCitiesCard(
                                     cityName: state.usermodel[index].name,
@@ -282,6 +279,7 @@ class _UserCitiesState extends State<UserCities> {
                                         state.usermodel[index].weather[0].icon,
                                     temprature: state.usermodel[index].main.temp
                                         .toString(),
+                                    isHomeCity: state.usermodel[index].isCurrentCity ??false,
                                   ),
                                 ),
                                 //),
@@ -348,25 +346,12 @@ class _UserCitiesState extends State<UserCities> {
 
   void saveCity(WeatherModel cityWeatherInformation, BuildContext context) {
     final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
-    var currentState = userCityBloc.state;
-    if (currentState is UserCityLoaded) {
-      bool cityExists = currentState.usermodel.any(
-            (city) => city.name.toLowerCase() == cityWeatherInformation.name.toLowerCase(),
-      );
-
-      if (!cityExists) {
-        userCityBloc.add(InsertUserCity(cityWeatherInformation));
-      } else {
-
-        print("Duplicate Values");
-
-      }
-    }
+    userCityBloc.add(SaveUserCity(cityWeatherInformation));
   }
+}
 
-  Future<void> saveCityToSharedPrefs2(WeatherModel newModel, BuildContext context) async {
-    LocalStorageServices localStorageServices = sLocator<LocalStorageServices>();
-    await localStorageServices.saveCurrentCity(newModel);
-  }
-
+Future<void> saveCityToSharedPrefs2(
+    WeatherModel newModel, BuildContext context) async {
+  LocalStorageServices localStorageServices = sLocator<LocalStorageServices>();
+  await localStorageServices.saveUserCurrentCity(newModel);
 }

@@ -50,7 +50,7 @@ class LocalStorageServices {
   }
 
   /// save is user first time
-  Future<bool> saveCurrentCity(WeatherModel weatherModel) {
+  Future<bool> saveUserCurrentCity(WeatherModel weatherModel) {
     return _saveData('currentCity', weatherModel);
   }
 

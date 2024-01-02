@@ -10,10 +10,22 @@ class UserCityControllerInitial extends UserCityControllerState {
 }
 
 /// insert
-class UserCityInsertSuccessfull extends UserCityControllerState{
+class UserCitySaveSuccessfull extends UserCityControllerState{
   final List<WeatherModel> weatherModel;
 
-  const UserCityInsertSuccessfull(this. weatherModel);
+  const UserCitySaveSuccessfull(this. weatherModel);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [ weatherModel];
+
+}
+
+
+/// insert current city
+class CurrentCitySaveSuccessfull extends UserCityControllerState{
+  final WeatherModel weatherModel;
+
+  const CurrentCitySaveSuccessfull(this. weatherModel);
   @override
   // TODO: implement props
   List<Object?> get props => [ weatherModel];
@@ -54,10 +66,10 @@ class UserCityAction extends UserCityControllerState{
   List<Object?> get props => [actionMessage];
 
 }
-/// actions may be deleting inserting, updating loading
-class UserCityExecute extends UserCityControllerState{
+/// actions
+class UserActionLoading extends UserCityControllerState{
 
-  const UserCityExecute();
+  const UserActionLoading();
   @override
   // TODO: implement props
   List<Object?> get props => [];
@@ -81,5 +93,16 @@ class SearchUserCityLoaded extends UserCityControllerState{
   @override
   // TODO: implement props
   List<Object?> get props => [usermodel];
+
+}
+
+class CurrentCitySavingResponse extends UserCityControllerState{
+  final String message;
+
+  const CurrentCitySavingResponse(this.message);
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [message];
 
 }

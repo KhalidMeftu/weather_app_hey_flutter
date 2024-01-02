@@ -51,9 +51,9 @@ class WeatherRepository implements BaseRemoteRepository {
   }
 
   @override
-  Future<Either<String, List<WeatherModel>>> insertWeatherModel(WeatherModel weatherModel) async {
+  Future<Either<String, List<WeatherModel>>> SaveUserCityData(WeatherModel weatherModel) async {
     // TODO: implement insertWeatherModel
-    final insertCityWeather = await baseremoteDataSource.insertWeatherModel(weatherModel);
+    final insertCityWeather = await baseremoteDataSource.saveUserCityDataModel(weatherModel);
     return insertCityWeather;
   }
 
@@ -68,6 +68,13 @@ class WeatherRepository implements BaseRemoteRepository {
   Future<Either<String,String>> updateCitiesWeather(WeatherModel weatherModel) {
     // TODO: implement updateCitiesWeather
     throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<String, WeatherModel>> SaveCurrentUserCityData(WeatherModel weatherModel) async {
+    // TODO: implement SaveCurrentUserCityData
+    final insertCityWeather = await baseremoteDataSource.saveUserCurrentCity(weatherModel);
+    return insertCityWeather;
   }
 
 }

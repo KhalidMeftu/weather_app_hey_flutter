@@ -13,14 +13,14 @@ abstract class BaseRemoteDataSource {
   Future<Either<String,String>> getCityImageURL(String cityName);
   /// get weather for forecast i fetch this from model tough
   Future<Either<String,List<Daily>>> getDailyForecast();
-  /// local database crud
 
   /// local database
   Future<Either<String,List<WeatherModel>>> getUserCitiesWithWeather();
   Future<Either<String,WeatherModel>> searchCities(String query);
-  Future<Either<String,List<WeatherModel>>> insertWeatherModel(WeatherModel weatherModel);
+  Future<Either<String,List<WeatherModel>>> saveUserCityDataModel(WeatherModel weatherModel);
   Future<Either<String,String>> deleteCities(WeatherModel weatherModel);
   Future<Either<String,String>>updateCitiesWeather(WeatherModel weatherModel);
+  Future<Either<String,WeatherModel>> saveUserCurrentCity(WeatherModel weatherModel) ;
 
 
 
