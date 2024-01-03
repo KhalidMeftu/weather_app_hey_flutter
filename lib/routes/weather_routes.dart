@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
-import 'package:flutterweatherapp/presentation/screens/splash_screen/splash_screen.dart';
 import 'package:flutterweatherapp/presentation/screens/cities_list/user_cities.dart';
-import 'package:flutterweatherapp/presentation/screens/home/weather_home_page.dart';
+import 'package:flutterweatherapp/presentation/screens/home_page/home_page_widget.dart';
+import 'package:flutterweatherapp/presentation/screens/splash_page/splash_screen_widget.dart';
 
 class WeatherRoutes {
-  static const String splashRoute = '/';
   static const String homePageRoute = '/home';
   static const String userCitiesRoute = '/userCities';
+  static const String splashRoute = '/newsplash';
+  static const String newHomePageRoute ='/newHomePage';
 }
 
 class RouteGenerator {
@@ -16,17 +17,16 @@ class RouteGenerator {
 
   static Route<dynamic> getRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
-      case WeatherRoutes.splashRoute:
-        //return MaterialPageRoute(builder: (_) => const SplashScreen());
-        return routingTransition(const SplashScreen());
 
-      case WeatherRoutes.homePageRoute:
-        List<dynamic> args = routeSettings.arguments as List<dynamic>;
-        //return MaterialPageRoute(
-        //   builder: (_) => HomePage(model: args[0]));
-        return routingTransition(HomePage(model: args[0]));
       case WeatherRoutes.userCitiesRoute:
         return routingTransition(const CitiesList());
+
+      case WeatherRoutes.splashRoute:
+        return MaterialPageRoute(builder: (_) => const NewSplash());
+
+      case WeatherRoutes.newHomePageRoute:
+        List<dynamic> args = routeSettings.arguments as List<dynamic>;
+        return MaterialPageRoute(builder: (_) => NewHomePage(showDataFromSavedCities: args[0],cityModel:args[1]));
 
       default:
         return unDefinedRoute();

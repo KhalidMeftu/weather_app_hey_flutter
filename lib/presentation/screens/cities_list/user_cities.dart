@@ -82,6 +82,10 @@ class _UserCitiesState extends State<UserCities> {
   Widget build(BuildContext context) {
     return BlocListener<GetUserCityWeatherControllerBloc,
         GetUserCityWeatherControllerState>(
+        listenWhen: (previous, current) {
+          return previous is UserCityWeatherLoading &&
+              current is NewUserCityWeatherLoaded;
+        },
       listener: (context, state) {
         if (state is NewUserCityWeatherLoaded) {
           WeatherModel newModel = state.cityWeatherInformation;
@@ -191,7 +195,7 @@ class _UserCitiesState extends State<UserCities> {
                                   onTap: () {
                                     Navigator.pushNamed(
                                         context, WeatherRoutes.homePageRoute,
-                                        arguments: [state.weatherModel[index]]);
+                                        arguments: [true,state.weatherModel[index]]);
                                   },
                                   child: SavedCitiesCard(
                                     cityName: state.weatherModel[index].name,
@@ -225,9 +229,12 @@ class _UserCitiesState extends State<UserCities> {
                               height: 150.h,
                               child: GestureDetector(
                                 onTap: () {
+                                  //Navigator.pushNamed(
+                                      //context, WeatherRoutes.homePageRoute,
+                                     // arguments: [state.usermodel]);
                                   Navigator.pushNamed(
                                       context, WeatherRoutes.homePageRoute,
-                                      arguments: [state.usermodel]);
+                                      arguments: [true,state.usermodel]);
                                 },
                                 child: SavedCitiesCard(
                                   cityName: state.usermodel.name,
@@ -262,9 +269,12 @@ class _UserCitiesState extends State<UserCities> {
                                     left: 12.w, right: 12.w, top: 15.h),
                                 child: GestureDetector(
                                   onTap: () {
+                                    //Navigator.pushNamed(
+                                    //    context, WeatherRoutes.homePageRoute,
+                                       // arguments: [state.usermodel[index]]);
                                     Navigator.pushNamed(
                                         context, WeatherRoutes.homePageRoute,
-                                        arguments: [state.usermodel[index]]);
+                                        arguments: [true,state.usermodel[index]]);
                                   },
                                   child: SavedCitiesCard(
                                     cityName: state.usermodel[index].name,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutterweatherapp/const/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'app_color.dart';
+import 'app_strings.dart';
 
 class AppUtils {
 
@@ -111,5 +113,11 @@ class AppUtils {
     String formattedDateTime = DateFormat('M/d/yyyy h:mm a').format(dateTime);
     return formattedDateTime;
   }
+
+
+  /// ask permission
+
+
+
 
 }

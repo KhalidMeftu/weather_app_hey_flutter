@@ -1,9 +1,13 @@
 class WeatherAppResources{
-  static String assets="assets/images";
-  static String splashCloud="$assets/splash_cloud.svg";
-  static String cityPlaceHolder="$assets/modern_city_place_holder.png";
-  static String humidtyIcon="$assets/humidity.svg";
-  static String feelsLike="$assets/feels_like.svg";
-  static String windIcon="$assets/wind_icon.svg";
+  static String assets="assets";
+  static String imagesExtended="/images";
+  static String lottieExtended="/lottie";
+  static String splashCloud="$assets$imagesExtended/splash_cloud.svg";
+  static String cityPlaceHolder="$assets$imagesExtended/modern_city_place_holder.png";
+  static String humidtyIcon="$assets$imagesExtended/humidity.svg";
+  static String feelsLike="$assets$imagesExtended/feels_like.svg";
+  static String windIcon="$assets$imagesExtended/wind_icon.svg";
+  static String splashLottie ="$assets$lottieExtended/splash_screen.json";
+
 
 }
