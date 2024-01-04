@@ -22,12 +22,7 @@ class WeatherRepository implements BaseRemoteRepository {
     return resultForUserCity;
   }
 
-  @override
-  Future<Either<String, String>> getCityImageURL(String cityName) async {
-    // TODO: implement getCityImageURL
-    final cityImageURL = await baseremoteDataSource.getCityImageURL(cityName);
-    return cityImageURL;
-  }
+
 
   @override
   Future<Either<String, List<Daily>>> getDailyForecast() async {

@@ -33,7 +33,6 @@ class UserCities extends StatefulWidget {
 }
 
 class _UserCitiesState extends State<UserCities> {
-  bool _isSearching = false;
   TextEditingController searchTextController = TextEditingController();
 
   /// save alert
@@ -71,10 +70,11 @@ class _UserCitiesState extends State<UserCities> {
     );
 
     if (result != null) {
-      print("Kalid Meftu loading1");
-      print("Adding to database");
-      print(result.toString());
-      saveToDatabase(result, context);
+      if(mounted)
+        {
+          getCityWeather(result, context);
+
+        }
     }
   }
 
@@ -87,12 +87,15 @@ class _UserCitiesState extends State<UserCities> {
               current is NewUserCityWeatherLoaded;
         },
       listener: (context, state) {
+
+          print("State is State");
+          print(state);
+
         if (state is NewUserCityWeatherLoaded) {
           WeatherModel newModel = state.cityWeatherInformation;
           newModel.cityImageURL = state.cityImageURL;
           newModel.isCurrentCity = false;
-          saveCity(newModel, context);
-          saveCityToSharedPrefs2(newModel, context);
+          AppUtils.saveCity(newModel, context);
         }
       },
       child: Scaffold(
@@ -110,40 +113,7 @@ class _UserCitiesState extends State<UserCities> {
                   right: 0,
                   child: AppBar(
                     backgroundColor: Colors.transparent,
-                    leading: _isSearching
-                        ? IconButton(
-                            icon: Icon(
-                              Icons.arrow_back,
-                              color: WeatherAppColor.whiteColor,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isSearching = false;
-                              });
-                            },
-                          )
-                        : Container(),
-                    title: _isSearching
-                        ? TextField(
-                            controller: searchTextController,
-                            autofocus: true,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              hintText: WeatherAppString.search,
-                              hintStyle: const TextStyle(color: Colors.white70),
-                            ),
-                            onSubmitted: (String searchText) {
-                              final searchUserCityBloc =
-                                  BlocProvider.of<UserCityControllerBloc>(
-                                      context);
-                              searchUserCityBloc
-                                  .add(SearchUserCity(searchText));
-                              setState(() {
-                                _isSearching = false;
-                              });
-                            },
-                          )
-                        : Text(
+                    title: Text(
                             WeatherAppString.savedLocations,
                             style: WeatherAppFonts.medium(
                                     fontWeight: FontWeight.w400)
@@ -154,14 +124,12 @@ class _UserCitiesState extends State<UserCities> {
                     actions: [
                       IconButton(
                         icon: Icon(
-                          Icons.search,
+                          Icons.sync,
                           color: WeatherAppColor.whiteColor,
                           size: 30,
                         ),
                         onPressed: () {
-                          setState(() {
-                            _isSearching = true;
-                          });
+
                         },
                       ),
                     ],
@@ -174,7 +142,7 @@ class _UserCitiesState extends State<UserCities> {
                     child: BlocConsumer<UserCityControllerBloc,
                         UserCityControllerState>(
                       listener: (context, state) {
-                        print("Consumer status");
+                        print("Consumer status12");
                         print(state);
                         // TODO: implement listener
                         if (state is UserCitySaveSuccessfull) {}
@@ -348,20 +316,11 @@ class _UserCitiesState extends State<UserCities> {
     );
   }
 
-  void saveToDatabase(String result, BuildContext context) {
+  void getCityWeather(String result, BuildContext context) {
     final userCityBloc =
         BlocProvider.of<GetUserCityWeatherControllerBloc>(context);
     userCityBloc.add(GetSavedCityWeather(result));
   }
 
-  void saveCity(WeatherModel cityWeatherInformation, BuildContext context) {
-    final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
-    userCityBloc.add(SaveUserCity(cityWeatherInformation));
-  }
 }
 
-Future<void> saveCityToSharedPrefs2(
-    WeatherModel newModel, BuildContext context) async {
-  LocalStorageServices localStorageServices = sLocator<LocalStorageServices>();
-  await localStorageServices.saveUserCurrentCity(newModel);
-}

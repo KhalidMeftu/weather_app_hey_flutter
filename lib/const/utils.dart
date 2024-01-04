@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterweatherapp/const/services.dart';
+import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
+import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_icons/weather_icons.dart';
@@ -115,7 +118,11 @@ class AppUtils {
   }
 
 
-  /// ask permission
+  /// save city
+  static void saveCity(WeatherModel cityWeatherInformation, BuildContext context) {
+    final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
+    userCityBloc.add(SaveUserCity(cityWeatherInformation));
+  }
 
 
 

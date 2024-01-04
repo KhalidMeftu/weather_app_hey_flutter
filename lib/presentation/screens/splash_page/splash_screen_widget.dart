@@ -57,7 +57,4 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
 }
 
 /// home implements shimmer effect untill data loads and splash will just show for 5sec
-///
-/// fix km/hr
-/// %
-/// user save bloc
+/// blocs

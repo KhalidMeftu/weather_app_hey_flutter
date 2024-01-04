@@ -4,10 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:flutterweatherapp/const/app_color.dart';
 import 'package:flutterweatherapp/const/app_extensions.dart';
-import 'package:flutterweatherapp/const/app_locator/service_locator.dart';
 import 'package:flutterweatherapp/const/app_resources.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
-import 'package:flutterweatherapp/const/sharedPrefs/sharedprefsservice.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
@@ -15,7 +13,6 @@ import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/presentation/common_widgets/reusable_container.dart';
 import 'package:flutterweatherapp/presentation/controller/get_daily_forecast/get_daily_forecast_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
-import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -26,7 +23,6 @@ import 'package:weather_icons/weather_icons.dart';
 class NewHomePage extends StatefulWidget {
   bool? showDataFromSavedCities;
   WeatherModel? cityModel;
-
   NewHomePage({super.key, this.showDataFromSavedCities, this.cityModel});
 
   @override
@@ -195,13 +191,13 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
                   current is UserCityWeatherLoaded;
             }, builder: (context, state) {
               /// if city info not found show toast and navigate user to add new city page
-              /// untill then show shimmer
+              /// until then show shimmer
 
               if (state is UserCityWeatherLoaded) {
                 WeatherModel userCityModel = state.cityWeatherInformation;
                 userCityModel.isCurrentCity = true;
-                saveCityToSharedPrefs(userCityModel, context);
-                saveCity(userCityModel, context);
+                AppUtils.saveCity(userCityModel, context);
+
                 return Stack(
                   children: [
                     userCityModel.cityImageURL!.isEmpty
@@ -355,7 +351,7 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
                                         ),
                                         3.0.sizeHeight,
                                         Text(
-                                          "${userCityModel.main.humidity}%",
+                                          "${userCityModel.main.humidity} ${WeatherAppString.percentageText}",
                                           style: WeatherAppFonts.large(
                                                   fontWeight: FontWeight.w500,
                                                   color: WeatherAppColor
@@ -386,7 +382,7 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
                                         ),
                                         3.0.sizeHeight,
                                         Text(
-                                          "${userCityModel.wind.speed}km/h",
+                                          "${userCityModel.wind.speed} ${WeatherAppString.kmPerHour}",
                                           style: WeatherAppFonts.large(
                                                   fontWeight: FontWeight.w500,
                                                   color: WeatherAppColor
@@ -506,7 +502,7 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
                         baseColor: Colors.grey.shade300,
                         highlightColor: Colors.red.shade100,
                         enabled: true,
-                        child: WeatherAppBar(cityNames: "")),
+                        child: const WeatherAppBar(cityNames: "")),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 80.h),
@@ -920,7 +916,7 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
                                     ),
                                     3.0.sizeHeight,
                                     Text(
-                                      "${widget.cityModel!.main.humidity}%",
+                                      "${widget.cityModel!.main.humidity} ${WeatherAppString.percentageText}",
                                       style: WeatherAppFonts.large(
                                               fontWeight: FontWeight.w500,
                                               color: WeatherAppColor.whiteColor)
@@ -946,7 +942,7 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
                                     ),
                                     3.0.sizeHeight,
                                     Text(
-                                      "${widget.cityModel!.wind.speed}km/h",
+                                      "${widget.cityModel!.wind.speed} ${WeatherAppString.kmPerHour}",
                                       style: WeatherAppFonts.large(
                                               fontWeight: FontWeight.w500,
                                               color: WeatherAppColor.whiteColor)
@@ -1040,21 +1036,9 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> saveCityToSharedPrefs(
-      WeatherModel newModel, BuildContext context) async {
-    LocalStorageServices localStorageServices =
-        sLocator<LocalStorageServices>();
-    await localStorageServices.saveUserCurrentCity(newModel);
-    if (!mounted) {
-      /// note If the widget is no longer in the widget tree, do not continue
-      return;
-    }
-  }
 
-  void saveCity(WeatherModel cityWeatherInformation, BuildContext context) {
-    final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
-    userCityBloc.add(SaveCurrentCity(cityWeatherInformation));
-  }
+
+
 }
 
 class WeatherAppBar extends StatelessWidget {

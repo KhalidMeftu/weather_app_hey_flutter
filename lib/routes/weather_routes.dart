@@ -8,7 +8,6 @@ class WeatherRoutes {
   static const String homePageRoute = '/home';
   static const String userCitiesRoute = '/userCities';
   static const String splashRoute = '/newsplash';
-  static const String newHomePageRoute ='/newHomePage';
 }
 
 class RouteGenerator {
@@ -24,7 +23,7 @@ class RouteGenerator {
       case WeatherRoutes.splashRoute:
         return MaterialPageRoute(builder: (_) => const NewSplash());
 
-      case WeatherRoutes.newHomePageRoute:
+      case WeatherRoutes.homePageRoute:
         List<dynamic> args = routeSettings.arguments as List<dynamic>;
         return MaterialPageRoute(builder: (_) => NewHomePage(showDataFromSavedCities: args[0],cityModel:args[1]));
 

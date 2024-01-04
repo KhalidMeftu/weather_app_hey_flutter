@@ -17,7 +17,9 @@ class RemoteDataSource extends BaseRemoteDataSource {
   Dio dio = Dio();
   static const String CityName = 'cities';
   final cityNameStore = intMapStoreFactory.store(CityName);
+
   RemoteDataSource() : _appDatabase = GetIt.instance<AppDatabase>();
+
   Future<Database> get _db async => await _appDatabase.database;
 
   @override
@@ -43,10 +45,8 @@ class RemoteDataSource extends BaseRemoteDataSource {
 
       if (response.statusCode == 200) {
         final data = WeatherModel.fromJson(response.data);
-        final cityImage=await getCityImage(cityName);
-        print("Kalid Meftu berihe");
-        print(cityImage);
-        data.cityImageURL=cityImage;
+        final cityImage = await getCityImage(cityName);
+        data.cityImageURL = cityImage;
         return Right(data);
       } else {
         return Left(
@@ -60,34 +60,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
     }
   }
 
-  @override
-  Future<Either<String, String>> getCityImageURL(String cityName) async {
-    String url = WeatherAppServices.cityImageApi +
-        cityName +
-        WeatherAppServices.cityImageApiImage;
-    try {
-      Response response = await dio.get(url);
-      if (response.statusCode == 200) {
-        if (response.data.containsKey('photos') &&
-            response.data['photos'].isNotEmpty) {
-          var imageData = response.data['photos'][0]['image']['mobile'];
 
-          return Right(imageData); // Using Either
-        } else {
-          return Left(WeatherAppString.noData); // No data found
-        }
-      } else {
-        return Left(
-            'Error: Unexpected response status code ${response.statusCode}');
-      }
-    } catch (e) {
-      if (e is DioException) {
-        return Left('DioException: ${e.message}');
-      } else {
-        return Left('Exception: ${e.toString()}');
-      }
-    }
-  }
 
   @override
   Future<Either<String, List<Daily>>> getDailyForecast() async {
@@ -128,16 +101,16 @@ class RemoteDataSource extends BaseRemoteDataSource {
   /// insert ops
   @override
   Future<Either<String, List<WeatherModel>>> saveUserCityDataModel(
-      WeatherModel weatherModel,
-      ) async {
-    print("Save user city invoked");
+    WeatherModel weatherModel,
+  ) async {
     try {
       final cityNameNormalized = normalizeCityName(weatherModel.name);
       final existingRecords = await cityNameStore.find(
         await _db,
         finder: Finder(
           filter: Filter.custom((record) {
-            final recordNameNormalized = normalizeCityName(record['name'] as String);
+            final recordNameNormalized =
+                normalizeCityName(record['name'] as String);
             return recordNameNormalized == cityNameNormalized;
           }),
         ),
@@ -209,9 +182,6 @@ class RemoteDataSource extends BaseRemoteDataSource {
   @override
   Future<Either<String, WeatherModel>> saveUserCurrentCity(
       WeatherModel weatherModel) async {
-
-    print("Save current city inovoked");
-
     try {
       final cityNameNormalized = normalizeCityName(weatherModel.name);
       final existingRecords = await cityNameStore.find(
@@ -238,7 +208,6 @@ class RemoteDataSource extends BaseRemoteDataSource {
     }
   }
 
-
   Future<String> getCityImage(String cityName) async {
     String url = WeatherAppServices.cityImageApi +
         cityName +
@@ -255,12 +224,10 @@ class RemoteDataSource extends BaseRemoteDataSource {
           return ""; // No data found
         }
       } else {
-        return
-            'Error: Unexpected response status code ${response.statusCode}';
+        return 'Error: Unexpected response status code ${response.statusCode}';
       }
     } catch (e) {
       return "";
     }
   }
-
 }
