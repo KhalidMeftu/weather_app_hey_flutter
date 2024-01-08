@@ -12,50 +12,38 @@ part 'user_city_controller_state.dart';
 class UserCityControllerBloc extends Bloc<UserCityControllerEvent, UserCityControllerState> {
   final WeatherAppUseCases getMedaUseCase;
 
-  UserCityControllerBloc(this.getMedaUseCase) : super(UserCityControllerInitial()) {
+  UserCityControllerBloc(this.getMedaUseCase) : super(UserCityLoading()) {
     on<SaveUserCity>((event, emit) async {
-      // TODO: implement event handler
-      emit(const UserActionLoading());
+      emit(UserCityLoading());
       final result=await getMedaUseCase.saveUserCity(event.weatherModel);
-      result.fold((left) => emit(UserCityAction(left)),
-              (right) => emit(UserCitySaveSuccessfull(right)));
-    });
+     result.fold((left) => emit(UserCitySavingError(left)),
+             (right) => emit(UserCitySaveSuccess(right)));
 
-    on<DeleteUserCity>((event, emit) {
-      // TODO: implement event handler
     });
-
-    on<UpdateUserCity>((event, emit) {
-      // TODO: implement event handler
-    });
-
-    /// fetch user city
-    on<FetchUserCity>((event, emit) async {
-      // TODO: implement event handler
-      emit(const UserActionLoading());
-      final result=await getMedaUseCase.loadUserCity();
-      result.fold((left) => emit(UserCityAction(left)),
+    on<FetchSavedCitiesData>((event, emit) async {
+      emit(UserCityLoading());
+      final result=await getMedaUseCase.loadSavedUserCities();
+      result.fold((left) => emit(UserCityFetchingError(left)),
               (right) => emit(UserCityLoaded(right)));
     });
-
-    // search
-    on<SearchUserCity>((event, emit) async {
-      // TODO: implement event handler
-      emit(const UserActionLoading());
-      final result=await getMedaUseCase.searchCity(event.cityName);
-
-      result.fold((left) => emit(UserCityAction(left)),
-              (right) => emit(SearchUserCityLoaded(right)));
+    on<GetCityWeather>((event,emit) async{
+      emit(UserCityLoading());
+      try {
+        final weatherResult =
+        await getMedaUseCase.getUserCityWeather(event.cityName);
+        weatherResult.fold((leftWeatherError) {
+          emit(UserCityFetchingError(leftWeatherError));
+        }, (rightWeather) {
+          emit(CityWeatherLoaded(rightWeather));
+        });
+      } catch (error) {
+        emit(UserCityFetchingError(error.toString()));
+      }
     });
 
 
-    /// save current city
-    on<SaveCurrentCity>((event, emit) async {
-      // TODO: implement event handler
-      emit(const UserActionLoading());
-      final result=await getMedaUseCase.saveUserCurrentCity(event.weatherModel);
-      result.fold((left) => emit(CurrentCitySavingResponse(left)),
-              (right) => emit(CurrentCitySaveSuccessfull(right)));
-    });
+
+
+
   }
 }

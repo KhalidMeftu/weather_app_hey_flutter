@@ -38,7 +38,7 @@ class SavedCitiesCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            isHomeCity? Row(
+            /*isHomeCity? Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -48,6 +48,7 @@ class SavedCitiesCard extends StatelessWidget {
                 ),
               ],
             ):Container(),
+            */
             
             Row(
               children: [

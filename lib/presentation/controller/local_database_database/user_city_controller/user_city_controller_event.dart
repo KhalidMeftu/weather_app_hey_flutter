@@ -15,20 +15,6 @@ class SaveUserCity extends UserCityControllerEvent{
 
 }
 
-/// save current city
-
-/// insert
-class SaveCurrentCity extends UserCityControllerEvent{
-  final WeatherModel weatherModel;
-
-  const SaveCurrentCity(this.weatherModel);
-
-  @override
-  // TODO: implement props
-  List<Object?> get props => [weatherModel];
-
-}
-/// delete
 
 class DeleteUserCity extends UserCityControllerEvent{
   final WeatherModel weatherModel;
@@ -54,9 +40,9 @@ class UpdateUserCity extends UserCityControllerEvent{
 }
 
 /// fetch all user data
-class FetchUserCity extends UserCityControllerEvent{
+class FetchSavedCitiesData extends UserCityControllerEvent{
 
-  const FetchUserCity();
+  const FetchSavedCitiesData();
 
   @override
   // TODO: implement props
@@ -64,14 +50,12 @@ class FetchUserCity extends UserCityControllerEvent{
 
 }
 
-/// search
-class SearchUserCity extends UserCityControllerEvent{
+class GetCityWeather extends UserCityControllerEvent {
   final String cityName;
-
-  const SearchUserCity(this.cityName);
-
+  const GetCityWeather(this.cityName);
   @override
   // TODO: implement props
   List<Object?> get props => [cityName];
 
 }
+

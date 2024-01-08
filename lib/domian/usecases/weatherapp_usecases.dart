@@ -7,7 +7,36 @@ class WeatherAppUseCases {
   final BaseRemoteRepository baseWeatherRepository;
 
   WeatherAppUseCases(this.baseWeatherRepository);
+  /// daily forcast
 
+  Future<Either<String,WeatherModel>> getCurrentCityWeather(String cityName) async{
+    return await baseWeatherRepository.gerWeatherForCurrentCity(cityName);
+  }
+
+  Future<Either<String,List<Daily>>> getDailyForecast() async{
+    return await baseWeatherRepository.getDailyForecast();
+  }
+
+  Future<Either<String,WeatherModel>> saveCurrentCityWeather(WeatherModel weatherModel) async{
+    return await baseWeatherRepository.saveCurrentWeatherData(weatherModel);
+  }
+
+  Future<Either<String,List<WeatherModel>>> saveUserCity(WeatherModel weatherModel) async{
+    return await baseWeatherRepository.saveUserCityData(weatherModel);
+  }
+
+  Future<Either<String,WeatherModel>> getUserCityWeather(String cityName) async{
+    return await baseWeatherRepository.getWeatherForUserCity(cityName);
+  }
+
+  /// fetch saved cities
+
+  Future<Either<String,List<WeatherModel>>> loadSavedUserCities() async{
+    return await baseWeatherRepository.getUserCitiesWithWeather();
+  }
+
+
+/*
 
   Future<Either<String,WeatherModel>> getUserCityWeather(String cityName) async{
     return await baseWeatherRepository.getWeatherForUserCity(cityName);
@@ -28,7 +57,7 @@ class WeatherAppUseCases {
   }
 
   /// fetch user city
-  Future<Either<String,List<WeatherModel>>> loadUserCity() async{
+  Future<Either<String,List<WeatherModel>>> loadSavedUserCities() async{
     return await baseWeatherRepository.getUserCitiesWithWeather();
   }
 
@@ -45,7 +74,7 @@ class WeatherAppUseCases {
     return await baseWeatherRepository.SaveCurrentUserCityData(weatherModel);
   }
 
-
+*/
 
 
 }

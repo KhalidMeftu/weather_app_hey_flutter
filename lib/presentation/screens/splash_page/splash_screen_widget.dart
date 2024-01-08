@@ -58,3 +58,9 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
 
 /// home implements shimmer effect untill data loads and splash will just show for 5sec
 /// blocs
+/// fix widgets
+/// meda score
+/// rename files
+/// []
+/// weather city loaded=> after save to weather city save success
+/// toast no city

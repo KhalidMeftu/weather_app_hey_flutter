@@ -16,26 +16,23 @@ class GetUserCityWeatherControllerBloc extends Bloc<
       : super(GetUserCityWeatherControllerInitial()) {
     on<GetUserCityWeather>((event, emit) async {
       emit(UserCityWeatherLoading());
-      try {
-        final weatherResult =
+           final weatherResult =
             await getMedaUseCase.getUserCityWeather(event.cityName);
 
-        weatherResult.fold((leftWeatherError) {
-          emit(UserCityWeatherLoadingError(leftWeatherError));
-        }, (rightWeather) {
-          emit(UserCityWeatherLoaded(rightWeather));
+        weatherResult.fold((left) {
+          emit(UserCityWeatherLoadingError(left));
+        }, (right) {
+          emit(UserCityWeatherLoaded(right));
         });
-      } catch (error) {
-        emit(UserCityWeatherLoadingError(error.toString()));
-      }
+
+
     });
 
     on<GetSavedCityWeather>((event, emit) async {
-      emit(UserCityWeatherLoading());
+     emit(UserCityWeatherLoading());
       try {
         final weatherResult =
         await getMedaUseCase.getUserCityWeather(event.cityName);
-
         weatherResult.fold((leftWeatherError) {
           emit(UserCityWeatherLoadingError(leftWeatherError));
         }, (rightWeather) {
@@ -44,6 +41,7 @@ class GetUserCityWeatherControllerBloc extends Bloc<
       } catch (error) {
         emit(UserCityWeatherLoadingError(error.toString()));
       }
+
     });
   }
 }

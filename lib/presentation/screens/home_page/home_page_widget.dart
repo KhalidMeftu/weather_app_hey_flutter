@@ -11,8 +11,8 @@ import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/presentation/common_widgets/reusable_container.dart';
-import 'package:flutterweatherapp/presentation/controller/get_daily_forecast/get_daily_forecast_bloc.dart';
-import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/HomeController/home_controller_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/get_daily_forecast_controller/get_daily_forecast_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -20,17 +20,20 @@ import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:weather_icons/weather_icons.dart';
 
-class NewHomePage extends StatefulWidget {
+class WeatherAppHomePage extends StatefulWidget {
   bool? showDataFromSavedCities;
   WeatherModel? cityModel;
-  NewHomePage({super.key, this.showDataFromSavedCities, this.cityModel});
+
+  WeatherAppHomePage({super.key, this.showDataFromSavedCities, this.cityModel});
 
   @override
-  State<NewHomePage> createState() => _NewHomePageState();
+  State<WeatherAppHomePage> createState() => _WeatherAppHomePageState();
 }
 
-class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
+class _WeatherAppHomePageState extends State<WeatherAppHomePage>
+    with WidgetsBindingObserver {
   final GlobalKey<State> _permissionDialogKey = GlobalKey<State>();
+  bool isGettingUserPosition = false;
 
   @override
   void initState() {
@@ -48,8 +51,14 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
+
     if (state == AppLifecycleState.resumed) {
-      await initLocationService();
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        return;
+      } else {
+        await initLocationService();
+      }
     }
   }
 
@@ -75,7 +84,9 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
             TextButton(
               onPressed: () async {
                 await Geolocator.openLocationSettings();
-                Navigator.of(context).pop();
+                if (mounted) {
+                  Navigator.of(context).pop();
+                }
               },
               child: Text(WeatherAppString.openSettings),
             ),
@@ -92,16 +103,19 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
           if (mounted) permissionDialog(context);
-        } else {
-          await getUserPos();
+          return;
+        } else if (permission == LocationPermission.deniedForever) {
+          if (mounted) Navigator.pop(context);
+          return;
         }
         break;
       case LocationPermission.deniedForever:
         if (mounted) Navigator.pop(context);
-        break;
+        return;
       default:
-        await getUserPos();
+        break;
     }
+    await getUserPos();
   }
 
   Future<void> getUserPos() async {
@@ -113,21 +127,32 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
   }
 
   Future<void> getUserPosition() async {
-    if (!await Geolocator.isLocationServiceEnabled()) return;
+    if (isGettingUserPosition) {
+      return;
+    }
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) return;
+    isGettingUserPosition = true;
+    try {
+      if (!await Geolocator.isLocationServiceEnabled()) return;
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best);
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
-    Placemark place = placemarks[0];
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) return;
 
-    if (mounted) {
-      final userCityBloc =
-          BlocProvider.of<GetUserCityWeatherControllerBloc>(context);
-      userCityBloc.add(GetUserCityWeather(place.locality!));
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.best);
+      List<Placemark> locationPlaceMark =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      Placemark place = locationPlaceMark[0];
+
+      if (!mounted) {
+      } else {
+
+        final userCityBloc =
+            BlocProvider.of<HomeControllerBloc>(context);
+        userCityBloc.add(GetCurrentCityWeatherInfo(place.locality!));
+      }
+    } finally {
+      isGettingUserPosition = false;
     }
   }
 
@@ -184,42 +209,326 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
     forecastBloc.add(GetDailyForCast());
     return Scaffold(
       body: widget.showDataFromSavedCities == false
-          ? BlocBuilder<GetUserCityWeatherControllerBloc,
-                  GetUserCityWeatherControllerState>(
+          ?
+      BlocConsumer<HomeControllerBloc,
+          HomeControllerState>(
               buildWhen: (previous, current) {
-              return previous is UserCityWeatherLoading &&
-                  current is UserCityWeatherLoaded;
-            }, builder: (context, state) {
-              /// if city info not found show toast and navigate user to add new city page
-              /// until then show shimmer
+                return previous is CurrentCityWeatherInfoLoading && current is CurrentCityDataLoaded;
+              },
+              builder: (context, state) {
+                if (state is CurrentCityDataLoaded) {
+                  WeatherModel userCityModel = state.currentCityData;
+                  userCityModel.isCurrentCity = true;
+                  AppUtils.saveCity(userCityModel, context);
 
-              if (state is UserCityWeatherLoaded) {
-                WeatherModel userCityModel = state.cityWeatherInformation;
-                userCityModel.isCurrentCity = true;
-                AppUtils.saveCity(userCityModel, context);
+                  return Stack(
+                    children: [
+                      userCityModel.cityImageURL!.isEmpty
+                          ? Positioned.fill(
+                              child: Image.asset(
+                                WeatherAppResources.cityPlaceHolder,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Positioned.fill(
+                              child: FadeInImage(
+                                placeholder: AssetImage(
+                                    WeatherAppResources.cityPlaceHolder),
+                                image:
+                                    NetworkImage(userCityModel.cityImageURL!),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        child: WeatherAppBar(cityNames: userCityModel.name),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 80.h),
+                        child: ListView(
+                          children: [
+                            SizedBox(height: AppBar().preferredSize.height),
+                            30.0.sizeHeight,
+
+                            /// today
+                            Center(
+                                child: Text(AppUtils.getFormattedDate(),
+                                    style: WeatherAppFonts.large(
+                                            fontWeight: FontWeight.w300,
+                                            color: WeatherAppColor.whiteColor)
+                                        .copyWith(
+                                            fontSize: WeatherAppFontSize.s30))),
+                            2.0.sizeHeight,
+
+                            /// updated at
+                            2.0.sizeHeight,
+                            Center(
+                                child: Text(
+                                    AppUtils.formatDateTime(userCityModel
+                                        .updatedAt
+                                        .toIso8601String()),
+                                    style: WeatherAppFonts.large(
+                                            fontWeight: FontWeight.w300,
+                                            color: WeatherAppColor.whiteColor
+                                                .withOpacity(0.75))
+                                        .copyWith(
+                                            fontSize: WeatherAppFontSize.s16))),
+
+                            /// display data from API
+                            Column(
+                              children: [
+                                10.0.sizeHeight,
+
+                                AppUtils().getWeatherIcon(
+                                            userCityModel.weather[0].icon) !=
+                                        WeatherIcons.refresh
+                                    ? Icon(
+                                        AppUtils().getWeatherIcon(
+                                            userCityModel.weather[0].icon),
+                                        size: 100.0,
+                                      )
+                                    : Image.network(AppUtils()
+                                        .getWeatherIconURL(
+                                            userCityModel.weather[0].icon)),
+                                10.0.sizeHeight,
+
+                                Text(
+                                  userCityModel.weather[0].description,
+                                  style: WeatherAppFonts.large(
+                                          fontWeight: FontWeight.w700,
+                                          color: WeatherAppColor.whiteColor)
+                                      .copyWith(
+                                          fontSize: WeatherAppFontSize.s30),
+                                ),
+
+                                //temp
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    RichText(
+                                      text: TextSpan(
+                                        children: <InlineSpan>[
+                                          TextSpan(
+                                            text: userCityModel.main.temp
+                                                .toString(),
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s48),
+                                          ),
+                                          WidgetSpan(
+                                            child: Transform.translate(
+                                              offset: const Offset(2, -8),
+                                              child: Text(
+                                                WeatherAppString.degreeCelsius,
+                                                // The superscript part
+                                                // Smaller font size for the superscript
+                                                style: WeatherAppFonts.large(
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color: WeatherAppColor
+                                                            .whiteColor)
+                                                    .copyWith(
+                                                  fontSize:
+                                                      WeatherAppFontSize.s24,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                ///
+                                /// humidty... feels like
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    //crossAxisAlignment:CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Image(
+                                            image: Svg(WeatherAppResources
+                                                .humidtyIcon),
+                                          ),
+                                          3.0.sizeHeight,
+                                          Text(
+                                            AppUtils.convertTextToUpper(
+                                                WeatherAppString.humidityText),
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s14),
+                                          ),
+                                          3.0.sizeHeight,
+                                          Text(
+                                            "${userCityModel.main.humidity} ${WeatherAppString.percentageText}",
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s14),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          Image(
+                                            image: Svg(
+                                                WeatherAppResources.windIcon),
+                                          ),
+                                          3.0.sizeHeight,
+                                          Text(
+                                            AppUtils.convertTextToUpper(
+                                                WeatherAppString.windText),
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s14),
+                                          ),
+                                          3.0.sizeHeight,
+                                          Text(
+                                            "${userCityModel.wind.speed} ${WeatherAppString.kmPerHour}",
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s14),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          Image(
+                                            image: Svg(
+                                                WeatherAppResources.feelsLike),
+                                          ),
+                                          3.0.sizeHeight,
+                                          Text(
+                                            AppUtils.convertTextToUpper(
+                                                WeatherAppString.feelsLikeText),
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s14),
+                                          ),
+                                          3.0.sizeHeight,
+                                          Text(
+                                            userCityModel.main.feelsLike
+                                                .toString(),
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s14),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                /// forecast
+                                ///
+
+                                BlocBuilder<GetDailyForecastBloc,
+                                        GetDailyForecastState>(
+                                    builder: (context, states) {
+                                  if (states is LoadingDailyForecast) {}
+                                  if (states is DailyForecastLoaded) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Center(
+                                        child: SizedBox(
+                                          height: 200.h,
+                                          child: GlassContainer(
+                                            color: WeatherAppColor.whiteColor
+                                                .withOpacity(0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount:
+                                                  states.forecastList.length,
+                                              itemBuilder: (context, index) {
+                                                return Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 17.w,
+                                                      right: 17.w,
+                                                      top: 20.h),
+                                                  child: Center(
+                                                    child: NextWeekCard(
+                                                      daysOfWeek:
+                                                          upcomingDays[index],
+                                                      forecastModel: states
+                                                          .forecastList[index],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                                  return Container();
+                                })
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                }
+
 
                 return Stack(
                   children: [
-                    userCityModel.cityImageURL!.isEmpty
-                        ? Positioned.fill(
-                            child: Image.asset(
-                              WeatherAppResources.cityPlaceHolder,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : Positioned.fill(
-                            child: FadeInImage(
-                              placeholder: AssetImage(
-                                  WeatherAppResources.cityPlaceHolder),
-                              image: NetworkImage(userCityModel.cityImageURL!),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                    Positioned.fill(
+                      child: Image.asset(
+                        WeatherAppResources.cityPlaceHolder,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                     Positioned(
                       top: 0,
                       left: 0,
                       right: 0,
-                      child: WeatherAppBar(cityNames: userCityModel.name),
+                      child: Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.red.shade100,
+                          enabled: true,
+                          child: const WeatherAppBar(cityNames: "")),
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 80.h),
@@ -229,549 +538,274 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
                           30.0.sizeHeight,
 
                           /// today
-                          Center(
-                              child: Text(AppUtils.getFormattedDate(),
-                                  style: WeatherAppFonts.large(
-                                          fontWeight: FontWeight.w300,
-                                          color: WeatherAppColor.whiteColor)
-                                      .copyWith(
-                                          fontSize: WeatherAppFontSize.s30))),
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.red.shade100,
+                            enabled: true,
+                            child: Center(
+                                child: Text(AppUtils.getFormattedDate(),
+                                    style: WeatherAppFonts.large(
+                                            fontWeight: FontWeight.w300,
+                                            color: WeatherAppColor.whiteColor)
+                                        .copyWith(
+                                            fontSize: WeatherAppFontSize.s30))),
+                          ),
                           2.0.sizeHeight,
 
                           /// updated at
                           2.0.sizeHeight,
-                          Center(
-                              child: Text(
-                                  AppUtils.formatDateTime(userCityModel
-                                      .updatedAt
-                                      .toIso8601String()),
-                                  style: WeatherAppFonts.large(
-                                          fontWeight: FontWeight.w300,
-                                          color: WeatherAppColor.whiteColor
-                                              .withOpacity(0.75))
-                                      .copyWith(
-                                          fontSize: WeatherAppFontSize.s16))),
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.red.shade100,
+                            enabled: true,
+                            child: Center(
+                                child: Text("",
+                                    style: WeatherAppFonts.large(
+                                            fontWeight: FontWeight.w300,
+                                            color: WeatherAppColor.whiteColor
+                                                .withOpacity(0.75))
+                                        .copyWith(
+                                            fontSize: WeatherAppFontSize.s16))),
+                          ),
 
                           /// display data from API
-                          Column(
-                            children: [
-                              10.0.sizeHeight,
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.red.shade100,
+                            enabled: true,
+                            child: Column(
+                              children: [
+                                10.0.sizeHeight,
 
-                              AppUtils().getWeatherIcon(
-                                          userCityModel.weather[0].icon) !=
-                                      WeatherIcons.refresh
-                                  ? Icon(
-                                      AppUtils().getWeatherIcon(
-                                          userCityModel.weather[0].icon),
-                                      size: 100.0,
-                                    )
-                                  : Image.network(AppUtils().getWeatherIconURL(
-                                      userCityModel.weather[0].icon)),
-                              10.0.sizeHeight,
+                                Icon(
+                                  AppUtils().getWeatherIcon(""),
+                                  size: 100.0,
+                                ),
 
-                              Text(
-                                userCityModel.weather[0].description,
-                                style: WeatherAppFonts.large(
-                                        fontWeight: FontWeight.w700,
-                                        color: WeatherAppColor.whiteColor)
-                                    .copyWith(fontSize: WeatherAppFontSize.s30),
-                              ),
+                                10.0.sizeHeight,
 
-                              //temp
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  RichText(
-                                    text: TextSpan(
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: userCityModel.main.temp
-                                              .toString(),
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
+                                Text(
+                                  "",
+                                  style: WeatherAppFonts.large(
+                                          fontWeight: FontWeight.w700,
+                                          color: WeatherAppColor.whiteColor)
+                                      .copyWith(
+                                          fontSize: WeatherAppFontSize.s30),
+                                ),
+
+                                //temp
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    RichText(
+                                      text: TextSpan(
+                                        children: <InlineSpan>[
+                                          TextSpan(
+                                            text: "",
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s48),
+                                          ),
+                                          WidgetSpan(
+                                            child: Transform.translate(
+                                              offset: const Offset(2, -8),
+                                              child: Text(
+                                                WeatherAppString.degreeCelsius,
+                                                // The superscript part
+                                                // Smaller font size for the superscript
+                                                style: WeatherAppFonts.large(
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color: WeatherAppColor
+                                                            .whiteColor)
+                                                    .copyWith(
                                                   fontSize:
-                                                      WeatherAppFontSize.s48),
-                                        ),
-                                        WidgetSpan(
-                                          child: Transform.translate(
-                                            offset: const Offset(2, -8),
-                                            child: Text(
-                                              WeatherAppString.degreeCelsius,
-                                              // The superscript part
-                                              // Smaller font size for the superscript
-                                              style: WeatherAppFonts.large(
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      color: WeatherAppColor
-                                                          .whiteColor)
-                                                  .copyWith(
-                                                fontSize:
-                                                    WeatherAppFontSize.s24,
+                                                      WeatherAppFontSize.s24,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              ///
-                              /// humidty... feels like
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  //crossAxisAlignment:CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Image(
-                                          image: Svg(
-                                              WeatherAppResources.humidtyIcon),
-                                        ),
-                                        3.0.sizeHeight,
-                                        Text(
-                                          AppUtils.convertTextToUpper(
-                                              WeatherAppString.humidityText),
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s14),
-                                        ),
-                                        3.0.sizeHeight,
-                                        Text(
-                                          "${userCityModel.main.humidity} ${WeatherAppString.percentageText}",
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s14),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Image(
-                                          image:
-                                              Svg(WeatherAppResources.windIcon),
-                                        ),
-                                        3.0.sizeHeight,
-                                        Text(
-                                          AppUtils.convertTextToUpper(
-                                              WeatherAppString.windText),
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s14),
-                                        ),
-                                        3.0.sizeHeight,
-                                        Text(
-                                          "${userCityModel.wind.speed} ${WeatherAppString.kmPerHour}",
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s14),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Image(
-                                          image: Svg(
-                                              WeatherAppResources.feelsLike),
-                                        ),
-                                        3.0.sizeHeight,
-                                        Text(
-                                          AppUtils.convertTextToUpper(
-                                              WeatherAppString.feelsLikeText),
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s14),
-                                        ),
-                                        3.0.sizeHeight,
-                                        Text(
-                                          userCityModel.main.feelsLike
-                                              .toString(),
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s14),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ),
 
-                              /// forecast
-                              ///
+                                ///
+                                /// humidty... feels like
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    //crossAxisAlignment:CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
 
-                              BlocBuilder<GetDailyForecastBloc,
-                                      GetDailyForecastState>(
-                                  builder: (context, states) {
-                                if (states is LoadingDailyForecast) {}
-                                if (states is DailyForecastLoaded) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Center(
-                                      child: SizedBox(
-                                        height: 200.h,
-                                        child: GlassContainer(
-                                          color: WeatherAppColor.whiteColor
-                                              .withOpacity(0.1),
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          child: ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount:
-                                                states.forecastList.length,
-                                            itemBuilder: (context, index) {
-                                              return Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 17.w,
-                                                    right: 17.w,
-                                                    top: 20.h),
-                                                child: Center(
-                                                  child: NextWeekCard(
-                                                    daysOfWeek:
-                                                        upcomingDays[index],
-                                                    forecastModel: states
-                                                        .forecastList[index],
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Image(
+                                            image: Svg(WeatherAppResources
+                                                .humidtyIcon),
+                                          ),
+                                          3.0.sizeHeight,
+                                          Text(
+                                            AppUtils.convertTextToUpper(
+                                                WeatherAppString.humidityText),
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s14),
+                                          ),
+                                          3.0.sizeHeight,
+                                          Text(
+                                            "",
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s14),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          Image(
+                                            image: Svg(
+                                                WeatherAppResources.windIcon),
+                                          ),
+                                          3.0.sizeHeight,
+                                          Text(
+                                            AppUtils.convertTextToUpper(
+                                                WeatherAppString.windText),
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s14),
+                                          ),
+                                          3.0.sizeHeight,
+                                          Text(
+                                            "",
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s14),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          Image(
+                                            image: Svg(
+                                                WeatherAppResources.feelsLike),
+                                          ),
+                                          3.0.sizeHeight,
+                                          Text(
+                                            AppUtils.convertTextToUpper(
+                                                WeatherAppString.feelsLikeText),
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s14),
+                                          ),
+                                          3.0.sizeHeight,
+                                          Text(
+                                            "",
+                                            style: WeatherAppFonts.large(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: WeatherAppColor
+                                                        .whiteColor)
+                                                .copyWith(
+                                                    fontSize:
+                                                        WeatherAppFontSize.s14),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                /// forecast
+                                ///
+
+                                BlocBuilder<GetDailyForecastBloc,
+                                        GetDailyForecastState>(
+                                    builder: (context, states) {
+                                  if (states is LoadingDailyForecast) {}
+                                  if (states is DailyForecastLoaded) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Center(
+                                        child: SizedBox(
+                                          height: 200.h,
+                                          child: GlassContainer(
+                                            color: WeatherAppColor.whiteColor
+                                                .withOpacity(0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount:
+                                                  states.forecastList.length,
+                                              itemBuilder: (context, index) {
+                                                return Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 17.w,
+                                                      right: 17.w,
+                                                      top: 20.h),
+                                                  child: Center(
+                                                    child: NextWeekCard(
+                                                      daysOfWeek:
+                                                          upcomingDays[index],
+                                                      forecastModel: states
+                                                          .forecastList[index],
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            },
+                                                );
+                                              },
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                }
+                                    );
+                                  }
 
-                                return Container();
-                              })
-                            ],
+                                  return Container();
+                                })
+                              ],
+                            ),
                           )
                         ],
                       ),
                     ),
                   ],
                 );
-              }
-
-              /// with shimmer
-              return Stack(
-                children: [
-                  Positioned.fill(
-                    child: Image.asset(
-                      WeatherAppResources.cityPlaceHolder,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.red.shade100,
-                        enabled: true,
-                        child: const WeatherAppBar(cityNames: "")),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 80.h),
-                    child: ListView(
-                      children: [
-                        SizedBox(height: AppBar().preferredSize.height),
-                        30.0.sizeHeight,
-
-                        /// today
-                        Shimmer.fromColors(
-                          baseColor: Colors.grey.shade300,
-                          highlightColor: Colors.red.shade100,
-                          enabled: true,
-                          child: Center(
-                              child: Text(AppUtils.getFormattedDate(),
-                                  style: WeatherAppFonts.large(
-                                          fontWeight: FontWeight.w300,
-                                          color: WeatherAppColor.whiteColor)
-                                      .copyWith(
-                                          fontSize: WeatherAppFontSize.s30))),
-                        ),
-                        2.0.sizeHeight,
-
-                        /// updated at
-                        2.0.sizeHeight,
-                        Shimmer.fromColors(
-                          baseColor: Colors.grey.shade300,
-                          highlightColor: Colors.red.shade100,
-                          enabled: true,
-                          child: Center(
-                              child: Text("",
-                                  style: WeatherAppFonts.large(
-                                          fontWeight: FontWeight.w300,
-                                          color: WeatherAppColor.whiteColor
-                                              .withOpacity(0.75))
-                                      .copyWith(
-                                          fontSize: WeatherAppFontSize.s16))),
-                        ),
-
-                        /// display data from API
-                        Shimmer.fromColors(
-                          baseColor: Colors.grey.shade300,
-                          highlightColor: Colors.red.shade100,
-                          enabled: true,
-                          child: Column(
-                            children: [
-                              10.0.sizeHeight,
-
-                              Icon(
-                                AppUtils().getWeatherIcon(""),
-                                size: 100.0,
-                              ),
-
-                              10.0.sizeHeight,
-
-                              Text(
-                                "",
-                                style: WeatherAppFonts.large(
-                                        fontWeight: FontWeight.w700,
-                                        color: WeatherAppColor.whiteColor)
-                                    .copyWith(fontSize: WeatherAppFontSize.s30),
-                              ),
-
-                              //temp
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  RichText(
-                                    text: TextSpan(
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: "",
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s48),
-                                        ),
-                                        WidgetSpan(
-                                          child: Transform.translate(
-                                            offset: const Offset(2, -8),
-                                            child: Text(
-                                              WeatherAppString.degreeCelsius,
-                                              // The superscript part
-                                              // Smaller font size for the superscript
-                                              style: WeatherAppFonts.large(
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      color: WeatherAppColor
-                                                          .whiteColor)
-                                                  .copyWith(
-                                                fontSize:
-                                                    WeatherAppFontSize.s24,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              ///
-                              /// humidty... feels like
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  //crossAxisAlignment:CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Image(
-                                          image: Svg(
-                                              WeatherAppResources.humidtyIcon),
-                                        ),
-                                        3.0.sizeHeight,
-                                        Text(
-                                          AppUtils.convertTextToUpper(
-                                              WeatherAppString.humidityText),
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s14),
-                                        ),
-                                        3.0.sizeHeight,
-                                        Text(
-                                          "",
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s14),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Image(
-                                          image:
-                                              Svg(WeatherAppResources.windIcon),
-                                        ),
-                                        3.0.sizeHeight,
-                                        Text(
-                                          AppUtils.convertTextToUpper(
-                                              WeatherAppString.windText),
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s14),
-                                        ),
-                                        3.0.sizeHeight,
-                                        Text(
-                                          "",
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s14),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Image(
-                                          image: Svg(
-                                              WeatherAppResources.feelsLike),
-                                        ),
-                                        3.0.sizeHeight,
-                                        Text(
-                                          AppUtils.convertTextToUpper(
-                                              WeatherAppString.feelsLikeText),
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s14),
-                                        ),
-                                        3.0.sizeHeight,
-                                        Text(
-                                          "",
-                                          style: WeatherAppFonts.large(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: WeatherAppColor
-                                                      .whiteColor)
-                                              .copyWith(
-                                                  fontSize:
-                                                      WeatherAppFontSize.s14),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              /// forecast
-                              ///
-
-                              BlocBuilder<GetDailyForecastBloc,
-                                      GetDailyForecastState>(
-                                  builder: (context, states) {
-                                if (states is LoadingDailyForecast) {}
-                                if (states is DailyForecastLoaded) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Center(
-                                      child: SizedBox(
-                                        height: 200.h,
-                                        child: GlassContainer(
-                                          color: WeatherAppColor.whiteColor
-                                              .withOpacity(0.1),
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          child: ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount:
-                                                states.forecastList.length,
-                                            itemBuilder: (context, index) {
-                                              return Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 17.w,
-                                                    right: 17.w,
-                                                    top: 20.h),
-                                                child: Center(
-                                                  child: NextWeekCard(
-                                                    daysOfWeek:
-                                                        upcomingDays[index],
-                                                    forecastModel: states
-                                                        .forecastList[index],
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                return Container();
-                              })
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            })
+              },
+              listener: (BuildContext context,
+                  HomeControllerState state) {
+                if (state is CurrentCityWeatherInfoLoadingError) {
+                  /// todo error
+                }
+              },
+            )
           : Stack(
               children: [
                 widget.cityModel!.cityImageURL!.isEmpty
@@ -986,7 +1020,7 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
                           ///
 
                           BlocBuilder<GetDailyForecastBloc,
-                                  GetDailyForecastState>(
+                              GetDailyForecastState>(
                               builder: (context, states) {
                             if (states is LoadingDailyForecast) {}
                             if (states is DailyForecastLoaded) {
@@ -1026,6 +1060,8 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
 
                             return Container();
                           })
+
+
                         ],
                       )
                     ],
@@ -1033,12 +1069,9 @@ class _NewHomePageState extends State<NewHomePage> with WidgetsBindingObserver {
                 ),
               ],
             ),
+
     );
   }
-
-
-
-
 }
 
 class WeatherAppBar extends StatelessWidget {
@@ -1066,9 +1099,11 @@ class WeatherAppBar extends StatelessWidget {
           padding: const EdgeInsets.only(right: 18.0),
           child: InkWell(
               onTap: () {
-                Navigator.pushNamed(context, WeatherRoutes.userCitiesRoute);
+                /// todo sync
+                Navigator.pushNamed(context, WeatherRoutes.savedCitiesRoute);
+
               },
-              child: Icon(Icons.menu, color: WeatherAppColor.whiteColor)),
+              child: Icon(Icons.sync, color: WeatherAppColor.whiteColor)),
         )
       ], // Removes shadow
     );

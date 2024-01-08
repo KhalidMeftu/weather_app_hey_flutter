@@ -8,7 +8,63 @@ class WeatherRepository implements BaseRemoteRepository {
   final BaseRemoteDataSource baseremoteDataSource;
 
   WeatherRepository(this.baseremoteDataSource);
+
   @override
+  Future<Either<String, List<Daily>>> getDailyForecast() async {
+    // TODO: implement getDailyForecast
+    final dailyForeCast = await baseremoteDataSource.getDailyForecast();
+    return dailyForeCast;
+  }
+
+  @override
+  Future<Either<String, WeatherModel>> gerWeatherForCurrentCity(String cityName) async {
+    // TODO: implement getWeatherForUserCity
+    final currentCityWeatherResult = await baseremoteDataSource.getWeatherInfoForCurrentCity(cityName);
+    return currentCityWeatherResult;
+  }
+
+  @override
+  Future<Either<String, WeatherModel>> saveCurrentWeatherData(WeatherModel weatherModel) async {
+    // TODO: implement saveCurrentWeatherData
+    final saveCurrentCity = await baseremoteDataSource.saveCurrentCityWeatherData(weatherModel);
+    return saveCurrentCity;
+  }
+
+  @override
+  Future<Either<String, List<WeatherModel>>> saveUserCityData(WeatherModel weatherModel) async {
+    // TODO: implement saveUserCityData
+    final saveCity = await baseremoteDataSource.saveUserCityData(weatherModel);
+    return saveCity;
+  }
+
+  @override
+  Future<Either<String, WeatherModel>> getWeatherForUserCity(String cityName) async {
+    // TODO: implement getWeatherForUserCity
+    final resultForUserCity = await baseremoteDataSource.getWeatherForUserCity(cityName);
+    return resultForUserCity;
+  }
+
+  @override
+  Future <Either<String,List<WeatherModel>>> getUserCitiesWithWeather() async {
+    // TODO: implement getUserCitiesWithWeather
+    final cityWeather = await baseremoteDataSource.getUserCitiesWithWeather();
+    return cityWeather;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* @override
   Future<Either<String, WeatherModel>> getWeatherForAllCities(List<String> cityName) async {
     // TODO: implement getWeatherForAllCities
     final weatherForAllCities = await baseremoteDataSource.getWeatherForAllCities(cityName);
@@ -71,5 +127,5 @@ class WeatherRepository implements BaseRemoteRepository {
     final insertCityWeather = await baseremoteDataSource.saveUserCurrentCity(weatherModel);
     return insertCityWeather;
   }
-
+*/
 }

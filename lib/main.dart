@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutterweatherapp/presentation/controller/get_daily_forecast/get_daily_forecast_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/HomeController/home_controller_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/get_daily_forecast_controller/get_daily_forecast_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
-import 'package:flutterweatherapp/presentation/controller/get_user_saved_city_weather_controller/get_saved_cities_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'const/app_locator/service_locator.dart';
@@ -26,6 +26,10 @@ class MyApp extends StatelessWidget {
         builder: (_, child) {
           return MultiBlocProvider(
             providers: [
+              //
+              BlocProvider(
+                  create: (context) => HomeControllerBloc(sLocator())),
+
               BlocProvider(
                   create: (context) => GetDailyForecastBloc(sLocator())),
               BlocProvider(
@@ -33,9 +37,7 @@ class MyApp extends StatelessWidget {
               BlocProvider(
                   create: (context) =>
                       GetUserCityWeatherControllerBloc(sLocator())),
-              BlocProvider(
-                  create: (context) =>
-                      GetSavedCitiesControllerBloc(sLocator())),
+
 
             ],
             child: MaterialApp(

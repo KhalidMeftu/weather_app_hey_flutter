@@ -9,23 +9,17 @@ class UserCityControllerInitial extends UserCityControllerState {
   List<Object> get props => [];
 }
 
-/// insert
-class UserCitySaveSuccessfull extends UserCityControllerState{
-  final List<WeatherModel> weatherModel;
-
-  const UserCitySaveSuccessfull(this. weatherModel);
+class UserCityLoading extends UserCityControllerState{
   @override
   // TODO: implement props
-  List<Object?> get props => [ weatherModel];
+  List<Object?> get props => [];
 
 }
+/// insert
+class UserCitySaveSuccess extends UserCityControllerState{
+  final List<WeatherModel> weatherModel;
 
-
-/// insert current city
-class CurrentCitySaveSuccessfull extends UserCityControllerState{
-  final WeatherModel weatherModel;
-
-  const CurrentCitySaveSuccessfull(this. weatherModel);
+  const UserCitySaveSuccess(this. weatherModel);
   @override
   // TODO: implement props
   List<Object?> get props => [ weatherModel];
@@ -33,10 +27,10 @@ class CurrentCitySaveSuccessfull extends UserCityControllerState{
 }
 
 /// delete
-class UserCityDeleteSuccessfull extends UserCityControllerState{
+class UserCityDeleteSuccess extends UserCityControllerState{
   final String successMessage;
 
-  const UserCityDeleteSuccessfull(this.successMessage);
+  const UserCityDeleteSuccess(this.successMessage);
   @override
   // TODO: implement props
   List<Object?> get props => [successMessage];
@@ -45,36 +39,16 @@ class UserCityDeleteSuccessfull extends UserCityControllerState{
 
 /// update
 
-class UserCityUpdateSuccessfull extends UserCityControllerState{
+class UserCityUpdateSuccess extends UserCityControllerState{
   final String successMessage;
 
-  const UserCityUpdateSuccessfull(this.successMessage);
+  const UserCityUpdateSuccess(this.successMessage);
   @override
   // TODO: implement props
   List<Object?> get props => [successMessage];
 
 }
 
-/// actions may be deleting inserting, updating
-///
-class UserCityAction extends UserCityControllerState{
-  final String actionMessage;
-
-  const UserCityAction(this.actionMessage);
-  @override
-  // TODO: implement props
-  List<Object?> get props => [actionMessage];
-
-}
-/// actions
-class UserActionLoading extends UserCityControllerState{
-
-  const UserActionLoading();
-  @override
-  // TODO: implement props
-  List<Object?> get props => [];
-
-}
 
 /// user city loaded
 class UserCityLoaded extends UserCityControllerState{
@@ -86,23 +60,36 @@ final List<WeatherModel> usermodel;
 
 }
 
-///search results
-class SearchUserCityLoaded extends UserCityControllerState{
+
+class UserCitySavingError extends UserCityControllerState{
+  final String errorMessage;
+
+  const UserCitySavingError(this.errorMessage);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [errorMessage];
+
+}
+
+class UserCityFetchingError extends UserCityControllerState{
+  final String errorMessage;
+
+  const UserCityFetchingError(this.errorMessage);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [errorMessage];
+
+}
+
+/// data is loaded show data
+class CityWeatherLoaded extends UserCityControllerState{
   final WeatherModel usermodel;
-  const SearchUserCityLoaded(this.usermodel);
+  const CityWeatherLoaded(this.usermodel);
   @override
   // TODO: implement props
   List<Object?> get props => [usermodel];
 
 }
 
-class CurrentCitySavingResponse extends UserCityControllerState{
-  final String message;
 
-  const CurrentCitySavingResponse(this.message);
 
-  @override
-  // TODO: implement props
-  List<Object?> get props => [message];
-
-}
