@@ -57,16 +57,12 @@ class RemoteDataSource extends BaseRemoteDataSource {
     try {
       Response response = await Dio()
           .get(WeatherAppServices.baseURL, queryParameters: queryParameters);
-      print("Response status for city${cityName}");
-      print(response.statusCode);
       if (response.statusCode == 200) {
         final data = WeatherModel.fromJson(response.data);
         final cityImage = await getCityImage(cityName);
         data.cityImageURL = cityImage;
-        print("Righ returned");
         return Right(data);
       } else {
-        print("Left returned");
         return Left(
             'Error: Server responded with status code ${response.statusCode}');
       }
@@ -113,266 +109,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
     }
   }
 
-/*
-  @override
-  Future<Either<String, WeatherModel>> getWeatherForAllCities(
-      List<String> cityName) {
-    // TODO: implement getWeatherForAllCities
 
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Either<String, WeatherModel>> getWeatherInfoForCurrentCity(
-      String cityName) async {
-    print("Hi kalid");
-    print(cityName);
-    Map<String, dynamic> queryParameters = {
-      'q': cityName,
-      'units': 'metric',
-      'appid': WeatherAppServices.apiKey,
-    };
-
-
-    try {
-      Response response = await Dio()
-          .get(WeatherAppServices.baseURL, queryParameters: queryParameters);
-
-      print("User city response");
-      print(response.statusCode);
-      print(response.statusMessage);
-      if (response.statusCode == 200) {
-        final data = WeatherModel.fromJson(response.data);
-        final cityImage = await getCityImage(cityName);
-        data.cityImageURL = cityImage;
-        return Right(data);
-      } else {
-        return Left(
-            'Error: Server responded with status code ${response.statusCode}');
-      }
-    } catch (e, s) {
-      print("Cache data");
-      print(e.toString());
-      print(e is DioException);
-      if (e is DioException) {
-        print("Cache data");
-        print(e.response?.statusCode == 404);
-
-        if (e.response?.statusCode == 404) {
-          // Handle 404 status code separately, if needed
-          return const Left('Error: 404 Not Found');
-        } else {
-          // Handle other DioException cases
-          return Left('Error: ${e.response?.data['message'] ?? e.message}');
-        }
-      } else {
-        // Handle other exceptions
-        return const Left('Error: An unexpected error occurred');
-      }
-    }
-  }
-
-
-
-  @override
-  Future<Either<String, List<Daily>>> getDailyForecast() async {
-    // TODO: implement getDailyForecast
-    try {
-      /// a 2-second delay to mock web response
-      await Future.delayed(const Duration(seconds: 1));
-      final String response =
-          await rootBundle.loadString('assets/json/mockdailyforecast.json');
-      final data = json.decode(response);
-
-      if (data is Map<String, dynamic> && data.containsKey('daily')) {
-        final dailyData = List<Map<String, dynamic>>.from(data['daily']);
-        List<Daily> dailyList =
-            dailyData.map((json) => Daily.fromJson(json)).toList();
-        return Right(dailyList);
-      } else {
-        return const Left('Invalid JSON format');
-      }
-    } catch (e) {
-      return Left(e.toString());
-    }
-  }
-
-  /// delete city
-  @override
-  Future<Either<String, String>> deleteCities(WeatherModel weatherModel) {
-    // TODO: implement deleteCities
-    throw UnimplementedError();
-  }
-
-  /// get all cities info
-  @override
-  Future<Either<String, List<WeatherModel>>> getUserCitiesWithWeather() async {
-    return await populateWeatherDatabase();
-  }
-
-  /// insert ops
-  @override
-  Future<Either<String, List<WeatherModel>>> saveUserCityDataModel(
-    WeatherModel weatherModel,
-  ) async {
-    print("saveUserCityDataModelUserCities");
-    print(weatherModel.name);
-    print(weatherModel.isCurrentCity);
-    //I/flutter (26184): Addis Ababa
-    // I/flutter (26184): true
-    // home page
-    try {
-      final cityNameNormalized = normalizeCityName(weatherModel.name);
-      final existingRecords = await cityNameStore.find(
-        await _db,
-        finder: Finder(
-          filter: Filter.custom((record) {
-            final recordNameNormalized =
-                normalizeCityName(record['name'] as String);
-            return recordNameNormalized == cityNameNormalized;
-          }),
-        ),
-      );
-
-      if (existingRecords.isNotEmpty) {
-        // Update now we will do updates
-        print("Data exits updating");
-        final existingRecord = existingRecords.first;
-        await cityNameStore.update(
-          await _db,
-          weatherModel.toJson(),
-          finder: Finder(
-            filter: Filter.byKey(existingRecord.key),
-          ),
-        );
-
-        final allRecords = await cityNameStore.find(await _db);
-        final weatherModels = allRecords.map((snapshot) {
-          return WeatherModel.fromJson(snapshot.value);
-        }).toList();
-
-        return Right(weatherModels);
-      }
-      await cityNameStore.add(await _db, weatherModel.toJson());
-      final allRecords = await cityNameStore.find(await _db);
-      final weatherModels = allRecords.map((snapshot) {
-        return WeatherModel.fromJson(snapshot.value);
-      }).toList();
-
-      return Right(weatherModels);
-    } catch (e) {
-      return Left('Insert failed: ${e.toString()}');
-    }
-  }
-
-  @override
-  Future<Either<String, WeatherModel>> saveUserCurrentCity(
-      WeatherModel weatherModel) async {
-    print("saveCurrentCityInfo");
-    print(weatherModel.name);
-    print(weatherModel.isCurrentCity);
-    try {
-      final cityNameNormalized = normalizeCityName(weatherModel.name);
-      final existingRecords = await cityNameStore.find(
-        await _db,
-        finder: Finder(
-          filter: Filter.custom((record) {
-            final recordNameNormalized =
-            normalizeCityName(record['name'] as String);
-            return recordNameNormalized == cityNameNormalized;
-          }),
-        ),
-      );
-
-      if (existingRecords.isNotEmpty) {
-        final existingWeatherModel =
-        WeatherModel.fromJson(existingRecords.first.value);
-        return Right(existingWeatherModel);
-      }
-
-      await cityNameStore.add(await _db, weatherModel.toJson());
-      return Right(weatherModel);
-    } catch (e) {
-      return Left('Insert failed2: ${e.toString()}');
-    }
-  }
-
-  /// search
-  @override
-  Future<Either<String, WeatherModel>> searchCities(String query) async {
-    try {
-      final finder = Finder(
-        filter: Filter.custom((record) {
-          final cityName = record['name'] as String;
-          return cityName.toLowerCase().contains(query.toLowerCase());
-        }),
-      );
-      final recordSnapshots =
-          await cityNameStore.find(await _db, finder: finder);
-
-      if (recordSnapshots.isEmpty) {
-        throw Exception("No cities found matching the query.");
-      }
-      // Assuming you want only the first match
-      final city = WeatherModel.fromJson(recordSnapshots.first.value);
-      return Right(city);
-    } catch (e) {
-      return Left(e.toString());
-    }
-  }
-
-  /// update city
-  @override
-  Future<Either<String, String>> updateCitiesWeather(
-      WeatherModel weatherModel) {
-    throw UnimplementedError();
-  }
-
-  Future<Either<String, List<WeatherModel>>> populateWeatherDatabase() async {
-
-    print("POPULATING USER DATA");
-    try {
-      final recordSnapshots = await cityNameStore.find(await _db);
-      final weatherModels = recordSnapshots.map((snapshot) {
-        return WeatherModel.fromJson(snapshot.value);
-      }).toList();
-
-      return Right(weatherModels);
-    } catch (e) {
-      return Left('Error fetching data: ${e.toString()}');
-    }
-  }
-
-
-
-  Future<String> getCityImage(String cityName) async {
-    String url = WeatherAppServices.cityImageApi +
-        cityName +
-        WeatherAppServices.cityImageApiImage;
-    try {
-      Response response = await dio.get(url);
-      if (response.statusCode == 200) {
-        if (response.data.containsKey('photos') &&
-            response.data['photos'].isNotEmpty) {
-          var imageData = response.data['photos'][0]['image']['mobile'];
-
-          return imageData; // Using Either
-        } else {
-          return ""; // No data found
-        }
-      } else {
-        return 'Error: Unexpected response status code ${response.statusCode}';
-      }
-    } catch (e) {
-      return "";
-    }
-  }
-
-  String normalizeCityName(String name) {
-    return name.toLowerCase().trim();
-  }
-
-  */
 
   String normalizeCityName(String name) {
     return name.toLowerCase().trim();
@@ -422,7 +159,6 @@ class RemoteDataSource extends BaseRemoteDataSource {
 
       if (existingRecords.isNotEmpty) {
         // Update now we will do updates
-        print("Data exits updating");
         final existingRecord = existingRecords.first;
         await cityNameStore.update(
           await _db,
@@ -462,16 +198,12 @@ class RemoteDataSource extends BaseRemoteDataSource {
     try {
       Response response = await Dio()
           .get(WeatherAppServices.baseURL, queryParameters: queryParameters);
-      print("Response status for city${cityName}");
-      print(response.statusCode);
       if (response.statusCode == 200) {
         final data = WeatherModel.fromJson(response.data);
         final cityImage = await getCityImage(cityName);
         data.cityImageURL = cityImage;
-        print("Righ returned");
         return Right(data);
       } else {
-        print("Left returned");
         return Left(
             'Error: Server responded with status code ${response.statusCode}');
       }
