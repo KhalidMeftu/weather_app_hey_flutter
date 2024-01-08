@@ -18,9 +18,12 @@ import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:glassmorphism_ui/glassmorphism_ui.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:weather_icons/weather_icons.dart';
-
+const String appGroupId = '<YOUR APP GROUP>';
+const String iOSWidgetName = 'WeatherAppHomeScreenWidget';
+const String androidWidgetName = 'WeatherAppHomeScreenWidget';
 class WeatherAppHomePage extends StatefulWidget {
   bool? showDataFromSavedCities;
   WeatherModel? cityModel;
@@ -30,7 +33,7 @@ class WeatherAppHomePage extends StatefulWidget {
   @override
   State<WeatherAppHomePage> createState() => _WeatherAppHomePageState();
 }
-
+//              updateHeadline(state.newsModel.data[0]);
 class _WeatherAppHomePageState extends State<WeatherAppHomePage>
     with WidgetsBindingObserver {
   final GlobalKey<State> _permissionDialogKey = GlobalKey<State>();
@@ -200,6 +203,16 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
     }
   }
 
+  void updateHomeScreenWidget(WeatherModel newHeadline) {
+    HomeWidget.saveWidgetData<String>('city_name', newHeadline.name);
+    HomeWidget.saveWidgetData<String>('temprature', (newHeadline.main.temp).toString());
+    HomeWidget.saveWidgetData<String>('weather_icon_url', (newHeadline.weather[0].icon).toString());
+    HomeWidget.updateWidget(
+      iOSName: iOSWidgetName,
+      androidName: androidWidgetName,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> upcomingDays = AppUtils.getNextFourDays();
@@ -216,6 +229,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                 if (state is CurrentCityDataLoaded) {
                   WeatherModel userCityModel = state.currentCityData;
                   userCityModel.isCurrentCity = true;
+                  updateHomeScreenWidget(userCityModel);
                   AppUtils.saveCity(userCityModel, context);
 
                   return Stack(
@@ -1105,7 +1119,7 @@ class WeatherAppBar extends StatelessWidget {
                 /// todo sync
                 Navigator.pushNamed(context, WeatherRoutes.savedCitiesRoute);
               },
-              child: Icon(Icons.sync, color: WeatherAppColor.whiteColor)),
+              child: Icon(Icons.info_outline_sharp, color: WeatherAppColor.whiteColor)),
         )
       ], // Removes shadow
     );

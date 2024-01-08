@@ -56,3 +56,5 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
   }
 }
 
+/// fix shimmer
+
