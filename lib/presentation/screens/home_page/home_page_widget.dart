@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutterweatherapp/const/app_color.dart';
 import 'package:flutterweatherapp/const/app_extensions.dart';
 import 'package:flutterweatherapp/const/app_resources.dart';
@@ -51,7 +52,6 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
-
     if (state == AppLifecycleState.resumed) {
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
@@ -146,9 +146,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
 
       if (!mounted) {
       } else {
-
-        final userCityBloc =
-            BlocProvider.of<HomeControllerBloc>(context);
+        final userCityBloc = BlocProvider.of<HomeControllerBloc>(context);
         userCityBloc.add(GetCurrentCityWeatherInfo(place.locality!));
       }
     } finally {
@@ -209,11 +207,10 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
     forecastBloc.add(GetDailyForCast());
     return Scaffold(
       body: widget.showDataFromSavedCities == false
-          ?
-      BlocConsumer<HomeControllerBloc,
-          HomeControllerState>(
+          ? BlocConsumer<HomeControllerBloc, HomeControllerState>(
               buildWhen: (previous, current) {
-                return previous is CurrentCityWeatherInfoLoading && current is CurrentCityDataLoaded;
+                return previous is CurrentCityWeatherInfoLoading &&
+                    current is CurrentCityDataLoaded;
               },
               builder: (context, state) {
                 if (state is CurrentCityDataLoaded) {
@@ -511,7 +508,6 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                   );
                 }
 
-
                 return Stack(
                   children: [
                     Positioned.fill(
@@ -799,10 +795,20 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                   ],
                 );
               },
-              listener: (BuildContext context,
-                  HomeControllerState state) {
+              listener: (BuildContext context, HomeControllerState state) {
                 if (state is CurrentCityWeatherInfoLoadingError) {
-                  /// todo error
+                  Fluttertoast.showToast(
+                      msg: WeatherAppString.noCityData,
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: WeatherAppFontSize.s16);
+                  Future.delayed(const Duration(seconds: 2), () {
+                    Navigator.pushNamed(
+                        context, WeatherRoutes.savedCitiesRoute);
+                  });
                 }
               },
             )
@@ -1020,7 +1026,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                           ///
 
                           BlocBuilder<GetDailyForecastBloc,
-                              GetDailyForecastState>(
+                                  GetDailyForecastState>(
                               builder: (context, states) {
                             if (states is LoadingDailyForecast) {}
                             if (states is DailyForecastLoaded) {
@@ -1060,8 +1066,6 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
 
                             return Container();
                           })
-
-
                         ],
                       )
                     ],
@@ -1069,7 +1073,6 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                 ),
               ],
             ),
-
     );
   }
 }
@@ -1101,7 +1104,6 @@ class WeatherAppBar extends StatelessWidget {
               onTap: () {
                 /// todo sync
                 Navigator.pushNamed(context, WeatherRoutes.savedCitiesRoute);
-
               },
               child: Icon(Icons.sync, color: WeatherAppColor.whiteColor)),
         )

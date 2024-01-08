@@ -31,6 +31,7 @@ class WeatherAppString{
   static String saveCity = "Save New City";
   static String enterCity ="Enter City";
   static String save ="Save";
+  static String noCityData="Currently we are unable to fetch you city response, add new city and enjoy the service";
 
 
 }

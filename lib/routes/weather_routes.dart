@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/presentation/screens/home_page/home_page_widget.dart';
-import 'package:flutterweatherapp/presentation/screens/saved_cities.dart';
+import 'package:flutterweatherapp/presentation/screens/saved_cities/saved_cities.dart';
 import 'package:flutterweatherapp/presentation/screens/splash_page/splash_screen_widget.dart';
 
 class WeatherRoutes {

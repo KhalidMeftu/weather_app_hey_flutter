@@ -60,9 +60,10 @@ dependencies:
   intl:
   shared_preferences:
   permission_handler:
-  home_widget: ^0.4.1
-  localization: ^2.1.1
-  shimmer: ^3.0.0
+  home_widget:
+  localization:
+  shimmer:
+  fluttertoast:
 
 dev_dependencies:
   flutter_test:
