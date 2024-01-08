@@ -28,6 +28,9 @@ class WeatherAppString{
   static String weatherCast="WeatherCast";
   static String locationDenied="Location permissions are denied";
   static String locationPermanentlyDenied="Location permissions are permanently denied, we cannot request permissions.";
+  static String saveCity = "Save New City";
+  static String enterCity ="Enter City";
+  static String save ="Save";
 
 
 }

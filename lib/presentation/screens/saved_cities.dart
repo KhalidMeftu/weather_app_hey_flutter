@@ -30,11 +30,14 @@ class UserCities extends StatefulWidget {
 }
 
 class _UserCitiesState extends State<UserCities> {
+  TextEditingController saveNewCityTextController = TextEditingController();
+
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+  void dispose() {
+    saveNewCityTextController.dispose();
+    super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +77,6 @@ class _UserCitiesState extends State<UserCities> {
                   ],
                 ),
               ),
-
               Padding(
                 padding: EdgeInsets.only(
                     top: 80.h, left: 2.w, right: 0.w, bottom: 73.h),
@@ -182,9 +184,6 @@ class _UserCitiesState extends State<UserCities> {
                   ),
                 ),
               ),
-
-
-              /// add btn
               Positioned(
                 bottom: 10.h,
                 left: 10.w,
@@ -232,27 +231,25 @@ class _UserCitiesState extends State<UserCities> {
     final result = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        TextEditingController textEditingController = TextEditingController();
-
         return AlertDialog(
-          title: const Text('Save New City'),
+          title: Text(WeatherAppString.saveCity),
           content: TextField(
-            controller: textEditingController,
-            decoration: const InputDecoration(
-              hintText: 'Enter City',
+            controller: saveNewCityTextController,
+            decoration:  InputDecoration(
+              hintText: WeatherAppString.enterCity,
             ),
           ),
           actions: [
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(WeatherAppString.cancel,),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('Save'),
+              child: Text(WeatherAppString.save),
               onPressed: () {
-                String text = textEditingController.text;
+                String text = saveNewCityTextController.text;
                 Navigator.of(context).pop(text);
               },
             ),
