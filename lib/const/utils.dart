@@ -4,6 +4,7 @@ import 'package:flutterweatherapp/const/services.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/presentation/controller/HomeController/home_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/save_current_city%20controller/save_current_city_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'app_color.dart';
@@ -119,7 +120,7 @@ class AppUtils {
 
 
   static void saveCity(WeatherModel cityWeatherInformation, BuildContext context) {
-    final userCityBloc = BlocProvider.of<HomeControllerBloc>(context);
+    final userCityBloc = BlocProvider.of<SaveCurrentCityBloc>(context);
     userCityBloc.add(SaveCurrentCityWeather(cityWeatherInformation));
   }
 

@@ -41,6 +41,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
     with WidgetsBindingObserver {
   final GlobalKey<State> _permissionDialogKey = GlobalKey<State>();
   bool isGettingUserPosition = false;
+  bool isLocationServiceInitialized = false;
 
   @override
   void initState() {
@@ -70,6 +71,10 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                     current is CurrentCityDataLoaded;
               },
               builder: (context, state) {
+                print("Home page Bloc");
+                print(state);
+                /// intial
+                /// //CurrentCityDataLoaded
                 if (state is CurrentCityDataLoaded) {
                   WeatherModel userCityModel = state.currentCityData;
                   userCityModel.isCurrentCity = true;
@@ -671,11 +676,12 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        return;
-      } else {
-        await initLocationService();
+      if (!isLocationServiceInitialized) {
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission != LocationPermission.denied) {
+          await initLocationService();
+          isLocationServiceInitialized = true;
+        }
       }
     }
   }
@@ -764,6 +770,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
 
       if (!mounted) {
       } else {
+        print("Getting current weather");
         final userCityBloc = BlocProvider.of<HomeControllerBloc>(context);
         userCityBloc.add(GetCurrentCityWeatherInfo(place.locality!));
       }

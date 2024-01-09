@@ -9,32 +9,7 @@ class HomeControllerInitial extends HomeControllerState {
   List<Object> get props => [];
 }
 
-/// show spinner or shimmer
-class SavingCurrentCity extends HomeControllerState{
-  @override
-  // TODO: implement props
-  List<Object?> get props => [];
 
-}
-
-/// success return with saved city model
-class CurrentCitySaved extends HomeControllerState{
-  final WeatherModel currentCityData;
-  const CurrentCitySaved(this.currentCityData);
-  @override
-  // TODO: implement props
-  List<Object?> get props => [currentCityData];
-
-}
-
-/// saving error goto add page may be your city is not saved
-class CurrentCitySavingError extends HomeControllerState{
-  final String errorMessage;
-  const CurrentCitySavingError(this.errorMessage);
-  @override
-  // TODO: implement props
-  List<Object?> get props => [errorMessage];
-}
 
 /// current city weather info loading
 class CurrentCityWeatherInfoLoading extends HomeControllerState{

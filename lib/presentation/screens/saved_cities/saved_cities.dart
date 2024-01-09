@@ -84,6 +84,8 @@ class _UserCitiesState extends State<UserCities> {
                   child: BlocConsumer<UserCityControllerBloc,
                       UserCityControllerState>(
                     builder: (context, state) {
+                      print("Saved city page Bloc");
+                      print(state);
                       if (state is UserCityLoading) {
                         return Center(child: AppUtils().loadingSpinner);
                       }

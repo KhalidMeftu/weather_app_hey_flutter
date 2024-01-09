@@ -11,14 +11,7 @@ class HomeControllerBloc extends Bloc<HomeControllerEvent, HomeControllerState> 
   final WeatherAppUseCases weatherAppUseCase;
 
   HomeControllerBloc(this.weatherAppUseCase) : super(HomeControllerInitial()) {
-    on<SaveCurrentCityWeather>((event, emit) async {
-      emit(SavingCurrentCity());
-      final result=await weatherAppUseCase.saveCurrentCityWeather(event.weatherModel);
-      result.fold((left) => emit(CurrentCitySavingError(left)),
-              (right) => emit(CurrentCitySaved(right)));
 
-
-    });
 
     on<GetCurrentCityWeatherInfo>((event, emit) async {
       emit(CurrentCityWeatherInfoLoading());
