@@ -28,8 +28,6 @@ class MyApp extends StatelessWidget {
         builder: (_, child) {
           return MultiBlocProvider(
             providers: [
-              //
-
               BlocProvider(
                   create: (context) => SaveCurrentCityBloc(sLocator())),
               BlocProvider(create: (context) => HomeControllerBloc(sLocator())),

@@ -68,13 +68,10 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
           ? BlocConsumer<HomeControllerBloc, HomeControllerState>(
               buildWhen: (previous, current) {
                 return previous is CurrentCityWeatherInfoLoading &&
-                    current is CurrentCityDataLoaded;
+                    current is CurrentCityDataLoaded || current is CurrentCityDataLoaded && previous is CurrentCityDataLoaded;
               },
               builder: (context, state) {
-                print("Home page Bloc");
-                print(state);
-                /// intial
-                /// //CurrentCityDataLoaded
+
                 if (state is CurrentCityDataLoaded) {
                   WeatherModel userCityModel = state.currentCityData;
                   userCityModel.isCurrentCity = true;

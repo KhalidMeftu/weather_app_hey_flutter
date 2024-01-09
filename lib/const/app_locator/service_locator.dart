@@ -25,7 +25,6 @@ class ServicesLocator {
     sLocator.registerLazySingleton(() =>WeatherAppUseCases(sLocator()));
     sLocator.registerLazySingleton<BaseRemoteRepository>(() => WeatherRepository(sLocator()));
     sLocator.registerLazySingleton<BaseRemoteDataSource>(() => RemoteDataSource());
-
     /// todo shared prrefs
     sLocator.registerLazySingleton(() => AppDatabase.instance);
     var instance = await LocalStorageServices.getinstance();

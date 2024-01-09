@@ -56,5 +56,5 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
   }
 }
 
-/// fix padding in bottom screen
+
 
