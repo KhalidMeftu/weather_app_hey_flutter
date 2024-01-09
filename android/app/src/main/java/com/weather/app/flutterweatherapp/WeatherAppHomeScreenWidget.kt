@@ -19,7 +19,7 @@ import es.antonborri.home_widget.HomeWidgetPlugin
  * App Widget Configuration implemented in [WeatherAppHomeScreenWidgetConfigureActivity]
  */
 class WeatherAppHomeScreenWidget : AppWidgetProvider() {
-  override fun onUpdate(
+    override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray,
@@ -32,19 +32,28 @@ class WeatherAppHomeScreenWidget : AppWidgetProvider() {
             view2.setTextViewText(R.id.headline_city, title ?: "")
 
             val description = widgetData.getString("temprature", null)
-            view2.setTextViewText(R.id.headline_temprature, description+ "\u2103" ?: "Weather info not found")
+            view2.setTextViewText(
+                R.id.headline_temprature,
+                description + "\u2103" ?: "Weather info not found"
+            )
 
             val imageIcon = widgetData.getString("weather_icon_url", "")
 
 
             val lastUpdate = widgetData.getString("last_update", null)
-            view2.setTextViewText(R.id.headline_lastUpdate, lastUpdate ?: "")
+            view2.setTextViewText(
+                R.id.headline_lastUpdate,
+                ("Last updated at: $lastUpdate")
+            )
             // Load the image asynchronously
             GlideApp.with(context.applicationContext)
                 .asBitmap()
                 .load(imageIcon)
                 .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
                         view2.setImageViewBitmap(R.id.imageId, resource)
                         updateUI(appWidgetManager, appWidgetId, view2)
                     }
@@ -58,7 +67,6 @@ class WeatherAppHomeScreenWidget : AppWidgetProvider() {
 
         }
     }
-
 
 
     private fun updateUI(

@@ -823,14 +823,14 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
     }
   }
 
-  void updateHomeScreenWidget(WeatherModel newHeadline) {
-    HomeWidget.saveWidgetData<String>('city_name', newHeadline.name);
+  void updateHomeScreenWidget(WeatherModel weatherData) {
+    HomeWidget.saveWidgetData<String>('city_name', weatherData.name);
     HomeWidget.saveWidgetData<String>(
-        'temprature', (newHeadline.main.temp).toString());
+        'temprature', (weatherData.main.temp).toString());
     HomeWidget.saveWidgetData<String>(
-        'weather_icon_url', (WeatherAppServices.iconURL+newHeadline.weather[0].icon+WeatherAppServices.iconSize).toString());
+        'weather_icon_url', (WeatherAppServices.iconURL+weatherData.weather[0].icon+WeatherAppServices.iconSize).toString());
     HomeWidget.saveWidgetData<String>(
-        'last_update', (newHeadline.updatedAt).toString());
+        'last_update', (weatherData.updatedAt).toString());
     HomeWidget.updateWidget(
       iOSName: iOSWidgetName,
       androidName: androidWidgetName,
