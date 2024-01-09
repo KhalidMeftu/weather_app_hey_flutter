@@ -14,6 +14,7 @@ import 'package:flutterweatherapp/const/weather_font_sizes.dart';
 import 'package:flutterweatherapp/const/weather_paddings.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/presentation/common_widgets/reusable_container.dart';
+import 'package:flutterweatherapp/presentation/common_widgets/weather_app_bar.dart';
 import 'package:flutterweatherapp/presentation/controller/HomeController/home_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_daily_forecast_controller/get_daily_forecast_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
@@ -823,12 +824,13 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
   }
 
   void updateHomeScreenWidget(WeatherModel newHeadline) {
-    print("Weather icon URL IS${WeatherAppServices.iconURL+newHeadline.weather[0].icon+WeatherAppServices.iconSize}");
     HomeWidget.saveWidgetData<String>('city_name', newHeadline.name);
     HomeWidget.saveWidgetData<String>(
         'temprature', (newHeadline.main.temp).toString());
     HomeWidget.saveWidgetData<String>(
         'weather_icon_url', (WeatherAppServices.iconURL+newHeadline.weather[0].icon+WeatherAppServices.iconSize).toString());
+    HomeWidget.saveWidgetData<String>(
+        'last_update', (newHeadline.updatedAt).toString());
     HomeWidget.updateWidget(
       iOSName: iOSWidgetName,
       androidName: androidWidgetName,
@@ -836,37 +838,3 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
   }
 }
 
-class WeatherAppBar extends StatelessWidget {
-  final String cityNames;
-
-  const WeatherAppBar({
-    super.key,
-    required this.cityNames,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: WeatherAppColor.transParentColor,
-      leading: Icon(Icons.location_on, color: WeatherAppColor.whiteColor),
-      title: Text(
-        cityNames,
-        style: WeatherAppFonts.medium(
-                fontWeight: FontWeight.w400, color: WeatherAppColor.whiteColor)
-            .copyWith(fontSize: WeatherAppFontSize.s18),
-      ),
-      elevation: 0,
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 18.0),
-          child: InkWell(
-              onTap: () {
-                Navigator.pushNamed(context, WeatherRoutes.savedCitiesRoute);
-              },
-              child: Icon(Icons.info_outline_sharp,
-                  color: WeatherAppColor.whiteColor)),
-        )
-      ], // Removes shadow
-    );
-  }
-}

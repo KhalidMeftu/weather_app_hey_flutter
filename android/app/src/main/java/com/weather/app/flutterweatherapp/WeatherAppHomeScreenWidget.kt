@@ -35,6 +35,10 @@ class WeatherAppHomeScreenWidget : AppWidgetProvider() {
             view2.setTextViewText(R.id.headline_temprature, description+ "\u2103" ?: "Weather info not found")
 
             val imageIcon = widgetData.getString("weather_icon_url", "")
+
+
+            val lastUpdate = widgetData.getString("last_update", null)
+            view2.setTextViewText(R.id.headline_lastUpdate, lastUpdate ?: "")
             // Load the image asynchronously
             GlideApp.with(context.applicationContext)
                 .asBitmap()

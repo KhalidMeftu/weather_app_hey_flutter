@@ -36,6 +36,17 @@
             android:textColor="@android:color/white"
             android:textSize="20sp"
             />
+        <TextView
+            android:id="@+id/headline_lastUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:text="last_update"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            />
     </LinearLayout>
 
     <LinearLayout
