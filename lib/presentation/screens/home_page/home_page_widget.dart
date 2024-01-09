@@ -830,7 +830,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
     HomeWidget.saveWidgetData<String>(
         'weather_icon_url', (WeatherAppServices.iconURL+weatherData.weather[0].icon+WeatherAppServices.iconSize).toString());
     HomeWidget.saveWidgetData<String>(
-        'last_update', (weatherData.updatedAt).toString());
+        'last_update', AppUtils.extractTime(weatherData.updatedAt));
     HomeWidget.updateWidget(
       iOSName: iOSWidgetName,
       androidName: androidWidgetName,

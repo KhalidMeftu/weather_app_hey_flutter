@@ -1,4 +1,4 @@
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_container"
     style="@style/Widget.Android.AppWidget.Container"
@@ -8,10 +8,25 @@
     android:background="@color/background_color"
     android:theme="@style/Theme.Android.AppWidgetContainer">
 
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/imageId"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="105dp"
+        android:layout_gravity="center_horizontal"
+
         android:orientation="vertical">
         <TextView
             android:id="@+id/headline_city"
@@ -23,7 +38,7 @@
             android:textColor="@android:color/white"
             android:textSize="27sp"
             android:textStyle="bold"
-           />
+            />
 
         <TextView
             android:id="@+id/headline_temprature"
@@ -49,20 +64,5 @@
             />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:orientation="vertical">
-        <ImageView
-            android:id="@+id/imageId"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
 
-            />
-    </LinearLayout>
-
-
-
-
-</LinearLayout>
+</FrameLayout>

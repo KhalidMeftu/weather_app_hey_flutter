@@ -131,6 +131,14 @@ class AppUtils {
   }
 
 
+  /// time formater for home screen widget
+  static String extractTime(DateTime dateTime) {
+    final formatter = DateFormat('HH:mm:ss');
+    final timeString = formatter.format(dateTime);
+    return timeString;
+  }
+
+
 
 
 
