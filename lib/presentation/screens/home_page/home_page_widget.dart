@@ -71,6 +71,9 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                 return previous is CurrentCityWeatherInfoLoading &&
                     current is CurrentCityDataLoaded || current is CurrentCityDataLoaded && previous is CurrentCityDataLoaded;
               },
+          listenWhen: (previous, current){
+                return previous is CurrentCityWeatherInfoLoadingError && current is CurrentCityWeatherInfoLoadingError;
+          },
               builder: (context, state) {
 
                 if (state is CurrentCityDataLoaded) {
