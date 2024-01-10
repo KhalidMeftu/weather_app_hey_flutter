@@ -238,4 +238,84 @@ class RemoteDataSource extends BaseRemoteDataSource {
       return Left('Error fetching data: ${e.toString()}');
     }
   }
+
+  @override
+  Future<Either<String, WeatherModel>> syncCitiesWeather(String cityName) async {
+    // TODO: implement syncCitiesWeather
+    Map<String, dynamic> queryParameters = {
+      'q': cityName,
+      'units': 'metric',
+      'appid': WeatherAppServices.apiKey,
+    };
+    try {
+      Response response = await Dio()
+          .get(WeatherAppServices.baseURL, queryParameters: queryParameters);
+      if (response.statusCode == 200) {
+        final data = WeatherModel.fromJson(response.data);
+        final cityImage = await getCityImage(cityName);
+        data.cityImageURL = cityImage;
+        upadateCurrentCityWeatherData(data);
+        return Right(data);
+      } else {
+        return Left(
+            'Error: Server responded with status code ${response.statusCode}');
+      }
+    } catch (e, s) {
+      if (e is DioException) {
+        if (e.response?.statusCode == 404) {
+          return const Left('Error: 404 Not Found');
+        } else {
+          return Left('Error: ${e.response?.data['message'] ?? e.message}');
+        }
+      } else {
+        return const Left('Error: An unexpected error occurred');
+      }
+    }
+  }
+
+
+  /// update data
+///
+  Future<Either<String, WeatherModel>> upadateCurrentCityWeatherData(
+      WeatherModel weatherModel) async {
+    try {
+      final cityNameNormalized = normalizeCityName(weatherModel.name);
+      final existingRecords = await cityNameStore.find(
+        await _db,
+        finder: Finder(
+          filter: Filter.custom((record) {
+            final recordNameNormalized =
+            normalizeCityName(record['name'] as String);
+            return recordNameNormalized == cityNameNormalized;
+          }),
+        ),
+      );
+
+      if (existingRecords.isNotEmpty) {
+        final existingWeatherModel =
+        WeatherModel.fromJson(existingRecords.first.value);
+
+        // Update the existing record with the new data
+        await cityNameStore.update(
+          await _db,
+          weatherModel.toJson(),
+          finder: Finder(
+            filter: Filter.custom((record) {
+              final recordNameNormalized =
+              normalizeCityName(record['name'] as String);
+              return recordNameNormalized == cityNameNormalized;
+            }),
+          ),
+        );
+
+        return Right(existingWeatherModel); // Return the existing weather model
+      }
+
+      await cityNameStore.add(await _db, weatherModel.toJson());
+      return Right(weatherModel);
+    } catch (e) {
+      return Left('Insert failed2: ${e.toString()}');
+    }
+  }
+
 }
