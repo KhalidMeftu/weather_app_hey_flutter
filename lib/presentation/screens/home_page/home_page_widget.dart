@@ -344,33 +344,30 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                                           child: SizedBox(
                                             height: 200.h,
                                             child: GlassContainer(
-                                              color: WeatherAppColor.whiteColor
-                                                  .withOpacity(0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              child: ListView.builder(
+                                              color: WeatherAppColor.whiteColor.withOpacity(0.1),
+                                              borderRadius: BorderRadius.circular(16),
+                                              child: SingleChildScrollView(
                                                 scrollDirection: Axis.horizontal,
-                                                itemCount:
-                                                    states.forecastList.length,
-                                                itemBuilder: (context, index) {
-                                                  return Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 13.w,
-                                                        right: 13.w,
-                                                        top: 20.h),
-                                                    child: NextWeekCard(
-                                                      daysOfWeek:
-                                                          upcomingDays[index],
-                                                      forecastModel: states
-                                                          .forecastList[index],
-                                                    ),
-                                                  );
-                                                },
+                                                child: Center(
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center, // Center items in the Row
+                                                    children: List.generate(states.forecastList.length, (index) {
+                                                      return Padding(
+                                                        padding: EdgeInsets.only(left: 7.w, right: 7.w, top: 20.h),
+                                                        child: NextWeekCard(
+                                                          daysOfWeek: upcomingDays[index],
+                                                          forecastModel: states.forecastList[index],
+                                                        ),
+                                                      );
+                                                    }),
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
                                       );
+
                                     }
 
                                     return Container();

@@ -27,7 +27,8 @@ class NextWeekCard extends StatelessWidget {
           height: 10.h,
         ),
         AppUtils().getWeatherIcon(
-          forecastModel.weather[0].icon)!=WeatherIcons.refresh? Icon(
+          forecastModel.weather[0].icon)!=WeatherIcons.refresh?
+        Icon(
           AppUtils().getWeatherIcon(
               forecastModel.weather[0].icon),
           size: 50.0,
