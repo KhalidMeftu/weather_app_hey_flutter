@@ -4,6 +4,7 @@ import 'package:flutterweatherapp/const/app_resources.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
+import 'package:flutterweatherapp/const/weather_paddings.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -23,19 +24,19 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
     _navigateToMainScreen();
   }
 
-
   Future<void> _navigateToMainScreen() async {
-    await Future.delayed(const Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 7));
 
     if (mounted) {
       Navigator.pushReplacementNamed(context, WeatherRoutes.homePageRoute,
-          arguments: [false,null]);
+          arguments: [false, null]);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: WeatherAppColor.russianViolateColorColor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,7 +50,29 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
                       color: WeatherAppColor.russianViolateColorColor)
                   .copyWith(fontSize: WeatherAppFontSize.s30),
             ),
-          )
+          ),
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: GestureDetector(
+                onTap: (){
+                  Navigator.pushReplacementNamed(context, WeatherRoutes.homePageRoute,
+                      arguments: [false, null]);
+                },
+                child: Card(
+                  elevation: 10,
+                  color: WeatherAppColor.redColor,
+                  child: Padding(
+                    padding: const EdgeInsets.all(WeatherAppPaddings.s8),
+                    child: Text(
+                      WeatherAppString.continueToPage,
+                      style: WeatherAppFonts.large(
+                              fontWeight: FontWeight.w500,
+                              color: WeatherAppColor.whiteColor)
+                          .copyWith(fontSize: WeatherAppFontSize.s19),
+                    ),
+                  ),
+                ),
+              ))
         ],
       ),
     );
@@ -60,4 +83,6 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
 /// some UI bg
 /// not city
 /// // home after allow not showing dialog
-
+///second time load from db and update UI there
+///put some cards on bg for clear view
+///

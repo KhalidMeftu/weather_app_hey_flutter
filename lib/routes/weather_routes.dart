@@ -26,7 +26,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => WeatherAppHomePage(showDataFromSavedCities: args[0],cityModel:args[1]));
 
       case WeatherRoutes.savedCitiesRoute:
-        return routingTransition(const CitiesList());
+        // back to right
+        return LeftToRightPageRoute( child:  const CitiesList(),);
 
       default:
         return unDefinedRoute();
@@ -80,6 +81,30 @@ class RouteGenerator {
           child: child,
         );
       },
+    );
+  }
+}
+
+class LeftToRightPageRoute extends PageRouteBuilder {
+  final Widget child;
+
+  LeftToRightPageRoute({required this.child})
+      : super(
+    transitionDuration: const Duration(seconds: 1),
+    pageBuilder: (context, animation, secondaryAnimation) => child,
+  );
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    // TODO: implement buildTransitions
+    return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(-1,0),
+              end: Offset.zero
+
+            ).animate(animation),
+            child: child,
     );
   }
 }

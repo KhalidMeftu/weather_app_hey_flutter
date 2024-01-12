@@ -21,4 +21,5 @@ class WeatherAppColor {
     transform: GradientRotation(192.33),
   );
   static Color redColor= Colors.redAccent;
+
 }

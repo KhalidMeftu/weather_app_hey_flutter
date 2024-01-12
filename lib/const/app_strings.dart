@@ -36,5 +36,6 @@ class WeatherAppString{
   static const String appGroupId = '<YOUR APP GROUP>';
   static const String iOSWidgetName = 'WeatherAppHomeScreenWidget';
   static const String androidWidgetName = 'WeatherAppHomeScreenWidget';
+  static const String continueToPage='Continue';
 
 }
