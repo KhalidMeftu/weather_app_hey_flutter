@@ -6,6 +6,7 @@ import 'package:flutterweatherapp/presentation/controller/get_daily_forecast_con
 import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/save_current_city%20controller/save_current_city_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/sync_data_controller/sync_database_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'const/app_locator/service_locator.dart';
 import 'const/app_strings.dart';
@@ -28,6 +29,8 @@ class MyApp extends StatelessWidget {
         builder: (_, child) {
           return MultiBlocProvider(
             providers: [
+
+              BlocProvider(create: (context) => SyncDatabaseBloc(sLocator())),
               BlocProvider(
                   create: (context) => SaveCurrentCityBloc(sLocator())),
               BlocProvider(create: (context) => HomeControllerBloc(sLocator())),

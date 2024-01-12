@@ -51,8 +51,8 @@ class WeatherRepository implements BaseRemoteRepository {
   }
 
   @override
-  Future<Either<String, WeatherModel>> syncCitiesWeather(String cityName) async {
-    final cityWeather = await baseremoteDataSource.syncCitiesWeather(cityName);
+  Future<Either<String, WeatherModel>> syncCitiesWeather(String cityName, bool isCurrentCity) async {
+    final cityWeather = await baseremoteDataSource.syncCitiesWeather(cityName, isCurrentCity);
     return cityWeather;
   }
 

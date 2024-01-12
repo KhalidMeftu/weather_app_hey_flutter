@@ -36,8 +36,8 @@ class WeatherAppUseCases {
 
 
   // sync data
-  Future<Either<String,WeatherModel>> syncUserCitiesData(String cityName) async{
-    return await baseWeatherRepository.syncCitiesWeather(cityName);
+  Future<Either<String,WeatherModel>> syncUserCitiesData(String cityName, bool isCurrentCity) async{
+    return await baseWeatherRepository.syncCitiesWeather(cityName,isCurrentCity);
   }
 
 

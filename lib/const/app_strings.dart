@@ -33,6 +33,8 @@ class WeatherAppString{
   static String save ="Save";
   static String loading ="Loading Data...";
   static String noCityData="Currently we are unable to fetch you city response, add new city and enjoy the service";
-
+  static const String appGroupId = '<YOUR APP GROUP>';
+  static const String iOSWidgetName = 'WeatherAppHomeScreenWidget';
+  static const String androidWidgetName = 'WeatherAppHomeScreenWidget';
 
 }

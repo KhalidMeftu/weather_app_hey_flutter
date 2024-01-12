@@ -10,6 +10,7 @@ import 'package:flutterweatherapp/presentation/controller/get_daily_forecast_con
 import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/save_current_city%20controller/save_current_city_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/sync_data_controller/sync_database_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt sLocator = GetIt.instance;
@@ -17,6 +18,8 @@ GetIt sLocator = GetIt.instance;
 class ServicesLocator {
   Future<void> init() async {
 //
+
+    sLocator.registerFactory(() => SyncDatabaseBloc(sLocator()));
     sLocator.registerFactory(() => SaveCurrentCityBloc(sLocator()));
     sLocator.registerFactory(() => HomeControllerBloc(sLocator()));
     sLocator.registerFactory(() => UserCityControllerBloc(sLocator()));

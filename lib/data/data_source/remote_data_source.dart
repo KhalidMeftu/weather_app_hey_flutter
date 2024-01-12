@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:either_dart/src/either.dart';
 import 'package:flutter/services.dart';
+import 'package:flutterweatherapp/const/app_extensions.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/const/database/app_database.dart';
 import 'package:flutterweatherapp/const/services.dart';
@@ -119,24 +120,31 @@ class RemoteDataSource extends BaseRemoteDataSource {
 
   Future<String> getCityImage(String cityName) async {
     String url = WeatherAppServices.cityImageApi +
-        cityName +
+        cityName.toLower() +
         WeatherAppServices.cityImageApiImage;
     try {
       Response response = await dio.get(url);
+
+
       if (response.statusCode == 200) {
         if (response.data.containsKey('photos') &&
             response.data['photos'].isNotEmpty) {
           var imageData = response.data['photos'][0]['image']['mobile'];
-
           return imageData; // Using Either
         } else {
           return ""; // No data found
         }
+      }else if (response.statusCode == 404) {
+        return "";
       } else {
-        return 'Error: Unexpected response status code ${response.statusCode}';
+         return 'Error: Unexpected response status code ${response.statusCode}';
       }
     } catch (e) {
-      return "";
+      if (e is DioException && e.response?.statusCode == 404) {
+        return "";
+      } else {
+        return "";
+      }
     }
   }
 
@@ -240,7 +248,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
   }
 
   @override
-  Future<Either<String, WeatherModel>> syncCitiesWeather(String cityName) async {
+  Future<Either<String, WeatherModel>> syncCitiesWeather(String cityName, bool isCurrentCity) async {
     // TODO: implement syncCitiesWeather
     Map<String, dynamic> queryParameters = {
       'q': cityName,
@@ -254,7 +262,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
         final data = WeatherModel.fromJson(response.data);
         final cityImage = await getCityImage(cityName);
         data.cityImageURL = cityImage;
-        upadateCurrentCityWeatherData(data);
+        updateCurrentCityWeatherData(data);
         return Right(data);
       } else {
         return Left(
@@ -276,8 +284,9 @@ class RemoteDataSource extends BaseRemoteDataSource {
 
   /// update data
 ///
-  Future<Either<String, WeatherModel>> upadateCurrentCityWeatherData(
+  Future<Either<String, WeatherModel>> updateCurrentCityWeatherData(
       WeatherModel weatherModel) async {
+    print("Updating Data");
     try {
       final cityNameNormalized = normalizeCityName(weatherModel.name);
       final existingRecords = await cityNameStore.find(

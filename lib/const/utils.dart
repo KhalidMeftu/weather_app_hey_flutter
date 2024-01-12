@@ -5,9 +5,11 @@ import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/presentation/controller/HomeController/home_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/save_current_city%20controller/save_current_city_bloc.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'app_color.dart';
+import 'app_strings.dart';
 
 class AppUtils {
 
@@ -138,6 +140,24 @@ class AppUtils {
     return timeString;
   }
 
+
+
+
+
+  // home widget update
+  static void updateHomeScreenWidget(WeatherModel weatherData) {
+    HomeWidget.saveWidgetData<String>('city_name', weatherData.name);
+    HomeWidget.saveWidgetData<String>(
+        'temprature', (weatherData.main.temp).toString());
+    HomeWidget.saveWidgetData<String>(
+        'weather_icon_url', (WeatherAppServices.iconURL+weatherData.weather[0].icon+WeatherAppServices.iconSize).toString());
+    HomeWidget.saveWidgetData<String>(
+        'last_update', AppUtils.extractTime(weatherData.updatedAt));
+    HomeWidget.updateWidget(
+      iOSName: WeatherAppString.iOSWidgetName,
+      androidName: WeatherAppString.androidWidgetName,
+    );
+  }
 
 
 

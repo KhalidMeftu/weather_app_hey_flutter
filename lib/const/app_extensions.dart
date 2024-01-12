@@ -8,3 +8,8 @@ extension SizedBoxExtension on num {
     return SizedBox(height: h);
   }
 }
+extension StringExtension on String {
+  String toLower(){
+    return toLowerCase();
+  }
+}
