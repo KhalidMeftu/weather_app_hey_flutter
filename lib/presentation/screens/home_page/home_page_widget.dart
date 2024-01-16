@@ -18,7 +18,6 @@ import 'package:flutterweatherapp/presentation/common_widgets/weather_app_bar.da
 import 'package:flutterweatherapp/presentation/controller/HomeController/home_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/connectivity/internate_connectivity_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_daily_forecast_controller/get_daily_forecast_bloc.dart';
-import 'package:flutterweatherapp/presentation/controller/local_database/get_current_city_weather/load_current_city_weather_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
