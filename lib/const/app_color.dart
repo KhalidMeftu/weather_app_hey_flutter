@@ -21,5 +21,6 @@ class WeatherAppColor {
     transform: GradientRotation(192.33),
   );
   static Color redColor= Colors.redAccent;
+  static Color splashButtonColor =const Color(0xffBF360C);
 
 }

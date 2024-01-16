@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterweatherapp/presentation/controller/HomeController/home_controller_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/connectivity/internate_connectivity_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_daily_forecast_controller/get_daily_forecast_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         builder: (_, child) {
           return MultiBlocProvider(
             providers: [
-
+              BlocProvider(create: (context) => InternateConnectivityBloc()),
               BlocProvider(create: (context) => SyncDatabaseBloc(sLocator())),
               BlocProvider(
                   create: (context) => SaveCurrentCityBloc(sLocator())),

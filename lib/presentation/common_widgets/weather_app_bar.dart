@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutterweatherapp/const/app_color.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
-import 'package:flutterweatherapp/routes/weather_routes.dart';
 
 class WeatherAppBar extends StatelessWidget {
   final String cityNames;
+  final Function onTap;
 
   const WeatherAppBar({
     super.key,
-    required this.cityNames,
+    required this.cityNames, required this.onTap,
   });
 
   @override
@@ -27,9 +27,9 @@ class WeatherAppBar extends StatelessWidget {
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 18.0),
-          child: InkWell(
+          child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, WeatherRoutes.savedCitiesRoute);
+                onTap.call();
               },
               child: Icon(Icons.info_outline_sharp,
                   color: WeatherAppColor.whiteColor)),
