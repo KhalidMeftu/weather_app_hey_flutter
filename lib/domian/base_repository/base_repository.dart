@@ -20,6 +20,7 @@ abstract class BaseRemoteRepository{
   Future<Either<String,List<WeatherModel>>> getUserCitiesWithWeather();
   // sync city data
   Future<Either<String,WeatherModel>> syncCitiesWeather(String cityName, bool isCurrentCity);
+  Future<Either<String,WeatherModel>> getCurrentCityWeather();
 
 
 

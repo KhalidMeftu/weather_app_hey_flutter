@@ -17,6 +17,7 @@ abstract class BaseRemoteDataSource {
   /// sync all data
 
   Future<Either<String,WeatherModel>> syncCitiesWeather(String cityName, bool isCurrentCity);
+  Future<Either<String,WeatherModel>> getCurrentCityWeather();
 
 
 }

@@ -8,6 +8,7 @@ class WeatherAppResources{
   static String feelsLike="$assets$imagesExtended/feels_like.svg";
   static String windIcon="$assets$imagesExtended/wind_icon.svg";
   static String splashLottie ="$assets$lottieExtended/splash_screen.json";
+  static String connectivityLottie ="$assets$lottieExtended/connectivity.json";
 
 
 }

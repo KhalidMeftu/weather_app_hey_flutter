@@ -8,7 +8,8 @@ import 'package:flutterweatherapp/domian/usecases/weatherapp_usecases.dart';
 import 'package:flutterweatherapp/presentation/controller/HomeController/home_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_daily_forecast_controller/get_daily_forecast_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
-import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/local_database/get_current_city_weather/load_current_city_weather_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/local_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/save_current_city%20controller/save_current_city_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/sync_data_controller/sync_database_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -18,7 +19,7 @@ GetIt sLocator = GetIt.instance;
 class ServicesLocator {
   Future<void> init() async {
 //
-
+    sLocator.registerFactory(() => LoadCurrentCityWeatherBloc(sLocator()));
     sLocator.registerFactory(() => SyncDatabaseBloc(sLocator()));
     sLocator.registerFactory(() => SaveCurrentCityBloc(sLocator()));
     sLocator.registerFactory(() => HomeControllerBloc(sLocator()));
@@ -28,7 +29,6 @@ class ServicesLocator {
     sLocator.registerLazySingleton(() =>WeatherAppUseCases(sLocator()));
     sLocator.registerLazySingleton<BaseRemoteRepository>(() => WeatherRepository(sLocator()));
     sLocator.registerLazySingleton<BaseRemoteDataSource>(() => RemoteDataSource());
-    /// todo shared prrefs
     sLocator.registerLazySingleton(() => AppDatabase.instance);
     var instance = await LocalStorageServices.getinstance();
     sLocator.registerLazySingleton<LocalStorageServices>(() => instance);

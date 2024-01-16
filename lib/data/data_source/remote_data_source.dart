@@ -326,5 +326,24 @@ class RemoteDataSource extends BaseRemoteDataSource {
       return Left('Insert failed2: ${e.toString()}');
     }
   }
+/// get current city Data
 
+  @override
+  Future<Either<String, WeatherModel>> getCurrentCityWeather() async {
+    try {
+      final recordSnapshots = await cityNameStore.find(await _db);
+
+      if (recordSnapshots.isEmpty) {
+        return const Left('No data found');
+      }
+
+      final recordSnapshot = recordSnapshots.first;
+      final weatherModel = WeatherModel.fromJson(recordSnapshot.value);
+      weatherModel.isCurrentCity = true;
+
+      return Right(weatherModel);
+    } catch (e) {
+      return Left('Error fetching data: ${e.toString()}');
+    }
+  }
 }

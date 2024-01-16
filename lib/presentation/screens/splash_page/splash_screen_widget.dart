@@ -79,10 +79,7 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
   }
 }
 
-/// internate checker
 /// some UI bg
 /// not city
-/// // home after allow not showing dialog
-///second time load from db and update UI there
-///put some cards on bg for clear view
-///
+///home after allow not showing dialog
+

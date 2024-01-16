@@ -8,7 +8,7 @@ import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/presentation/common_widgets/saved_cities_card.dart';
-import 'package:flutterweatherapp/presentation/controller/local_database_database/user_city_controller/user_city_controller_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/local_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/sync_data_controller/sync_database_bloc.dart';
 import 'package:flutterweatherapp/routes/weather_routes.dart';
 
