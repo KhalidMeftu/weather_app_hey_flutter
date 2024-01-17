@@ -154,6 +154,9 @@ class _UserCitiesState extends State<UserCities> {
               buildWhen: (previous, current) {
                 return previous != current;
               },
+              listenWhen: (previous, current) {
+                return previous != current;
+              },
               builder: (context, state) {
                 if (state is UserCityLoading) {
                   return Center(child: AppUtils().loadingSpinner);

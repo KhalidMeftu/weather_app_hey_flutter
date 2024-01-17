@@ -130,9 +130,10 @@ class SavedCitiesCard extends StatelessWidget {
                           ? Icon(
                               AppUtils().getWeatherIcon(statusImage),
                               size: 50.0,
+                               color: WeatherAppColor.yellowColor,
                             )
                           : Image.network(
-                              AppUtils().getWeatherIconURL(statusImage)),
+                              AppUtils().getWeatherIconURL(statusImage),color: WeatherAppColor.yellowColor,),
 
                       SizedBox(
                         height: 14.h,

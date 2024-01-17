@@ -129,6 +129,8 @@ class RemoteDataSource extends BaseRemoteDataSource {
       final response = await dio.get(
         '${WeatherAppServices.unSplashBaseURL}?query=$cityName&client_id=${WeatherAppServices.unSplashApiKey}',
       );
+      print("Response");
+      print(response);
 
 
       if (response.statusCode == 200) {
@@ -148,6 +150,8 @@ class RemoteDataSource extends BaseRemoteDataSource {
         return "";
       }
     }catch (e) {
+      print("Exception error");
+      print(e);
       if (e is DioException && e.response?.statusCode == 404) {
         return "";
       } else {

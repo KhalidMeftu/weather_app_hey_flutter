@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,6 +52,14 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
     if (widget.showDataFromSavedCities == false) {
       initLocationService();
     }
+    else
+      {
+        if (kDebugMode) {
+          print("City Images");
+          print(widget.cityModel?.cityImageURL);
+
+        }
+      }
   }
 
   @override
@@ -219,10 +228,11 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                                           AppUtils().getWeatherIcon(widget
                                               .cityModel!.weather[0].icon),
                                           size: 100.0,
+                                         color: WeatherAppColor.yellowColor,
                                         )
                                       : Image.network(AppUtils()
                                           .getWeatherIconURL(widget
-                                              .cityModel!.weather[0].icon)),
+                                              .cityModel!.weather[0].icon,),color: WeatherAppColor.yellowColor,),
                                   10.0.sizeHeight,
 
                                   Text(
@@ -597,12 +607,13 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                                                                   .weather[0]
                                                                   .icon),
                                                       size: 100.0,
+                                                      color: WeatherAppColor.yellowColor,
                                                     )
                                                   : Image.network(AppUtils()
                                                       .getWeatherIconURL(
                                                           weatherCityModel
                                                               .weather[0]
-                                                              .icon)),
+                                                              .icon),color: WeatherAppColor.yellowColor,),
                                               10.0.sizeHeight,
 
                                               Text(

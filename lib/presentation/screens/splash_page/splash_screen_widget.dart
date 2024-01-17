@@ -63,7 +63,7 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
                   width: 300.w,
                   child: Card(
                     elevation: 10,
-                    color: WeatherAppColor.yellowColor,
+                    color: WeatherAppColor.greyColor,
                     child: Padding(
                       padding: const EdgeInsets.all(WeatherAppPaddings.s8),
                       child: Center(
