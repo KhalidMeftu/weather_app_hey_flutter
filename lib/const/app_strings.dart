@@ -54,5 +54,6 @@ class WeatherAppString {
   static const String unExpectedStatusCode =
       "Error: Unexpected response status code";
   static const String noWeatherInfo = "No Weather info found for city";
+  static const String syncDone="Sync Completed";
 
 }
