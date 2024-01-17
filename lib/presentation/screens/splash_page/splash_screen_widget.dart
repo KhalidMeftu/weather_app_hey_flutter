@@ -85,5 +85,6 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
   }
 }
 
-
+/// dont spin add screen shots and video thats all
+/// ping medium
 

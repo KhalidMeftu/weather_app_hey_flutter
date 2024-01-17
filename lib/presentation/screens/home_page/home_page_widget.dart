@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +25,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:lottie/lottie.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 class WeatherAppHomePage extends StatefulWidget {
@@ -937,20 +940,28 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
           if (mounted) permissionDialog(context);
           return;
         } else if (permission == LocationPermission.deniedForever) {
-          if (mounted) Navigator.pop(context);
+
+          if (mounted) {
+            //initLocationService();
+            await openAppSettings();
+
+          }
           return;
         }
         break;
       case LocationPermission.deniedForever:
-        if (mounted) Navigator.pop(context);
+        if (mounted) {
+          await openAppSettings();
+        }
+
         return;
       default:
         break;
     }
-    await getUserPos();
+    await getPosition();
   }
 
-  Future<void> getUserPos() async {
+  Future<void> getPosition() async {
     try {
       await getUserPosition();
     } catch (e) {
@@ -1001,7 +1012,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
             MaterialButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                getUserPos();
+                getPosition();
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1014,7 +1025,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pop();
+                     exit(0);
                     },
                     child: Text(WeatherAppString.cancel),
                   ),
@@ -1035,8 +1046,6 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
   }
 
   void goToSavedList(bool status) {
-    //Navigator.pushReplacementNamed(context, WeatherRoutes.homePageRoute,
-    //           arguments: [false, null]);
-    Navigator.pushNamed(context, WeatherRoutes.savedCitiesRoute, arguments: [status]);
+        Navigator.pushNamed(context, WeatherRoutes.savedCitiesRoute, arguments: [status]);
   }
 }

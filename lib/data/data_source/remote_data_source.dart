@@ -124,12 +124,10 @@ class RemoteDataSource extends BaseRemoteDataSource {
 
   /// unslplash scity images
   Future<String> getCityImage(String cityName) async {
-    final String apiKey = 'AiO2jGyD0kOaiHHxTdvYo7gvKPjQLT3oFaIwB05w4tw';
-    final String apiUrl = 'https://api.unsplash.com/search/photos';
     try {
       final dio = Dio();
       final response = await dio.get(
-        '$apiUrl?query=$cityName&client_id=$apiKey',
+        '${WeatherAppServices.unSplashBaseURL}?query=$cityName&client_id=${WeatherAppServices.unSplashApiKey}',
       );
 
 
