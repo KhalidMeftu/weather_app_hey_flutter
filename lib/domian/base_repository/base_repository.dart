@@ -5,7 +5,7 @@ import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 abstract class BaseRemoteRepository{
 
   /// get weather for current city
-  Future<Either<String, WeatherModel>> gerWeatherForCurrentCity(String cityName);
+  Future<Either<String, WeatherModel>> getWeatherForCurrentCity(String cityName);
 
   /// get 4 days weather forecast
   Future<Either<String,List<Daily>>> getDailyForecast();

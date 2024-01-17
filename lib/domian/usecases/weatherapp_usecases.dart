@@ -9,7 +9,7 @@ class WeatherAppUseCases {
   WeatherAppUseCases(this.baseWeatherRepository);
 
   Future<Either<String,WeatherModel>> getCurrentCityWeather(String cityName) async{
-    return await baseWeatherRepository.gerWeatherForCurrentCity(cityName);
+    return await baseWeatherRepository.getWeatherForCurrentCity(cityName);
   }
 
   Future<Either<String,List<Daily>>> getDailyForecast() async{

@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:either_dart/src/either.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterweatherapp/const/app_extensions.dart';
+import 'package:flutterweatherapp/const/app_resources.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/const/database/app_database.dart';
 import 'package:flutterweatherapp/const/services.dart';
@@ -30,16 +31,18 @@ class RemoteDataSource extends BaseRemoteDataSource {
       /// a 2-second delay to mock web response
       await Future.delayed(const Duration(seconds: 1));
       final String response =
-          await rootBundle.loadString('assets/json/mockdailyforecast.json');
+          await rootBundle.loadString(WeatherAppResources.dailyForecastMock);
       final data = json.decode(response);
 
-      if (data is Map<String, dynamic> && data.containsKey('daily')) {
-        final dailyData = List<Map<String, dynamic>>.from(data['daily']);
+      if (data is Map<String, dynamic> &&
+          data.containsKey(WeatherAppString.daily)) {
+        final dailyData =
+            List<Map<String, dynamic>>.from(data[WeatherAppString.daily]);
         List<Daily> dailyList =
             dailyData.map((json) => Daily.fromJson(json)).toList();
         return Right(dailyList);
       } else {
-        return const Left('Invalid JSON format');
+        return const Left(WeatherAppString.invalidJson);
       }
     } catch (e) {
       return Left(e.toString());
@@ -64,18 +67,21 @@ class RemoteDataSource extends BaseRemoteDataSource {
         data.cityImageURL = cityImage;
         return Right(data);
       } else {
-        return Left(
-            'Error: Server responded with status code ${response.statusCode}');
+        return Left(WeatherAppString.weatherAppError +
+            (response.statusCode).toString());
       }
     } catch (e, s) {
       if (e is DioException) {
         if (e.response?.statusCode == 404) {
-          return const Left('Error: 404 Not Found');
+          return Left(
+              WeatherAppString.weatherAppError + WeatherAppString.notFound);
         } else {
-          return Left('Error: ${e.response?.data['message'] ?? e.message}');
+          return Left(
+              '${WeatherAppString.weatherAppError}${e.response?.data['message'] ?? e.message}');
         }
       } else {
-        return const Left('Error: An unexpected error occurred');
+        return Left(WeatherAppString.weatherAppError +
+            WeatherAppString.unExpectedError);
       }
     }
   }
@@ -106,11 +112,9 @@ class RemoteDataSource extends BaseRemoteDataSource {
       await cityNameStore.add(await _db, weatherModel.toJson());
       return Right(weatherModel);
     } catch (e) {
-      return Left('Insert failed2: ${e.toString()}');
+      return Left('${WeatherAppString.dataInsertionFailed}${e.toString()}');
     }
   }
-
-
 
   String normalizeCityName(String name) {
     return name.toLowerCase().trim();
@@ -125,7 +129,6 @@ class RemoteDataSource extends BaseRemoteDataSource {
     try {
       Response response = await dio.get(url);
 
-
       if (response.statusCode == 200) {
         if (response.data.containsKey('photos') &&
             response.data['photos'].isNotEmpty) {
@@ -134,10 +137,10 @@ class RemoteDataSource extends BaseRemoteDataSource {
         } else {
           return ""; // No data found
         }
-      }else if (response.statusCode == 404) {
+      } else if (response.statusCode == 404) {
         return "";
       } else {
-         return 'Error: Unexpected response status code ${response.statusCode}';
+        return '${WeatherAppString.unExpectedStatusCode} ${response.statusCode}';
       }
     } catch (e) {
       if (e is DioException && e.response?.statusCode == 404) {
@@ -149,7 +152,8 @@ class RemoteDataSource extends BaseRemoteDataSource {
   }
 
   @override
-  Future<Either<String, List<WeatherModel>>> saveUserCityData(WeatherModel weatherModel) async {
+  Future<Either<String, List<WeatherModel>>> saveUserCityData(
+      WeatherModel weatherModel) async {
     // TODO: implement saveUserCityData
 
     try {
@@ -159,7 +163,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
         finder: Finder(
           filter: Filter.custom((record) {
             final recordNameNormalized =
-            normalizeCityName(record['name'] as String);
+                normalizeCityName(record['name'] as String);
             return recordNameNormalized == cityNameNormalized;
           }),
         ),
@@ -191,12 +195,13 @@ class RemoteDataSource extends BaseRemoteDataSource {
 
       return Right(weatherModels);
     } catch (e) {
-      return Left('Insert failed: ${e.toString()}');
+      return Left('${WeatherAppString.dataInsertionFailed}${e.toString()}');
     }
   }
 
   @override
-  Future<Either<String, WeatherModel>> getWeatherForUserCity(String cityName) async {
+  Future<Either<String, WeatherModel>> getWeatherForUserCity(
+      String cityName) async {
     // TODO: implement getWeatherForUserCity
     Map<String, dynamic> queryParameters = {
       'q': cityName,
@@ -213,17 +218,18 @@ class RemoteDataSource extends BaseRemoteDataSource {
         return Right(data);
       } else {
         return Left(
-            'Error: Server responded with status code ${response.statusCode}');
+            '${WeatherAppString.unExpectedStatusCode} ${response.statusCode}');
       }
     } catch (e, s) {
       if (e is DioException) {
         if (e.response?.statusCode == 404) {
-          return const Left('Error: 404 Not Found');
+          return const Left(WeatherAppString.notFound);
         } else {
-          return Left('Error: ${e.response?.data['message'] ?? e.message}');
+          return Left(
+              '${WeatherAppString.weatherAppError} ${e.response?.data['message'] ?? e.message}');
         }
       } else {
-        return const Left('Error: An unexpected error occurred');
+        return const Left(WeatherAppString.unExpectedError);
       }
     }
   }
@@ -234,7 +240,6 @@ class RemoteDataSource extends BaseRemoteDataSource {
   }
 
   Future<Either<String, List<WeatherModel>>> populateWeatherDatabase() async {
-
     try {
       final recordSnapshots = await cityNameStore.find(await _db);
       final weatherModels = recordSnapshots.map((snapshot) {
@@ -243,12 +248,13 @@ class RemoteDataSource extends BaseRemoteDataSource {
 
       return Right(weatherModels);
     } catch (e) {
-      return Left('Error fetching data: ${e.toString()}');
+      return Left('${WeatherAppString.weatherAppError} ${e.toString()}');
     }
   }
 
   @override
-  Future<Either<String, WeatherModel>> syncCitiesWeather(String cityName, bool isCurrentCity) async {
+  Future<Either<String, WeatherModel>> syncCitiesWeather(
+      String cityName, bool isCurrentCity) async {
     // TODO: implement syncCitiesWeather
     Map<String, dynamic> queryParameters = {
       'q': cityName,
@@ -271,22 +277,21 @@ class RemoteDataSource extends BaseRemoteDataSource {
     } catch (e, s) {
       if (e is DioException) {
         if (e.response?.statusCode == 404) {
-          return const Left('Error: 404 Not Found');
+          return const Left(WeatherAppString.notFound);
         } else {
-          return Left('Error: ${e.response?.data['message'] ?? e.message}');
+          return Left(
+              '${WeatherAppString.weatherAppError} ${e.response?.data['message'] ?? e.message}');
         }
       } else {
-        return const Left('Error: An unexpected error occurred');
+        return const Left(WeatherAppString.unExpectedError);
       }
     }
   }
 
-
   /// update data
-///
+  ///
   Future<Either<String, WeatherModel>> updateCurrentCityWeatherData(
       WeatherModel weatherModel) async {
-    print("Updating Data");
     try {
       final cityNameNormalized = normalizeCityName(weatherModel.name);
       final existingRecords = await cityNameStore.find(
@@ -294,7 +299,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
         finder: Finder(
           filter: Filter.custom((record) {
             final recordNameNormalized =
-            normalizeCityName(record['name'] as String);
+                normalizeCityName(record['name'] as String);
             return recordNameNormalized == cityNameNormalized;
           }),
         ),
@@ -302,7 +307,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
 
       if (existingRecords.isNotEmpty) {
         final existingWeatherModel =
-        WeatherModel.fromJson(existingRecords.first.value);
+            WeatherModel.fromJson(existingRecords.first.value);
 
         // Update the existing record with the new data
         await cityNameStore.update(
@@ -311,7 +316,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
           finder: Finder(
             filter: Filter.custom((record) {
               final recordNameNormalized =
-              normalizeCityName(record['name'] as String);
+                  normalizeCityName(record['name'] as String);
               return recordNameNormalized == cityNameNormalized;
             }),
           ),
@@ -323,10 +328,11 @@ class RemoteDataSource extends BaseRemoteDataSource {
       await cityNameStore.add(await _db, weatherModel.toJson());
       return Right(weatherModel);
     } catch (e) {
-      return Left('Insert failed2: ${e.toString()}');
+      return Left('${WeatherAppString.dataInsertionFailed} ${e.toString()}');
     }
   }
-/// get current city Data
+
+  /// get current city Data
 
   @override
   Future<Either<String, WeatherModel>> getCurrentCityWeather() async {
@@ -334,7 +340,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
       final recordSnapshots = await cityNameStore.find(await _db);
 
       if (recordSnapshots.isEmpty) {
-        return const Left('No data found');
+        return Left(WeatherAppString.noData);
       }
 
       final recordSnapshot = recordSnapshots.first;
@@ -343,7 +349,7 @@ class RemoteDataSource extends BaseRemoteDataSource {
 
       return Right(weatherModel);
     } catch (e) {
-      return Left('Error fetching data: ${e.toString()}');
+      return Left('${WeatherAppString.weatherAppError} ${e.toString()}');
     }
   }
 }
