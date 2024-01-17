@@ -17,18 +17,20 @@ import 'package:flutterweatherapp/routes/weather_routes.dart';
 import 'package:lottie/lottie.dart';
 
 class CitiesList extends StatelessWidget {
-  const CitiesList({super.key});
+  final bool isCurrentCityNotFound;
+  const CitiesList({super.key, required this.isCurrentCityNotFound});
 
   @override
   Widget build(BuildContext context) {
     final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
     userCityBloc.add(const FetchSavedCitiesData());
-    return const UserCities();
+    return  UserCities(isCurrentCityNotFound: isCurrentCityNotFound);
   }
 }
 
 class UserCities extends StatefulWidget {
-  const UserCities({super.key});
+  final bool isCurrentCityNotFound;
+  const UserCities({super.key, required this.isCurrentCityNotFound});
 
   @override
   State<UserCities> createState() => _UserCitiesState();
@@ -67,7 +69,15 @@ class _UserCitiesState extends State<UserCities> {
               child: WillPopScope(
                 onWillPop: () async {
                   cityNamesData = [];
-                  return true;
+                  if(widget.isCurrentCityNotFound)
+                    {
+                      return false;
+
+                    }
+                  else{
+                    return true;
+
+                  }
                 },
                 child: Scaffold(
                     resizeToAvoidBottomInset: true,

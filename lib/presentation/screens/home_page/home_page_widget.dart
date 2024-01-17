@@ -103,8 +103,8 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                          AppUtils.showToastMessage(WeatherAppString.noCityData,Toast.LENGTH_LONG);
 
                           Future.delayed(const Duration(seconds: 2), () {
-                            Navigator.pushNamed(
-                                context, WeatherRoutes.savedCitiesRoute);
+                            //goToPagesList
+                            goToSavedList(true);
                           });
                         }
                       },
@@ -160,7 +160,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                   child: WeatherAppBar(
                       cityNames: widget.cityModel!.name,
                       onTap: () {
-                        goToPagesList();
+                        goToSavedList(false);
                       }),
                 ),
                 Padding(
@@ -172,9 +172,9 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
 
                       /// today
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding:  const EdgeInsets.all(WeatherAppPaddings.s10),
                         child: GlassContainer(
-                          color: WeatherAppColor.whiteColor.withOpacity(0.1),
+                          color: WeatherAppColor.blackColor.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(16),
                           child: Column(
                             children: [
@@ -183,7 +183,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                                       style: WeatherAppFonts.large(
                                               fontWeight: FontWeight.w300,
                                               color:
-                                                  WeatherAppColor.whiteColor)
+                                              WeatherAppColor.whiteColor)
                                           .copyWith(
                                               fontSize:
                                                   WeatherAppFontSize.s30))),
@@ -199,8 +199,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                                       style: WeatherAppFonts.large(
                                               fontWeight: FontWeight.w300,
                                               color: WeatherAppColor
-                                                  .whiteColor
-                                                  .withOpacity(0.75))
+                                                  .whiteColor)
                                           .copyWith(
                                               fontSize:
                                                   WeatherAppFontSize.s16))),
@@ -423,8 +422,8 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                               child: SizedBox(
                                 height: 200.h,
                                 child: GlassContainer(
-                                  color: WeatherAppColor.whiteColor
-                                      .withOpacity(0.1),
+                                  color: WeatherAppColor.blackColor.withOpacity(0.3),
+
                                   borderRadius: BorderRadius.circular(16),
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
@@ -522,7 +521,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                               child: WeatherAppBar(
                                 cityNames: weatherCityModel.name,
                                 onTap: () {
-                                  goToPagesList();
+                                  goToSavedList(false);
                                 },
                               ),
                             ),
@@ -538,8 +537,8 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: GlassContainer(
-                                      color: WeatherAppColor.whiteColor
-                                          .withOpacity(0.1),
+                                      color: WeatherAppColor.blackColor.withOpacity(0.3),
+
                                       borderRadius: BorderRadius.circular(16),
                                       child: Column(
                                         children: [
@@ -827,9 +826,8 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                                           child: SizedBox(
                                             height: 200.h,
                                             child: GlassContainer(
-                                              color: WeatherAppColor
-                                                  .whiteColor
-                                                  .withOpacity(0.1),
+                                              color: WeatherAppColor.blackColor.withOpacity(0.3),
+
                                               borderRadius:
                                                   BorderRadius.circular(16),
                                               child: SingleChildScrollView(
@@ -1036,7 +1034,9 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
     }
   }
 
-  void goToPagesList() {
-    Navigator.pushNamed(context, WeatherRoutes.savedCitiesRoute);
+  void goToSavedList(bool status) {
+    //Navigator.pushReplacementNamed(context, WeatherRoutes.homePageRoute,
+    //           arguments: [false, null]);
+    Navigator.pushNamed(context, WeatherRoutes.savedCitiesRoute, arguments: [status]);
   }
 }

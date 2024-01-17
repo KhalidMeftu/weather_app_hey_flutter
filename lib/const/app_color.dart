@@ -22,5 +22,7 @@ class WeatherAppColor {
   );
   static Color redColor= Colors.redAccent;
   static Color splashButtonColor =const Color(0xffBF360C);
+  static Color yellowColor = const Color(0xffE6E6FA);
+  static Color blackColor =const Color(0xff000000);
 
 }

@@ -27,7 +27,9 @@ class RouteGenerator {
 
       case WeatherRoutes.savedCitiesRoute:
         // back to right
-        return LeftToRightPageRoute( child:  const CitiesList(),);
+        List<dynamic> args = routeSettings.arguments as List<dynamic>;
+
+        return LeftToRightPageRoute( child:  CitiesList(isCurrentCityNotFound: args[0],),);
 
       default:
         return unDefinedRoute();
@@ -62,8 +64,7 @@ class RouteGenerator {
           Tween(begin: 0.0, end: 1.0).chain(
             CurveTween(
                 curve: const Interval(0.2, 1.0,
-                    curve: Curves.ease)), // Adjust the delay timing here
-          ),
+                    curve: Curves.ease)), ),
         );
 
         return AnimatedBuilder(
@@ -90,21 +91,28 @@ class LeftToRightPageRoute extends PageRouteBuilder {
 
   LeftToRightPageRoute({required this.child})
       : super(
-    transitionDuration: const Duration(seconds: 1),
+    transitionDuration: const Duration(milliseconds: 500), // Shortened duration
     pageBuilder: (context, animation, secondaryAnimation) => child,
   );
 
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    // TODO: implement buildTransitions
-    return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(-1,0),
-              end: Offset.zero
+    // Use a fade transition for better performance and smoother look
+    var begin = const Offset(-1.0, 0.0);
+    var end = Offset.zero;
+    var curve = Curves.easeOut; // Smoother curve for the transition
 
-            ).animate(animation),
-            child: child,
+    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+    var offsetAnimation = animation.drive(tween);
+
+    return FadeTransition(
+      opacity: animation,
+      child: SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      ),
     );
   }
 }
+

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterweatherapp/const/app_color.dart';
 import 'package:flutterweatherapp/const/app_resources.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
@@ -58,17 +59,22 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
                   Navigator.pushReplacementNamed(context, WeatherRoutes.homePageRoute,
                       arguments: [false, null]);
                 },
-                child: Card(
-                  elevation: 10,
-                  color: WeatherAppColor.splashButtonColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(WeatherAppPaddings.s8),
-                    child: Text(
-                      WeatherAppString.continueToPage,
-                      style: WeatherAppFonts.large(
-                              fontWeight: FontWeight.w500,
-                              color: WeatherAppColor.whiteColor)
-                          .copyWith(fontSize: WeatherAppFontSize.s19),
+                child: SizedBox(
+                  width: 300.w,
+                  child: Card(
+                    elevation: 10,
+                    color: WeatherAppColor.yellowColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(WeatherAppPaddings.s8),
+                      child: Center(
+                        child: Text(
+                          WeatherAppString.continueToPage,
+                          style: WeatherAppFonts.large(
+                                  fontWeight: FontWeight.w500,
+                                  color: WeatherAppColor.blackColor)
+                              .copyWith(fontSize: WeatherAppFontSize.s19),
+                        ),
+                      ),
                     ),
                   ),
                 ),
