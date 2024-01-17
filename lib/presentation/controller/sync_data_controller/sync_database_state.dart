@@ -29,11 +29,13 @@ class DataSyncSuccessfull extends SyncDatabaseState{
 
 
 class SyncSuccessfull extends SyncDatabaseState{
+final List<WeatherModel> newModel;
 
+  const SyncSuccessfull(this.newModel);
 
   @override
   // TODO: implement props
-  List<Object?> get props => [];
+  List<Object?> get props => [newModel];
 }
 class DataSyncError extends SyncDatabaseState{
   final String errorMessage;

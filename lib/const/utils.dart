@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutterweatherapp/const/services.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/presentation/controller/local_database/user_city_controller/user_city_controller_bloc.dart';
@@ -155,6 +156,19 @@ class AppUtils {
     HomeWidget.updateWidget(
       iOSName: WeatherAppString.iOSWidgetName,
       androidName: WeatherAppString.androidWidgetName,
+    );
+  }
+
+
+  static void showToastMessage(String message, Toast length) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: length,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
     );
   }
 

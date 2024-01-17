@@ -120,29 +120,36 @@ class RemoteDataSource extends BaseRemoteDataSource {
     return name.toLowerCase().trim();
   }
 
-  /// get city image function
 
+
+  /// unslplash scity images
   Future<String> getCityImage(String cityName) async {
-    String url = WeatherAppServices.cityImageApi +
-        cityName.toLower() +
-        WeatherAppServices.cityImageApiImage;
+    final String apiKey = 'AiO2jGyD0kOaiHHxTdvYo7gvKPjQLT3oFaIwB05w4tw';
+    final String apiUrl = 'https://api.unsplash.com/search/photos';
     try {
-      Response response = await dio.get(url);
+      final dio = Dio();
+      final response = await dio.get(
+        '$apiUrl?query=$cityName&client_id=$apiKey',
+      );
+
 
       if (response.statusCode == 200) {
-        if (response.data.containsKey('photos') &&
-            response.data['photos'].isNotEmpty) {
-          var imageData = response.data['photos'][0]['image']['mobile'];
-          return imageData; // Using Either
+        var responseData = response.data;
+        if (responseData['results'] != null && responseData['results'].isNotEmpty) {
+          var firstImage = responseData['results'][0];
+          String imageUrl = firstImage['urls']['regular'];
+          return imageUrl;
         } else {
-          return ""; // No data found
+          return "";
         }
-      } else if (response.statusCode == 404) {
-        return "";
-      } else {
-        return '${WeatherAppString.unExpectedStatusCode} ${response.statusCode}';
       }
-    } catch (e) {
+      else if (response.statusCode == 404) {
+        return "";
+      }
+      else {
+        return "";
+      }
+    }catch (e) {
       if (e is DioException && e.response?.statusCode == 404) {
         return "";
       } else {

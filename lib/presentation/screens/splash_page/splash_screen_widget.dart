@@ -79,7 +79,5 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
   }
 }
 
-/// some UI bg
-/// not city
-///home after allow not showing dialog
+
 

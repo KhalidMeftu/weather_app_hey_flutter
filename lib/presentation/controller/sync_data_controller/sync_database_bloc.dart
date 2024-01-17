@@ -12,6 +12,7 @@ class SyncDatabaseBloc extends Bloc<SyncDatabaseEvent, SyncDatabaseState> {
 
   SyncDatabaseBloc(this.getMedaUseCase) : super(SyncDatabaseInitial()) {
     on<SyncMyData>((event, emit) async {
+      List<WeatherModel> newModel=[];
       emit(SyncingWeatherData());
       bool allDataSynced = true;
       for (int i = 0; i < event.cityNames.length; i++) {
@@ -23,9 +24,7 @@ class SyncDatabaseBloc extends Bloc<SyncDatabaseEvent, SyncDatabaseState> {
             allDataSynced = false;
           },
           (right) {
-            //emit(DataSyncSuccessfull(right));
-            print("Data sync successfull");
-            print(right.cityImageURL);
+            newModel.add(right);
             allDataSynced = false;
 
           },
@@ -33,7 +32,7 @@ class SyncDatabaseBloc extends Bloc<SyncDatabaseEvent, SyncDatabaseState> {
       }
 
       if (allDataSynced) {
-        emit(SyncSuccessfull());
+        emit(SyncSuccessfull(newModel));
       }
     });
   }

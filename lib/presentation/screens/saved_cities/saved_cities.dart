@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutterweatherapp/const/app_color.dart';
 import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/const/utils.dart';
@@ -48,10 +49,13 @@ class _UserCitiesState extends State<UserCities> {
       listener: (context, state) {
         if(state is SyncSuccessfull)
           {
-            final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
-            userCityBloc.add(const FetchSavedCitiesData());
+
             isSyncing=true;
-            Navigator.pop(context);
+            for(int i=0;i<=state.newModel.length;i++)
+              {
+                AppUtils.saveUserCity(state.newModel[i], context);
+
+              }
           }
       },
       child: WillPopScope(
@@ -108,22 +112,27 @@ class _UserCitiesState extends State<UserCities> {
                     child: Center(
                       child: BlocConsumer<UserCityControllerBloc,
                           UserCityControllerState>(
+                        buildWhen: (previous, current) {
+                          return previous != current;
+                        },
                         builder: (context, state) {
                           if (state is UserCityLoading) {
                             return Center(child: AppUtils().loadingSpinner);
                           }
                           if (state is UserCityLoaded) {
 
-                            if(isSyncing)
-                              {
-                                final currentCityWeatherModel = state.usermodel.firstWhere(
-                                      (element) => element.isCurrentCity == true,
-                                );
-                                AppUtils.updateHomeScreenWidget(currentCityWeatherModel);
+                            if(isSyncing) {
+                              final currentCityWeatherModel = state.usermodel
+                                  .firstWhere(
+                                    (element) => element.isCurrentCity == true,
+                                orElse: () => state.usermodel.first,
+                              );
 
-
-
+                              if (currentCityWeatherModel != null) {
+                                AppUtils.updateHomeScreenWidget(
+                                    currentCityWeatherModel);
                               }
+                            }
                             return ListView.builder(
                               itemCount: state.usermodel.length,
                               itemBuilder: (context, index) {
@@ -209,15 +218,23 @@ class _UserCitiesState extends State<UserCities> {
                           }
                           return Text(state.toString());
                         },
-                        listener: (context, liState) {
-                          if (liState is CityWeatherLoaded) {
+                        listener: (context, listnerState) {
+                          if (listnerState is CityWeatherLoaded) {
                             saveNewCityTextController.clear();
-                            WeatherModel newModel = liState.usermodel;
+                            WeatherModel newModel = listnerState.usermodel;
                             newModel.cityImageURL =
-                                liState.usermodel.cityImageURL;
+                                listnerState.usermodel.cityImageURL;
                             newModel.isCurrentCity = false;
                             AppUtils.saveUserCity(newModel, context);
                           }
+                          if(listnerState is UserCityFetchingError)
+                            {
+                              saveNewCityTextController.clear();
+                              AppUtils.showToastMessage(WeatherAppString.noWeatherInfo,Toast.LENGTH_SHORT);
+                              final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
+                              userCityBloc.add(const FetchSavedCitiesData());
+
+                            }
                         },
                       ),
                     ),

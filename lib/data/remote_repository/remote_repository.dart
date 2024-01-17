@@ -5,7 +5,7 @@ import 'package:flutterweatherapp/domian/entity/forcast_entity.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 
 class WeatherRepository implements BaseRemoteRepository {
-  final BaseRemoteRepository baseRemoteDataSource;
+  final BaseRemoteDataSource baseRemoteDataSource;
 
   WeatherRepository(this.baseRemoteDataSource);
 
@@ -19,14 +19,14 @@ class WeatherRepository implements BaseRemoteRepository {
   @override
   Future<Either<String, WeatherModel>> getWeatherForCurrentCity(String cityName) async {
     // TODO: implement getWeatherForUserCity
-    final currentCityWeatherResult = await baseRemoteDataSource.getWeatherForCurrentCity(cityName);
+    final currentCityWeatherResult = await baseRemoteDataSource.getWeatherInfoForCurrentCity(cityName);
     return currentCityWeatherResult;
   }
 
   @override
   Future<Either<String, WeatherModel>> saveCurrentWeatherData(WeatherModel weatherModel) async {
     // TODO: implement saveCurrentWeatherData
-    final saveCurrentCity = await baseRemoteDataSource.saveCurrentWeatherData(weatherModel);
+    final saveCurrentCity = await baseRemoteDataSource.saveCurrentCityWeatherData(weatherModel);
     return saveCurrentCity;
   }
 

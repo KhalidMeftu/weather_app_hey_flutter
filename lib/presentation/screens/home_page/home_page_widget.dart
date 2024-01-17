@@ -47,7 +47,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
     WidgetsBinding.instance.addObserver(this);
     if (widget.showDataFromSavedCities == false) {
       initLocationService();
-    } else {}
+    }
   }
 
   @override
@@ -502,14 +502,8 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                       listener:
                           (BuildContext context, HomeControllerState state) {
                         if (state is CurrentCityWeatherInfoLoadingError) {
-                          Fluttertoast.showToast(
-                              msg: WeatherAppString.noCityData,
-                              toastLength: Toast.LENGTH_LONG,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
-                              fontSize: WeatherAppFontSize.s16);
+                         AppUtils.showToastMessage(WeatherAppString.noCityData,Toast.LENGTH_LONG);
+
                           Future.delayed(const Duration(seconds: 2), () {
                             Navigator.pushNamed(
                                 context, WeatherRoutes.savedCitiesRoute);
@@ -565,7 +559,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
                         }),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 40.h),
+                    padding: EdgeInsets.only(top: 70.h),
                     child: ListView(
                       children: [
                         SizedBox(height: AppBar().preferredSize.height),
@@ -879,6 +873,10 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
           await initLocationService();
           isLocationServiceInitialized = true;
         }
+        else{
+          await initLocationService();
+
+        }
       }
     }
   }
@@ -1024,7 +1022,6 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage>
   }
 
   void goToPagesList() {
-    print('Clicked');
     Navigator.pushNamed(context, WeatherRoutes.savedCitiesRoute);
   }
 }

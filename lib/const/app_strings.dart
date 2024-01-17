@@ -53,4 +53,6 @@ class WeatherAppString {
   static const String dataInsertionFailed = "Data Insertion Error";
   static const String unExpectedStatusCode =
       "Error: Unexpected response status code";
+  static const String noWeatherInfo = "No Weather info found for city";
+
 }
