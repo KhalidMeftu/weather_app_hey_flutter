@@ -44,6 +44,12 @@ class _UserCitiesState extends State<UserCities> {
   bool isSyncing = false;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   void dispose() {
     saveNewCityTextController.dispose();
     super.dispose();
@@ -51,6 +57,7 @@ class _UserCitiesState extends State<UserCities> {
 
   @override
   Widget build(BuildContext context) {
+    getState(context);
     return BlocBuilder<InternateConnectivityBloc, InternateConnectivityState>(
       builder: (context, state) {
         if (state is ConnectedState) {
@@ -170,8 +177,13 @@ class _UserCitiesState extends State<UserCities> {
                             EdgeInsets.only(left: 12.w, right: 12.w, top: 15.h),
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, WeatherRoutes.homePageRoute,
+                            print("From City loaded");
+                            resetState();
+                           // Navigator.pushAndRemoveUntil(
+                              //  context, WeatherRoutes.homePageRoute,
+                              //  arguments: [true, state.usermodel[index]]);
+
+                            Navigator.pushReplacementNamed(context, WeatherRoutes.homePageRoute,
                                 arguments: [true, state.usermodel[index]]);
                           },
                           child: SavedCitiesCard(
@@ -195,8 +207,12 @@ class _UserCitiesState extends State<UserCities> {
                   );
                 }
 
-                if (state is UserCitySaveSuccess) {
-                  return ListView.builder(
+
+                return Text(state.toString());
+              },
+              listener: (context, listenerState) {
+                if (listenerState is UserCitySaveSuccess) {
+                  /* return ListView.builder(
                     itemCount: state.weatherModel.length,
                     itemBuilder: (context, index) {
                       return Padding(
@@ -204,6 +220,8 @@ class _UserCitiesState extends State<UserCities> {
                             EdgeInsets.only(left: 12.w, right: 12.w, top: 15.h),
                         child: GestureDetector(
                           onTap: () {
+                            print("From Save Success");
+                            resetState();
                             Navigator.pushNamed(
                                 context, WeatherRoutes.homePageRoute,
                                 arguments: [true, state.weatherModel[index]]);
@@ -229,17 +247,27 @@ class _UserCitiesState extends State<UserCities> {
                       );
                     },
                   );
+                  */
+                  final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
+                  userCityBloc.add(const FetchSavedCitiesData());
                 }
-                return Text(state.toString());
-              },
-              listener: (context, listenerState) {
+             //   print("State is");
+               // print(listenerState);
+                // UserCitySaveSuccess
 
+                ///UserCityLoaded([Instance of 'WeatherModel', Instance of 'WeatherModel'])
                 if (listenerState is CityWeatherLoaded) {
                   saveNewCityTextController.clear();
                   WeatherModel newModel = listenerState.usermodel;
                   newModel.cityImageURL = listenerState.usermodel.cityImageURL;
                   newModel.isCurrentCity = false;
                   AppUtils.saveUserCity(newModel, context);
+                  if(widget.isCurrentCityNotFound==true)
+                    {
+                      AppUtils.updateHomeScreenWidget(newModel);
+
+                    }
+
                 }
                 if (listenerState is UserCityFetchingError) {
                   saveNewCityTextController.clear();
@@ -341,4 +369,16 @@ class _UserCitiesState extends State<UserCities> {
     final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
     userCityBloc.add(GetCityWeather(result));
   }
+
+  void resetState() {
+    final resetState = BlocProvider.of<UserCityControllerBloc>(context);
+    resetState.add(const UserCityInitial());
+  }
+}
+
+void getState(BuildContext context) {
+  final resetState = BlocProvider.of<UserCityControllerBloc>(context);
+  print("State is1$resetState");
+  //'UserCityControllerBloc'
+
 }

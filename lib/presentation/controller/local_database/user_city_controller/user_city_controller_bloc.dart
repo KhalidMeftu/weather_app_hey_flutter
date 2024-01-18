@@ -12,7 +12,14 @@ part 'user_city_controller_state.dart';
 class UserCityControllerBloc extends Bloc<UserCityControllerEvent, UserCityControllerState> {
   final WeatherAppUseCases getMedaUseCase;
 
-  UserCityControllerBloc(this.getMedaUseCase) : super(UserCityLoading()) {
+  UserCityControllerBloc(this.getMedaUseCase) : super( UserCityControllerInitial()) {
+    //
+
+    on<UserCityInitial>((event, emit) async {
+      emit(UserCityControllerInitial());
+
+
+    });
     on<SaveUserCity>((event, emit) async {
       emit(UserCityLoading());
       final result=await getMedaUseCase.saveUserCity(event.weatherModel);

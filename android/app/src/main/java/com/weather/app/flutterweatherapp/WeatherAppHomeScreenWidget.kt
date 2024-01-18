@@ -28,10 +28,10 @@ class WeatherAppHomeScreenWidget : AppWidgetProvider() {
             val widgetData = HomeWidgetPlugin.getData(context)
             val view2 = RemoteViews(context.packageName, R.layout.weather_app_home_screen_widget)
 
-            val title = widgetData.getString("city_name", null)
+            val title = widgetData.getString("city_name","Weather info not found")
             view2.setTextViewText(R.id.headline_city, title ?: "")
 
-            val description = widgetData.getString("temprature", null)
+            val description = widgetData.getString("temprature","Weather info not found")
             view2.setTextViewText(
                 R.id.headline_temprature,
                 description + "\u2103" ?: "Weather info not found"
@@ -40,7 +40,7 @@ class WeatherAppHomeScreenWidget : AppWidgetProvider() {
             val imageIcon = widgetData.getString("weather_icon_url", "")
 
 
-            val lastUpdate = widgetData.getString("last_update", null)
+            val lastUpdate = widgetData.getString("last_update", "Weather info not found")
             view2.setTextViewText(
                 R.id.headline_lastUpdate,
                 ("Last updated at: $lastUpdate")

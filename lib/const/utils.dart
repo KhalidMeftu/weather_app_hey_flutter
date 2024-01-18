@@ -1,10 +1,16 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutterweatherapp/const/services.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
+import 'package:flutterweatherapp/presentation/controller/HomeController/home_controller_bloc.dart';
+import 'package:flutterweatherapp/presentation/controller/get_daily_forecast_controller/get_daily_forecast_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/local_database/user_city_controller/user_city_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/save_current_city%20controller/save_current_city_bloc.dart';
+import 'package:flutterweatherapp/routes/weather_routes.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_icons/weather_icons.dart';
@@ -12,7 +18,6 @@ import 'app_color.dart';
 import 'app_strings.dart';
 
 class AppUtils {
-
   /// a function to convert city name to lowercase to get city Image
   static String convertTextToLower(String cityName) {
     return cityName.toLowerCase();
@@ -24,19 +29,31 @@ class AppUtils {
     return text.toUpperCase();
   }
 
-
   /// only first later to upper case for api response of current city
   static String convertFirstTextToUpper(String text) {
-    return text[0].toUpperCase()+text.substring(1);
+    return text[0].toUpperCase() + text.substring(1);
   }
 
   /// on home page we have date format of Jun 07 so belows function takes todays date as an input and returns formated
-/// output
+  /// output
   static String getFormattedDate() {
     DateTime now = DateTime.now();
+
     ///  months
     List<String> monthNames = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
     ];
 
     String month = monthNames[now.month];
@@ -47,7 +64,7 @@ class AppUtils {
 
   /// spinner to load data
 
- Widget loadingSpinner =  Center(
+  Widget loadingSpinner = Center(
     child: SizedBox(
         width: 24,
         height: 24,
@@ -77,18 +94,17 @@ class AppUtils {
         return WeatherIcons.thunderstorm;
       case "13d":
         return WeatherIcons.snow;
-        default:
+      default:
         return WeatherIcons.refresh; // A fallback icon in case of unknown code
     }
   }
+
   /// some datas are missing from WEATHER ICONS SO WE MANUALLY HIT THE url
 
   String getWeatherIconURL(String weatherCode) {
-
-        return WeatherAppServices.iconURL+weatherCode+WeatherAppServices.iconSize;
-
-
-
+    return WeatherAppServices.iconURL +
+        weatherCode +
+        WeatherAppServices.iconSize;
   }
 
   /// get next four days
@@ -110,8 +126,7 @@ class AppUtils {
     return nextDays;
   }
 
-
-/// time stamp formater
+  /// time stamp formater
 
   static String formatDateTime(String timestamp) {
     DateTime dateTime = DateTime.parse(timestamp);
@@ -119,19 +134,17 @@ class AppUtils {
     return formattedDateTime;
   }
 
-
-
-  static void saveCity(WeatherModel cityWeatherInformation, BuildContext context) {
+  static void saveCity(
+      WeatherModel cityWeatherInformation, BuildContext context) {
     final userCityBloc = BlocProvider.of<SaveCurrentCityBloc>(context);
     userCityBloc.add(SaveCurrentCityWeather(cityWeatherInformation));
   }
 
-
-  static void saveUserCity(WeatherModel cityWeatherInformation, BuildContext context) {
+  static void saveUserCity(
+      WeatherModel cityWeatherInformation, BuildContext context) {
     final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
     userCityBloc.add(SaveUserCity(cityWeatherInformation));
   }
-
 
   /// time formater for home screen widget
   static String extractTime(DateTime dateTime) {
@@ -140,17 +153,17 @@ class AppUtils {
     return timeString;
   }
 
-
-
-
-
   // home widget update
   static void updateHomeScreenWidget(WeatherModel weatherData) {
     HomeWidget.saveWidgetData<String>('city_name', weatherData.name);
     HomeWidget.saveWidgetData<String>(
         'temprature', (weatherData.main.temp).toString());
     HomeWidget.saveWidgetData<String>(
-        'weather_icon_url', (WeatherAppServices.iconURL+weatherData.weather[0].icon+WeatherAppServices.iconSize).toString());
+        'weather_icon_url',
+        (WeatherAppServices.iconURL +
+                weatherData.weather[0].icon +
+                WeatherAppServices.iconSize)
+            .toString());
     HomeWidget.saveWidgetData<String>(
         'last_update', AppUtils.extractTime(weatherData.updatedAt));
     HomeWidget.updateWidget(
@@ -158,7 +171,6 @@ class AppUtils {
       androidName: WeatherAppString.androidWidgetName,
     );
   }
-
 
   static void showToastMessage(String message, Toast length) {
     Fluttertoast.showToast(
@@ -172,7 +184,136 @@ class AppUtils {
     );
   }
 
+  static void goToSavedList(bool status, BuildContext context) {
+    Navigator.pushNamed(context, WeatherRoutes.savedCitiesRoute,
+        arguments: [status]);
+  }
 
+  static Future<void> showLocationServiceDialog(
+      BuildContext context, bool mounted) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(WeatherAppString.locationDisabled),
+          content: Text(WeatherAppString.pleaseEnableLocation),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () async {
+                await Geolocator.openLocationSettings();
+                if (mounted) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Text(WeatherAppString.openSettings),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
+  static List<String> getDailyForecast(BuildContext context) {
+    List<String> upcomingDays = AppUtils.getNextFourDays();
+    final forecastBloc = BlocProvider.of<GetDailyForecastBloc>(context);
+    forecastBloc.add(GetDailyForCast());
+    return upcomingDays;
+  }
 
+  static void permissionDialog(
+      BuildContext context,
+      GlobalKey<State<StatefulWidget>> permissionDialogKey,
+      bool mounted,
+      bool isGettingUserPosition,
+      bool? showDataFromSavedCities) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          key: permissionDialogKey,
+          title: Text(WeatherAppString.locationServicesDisabled),
+          content: Text(WeatherAppString.locationEnable),
+          actions: <Widget>[
+            MaterialButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                //BuildContext context,bool mounted,GlobalKey<State<StatefulWidget>> permissionDialogKey,
+                // bool isGettingUserPosition,
+                // bool? showDataFromSavedCities
+                getPosition(context, mounted, permissionDialogKey,
+                    isGettingUserPosition, showDataFromSavedCities);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(WeatherAppString.okay),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      exit(0);
+                    },
+                    child: Text(WeatherAppString.cancel),
+                  ),
+                ],
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  static Future<void> getPosition(
+      BuildContext context,
+      bool mounted,
+      GlobalKey<State<StatefulWidget>> permissionDialogKey,
+      bool isGettingUserPosition,
+      bool? showDataFromSavedCities) async {
+    try {
+      await getUserPosition(
+          isGettingUserPosition, context, mounted, showDataFromSavedCities);
+    } catch (e) {
+      if (mounted) {
+        permissionDialog(context, permissionDialogKey, mounted,
+            isGettingUserPosition, showDataFromSavedCities);
+      }
+    }
+  }
+
+  static Future<void> getUserPosition(
+      bool isGettingUserPosition,
+      BuildContext context,
+      bool isMounted,
+      bool? showDataFromSavedCities) async {
+    if (isGettingUserPosition) {
+      return;
+    }
+    isGettingUserPosition = true;
+    try {
+      if (!await Geolocator.isLocationServiceEnabled()) return;
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) return;
+
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.best);
+      List<Placemark> locationPlaceMark =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      Placemark place = locationPlaceMark[0];
+
+      if (isMounted) {
+        if (showDataFromSavedCities == false) {
+          final weatherCityBloc = BlocProvider.of<HomeControllerBloc>(context);
+          weatherCityBloc.add(GetCurrentCityWeatherInfo(place.locality!));
+        }
+      }
+    } finally {
+      isGettingUserPosition = false;
+    }
+  }
 }

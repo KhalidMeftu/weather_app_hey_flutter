@@ -12,6 +12,11 @@ class HomeControllerBloc extends Bloc<HomeControllerEvent, HomeControllerState> 
 
   HomeControllerBloc(this.weatherAppUseCase) : super(HomeControllerInitial()) {
 
+//
+    on<GetInitialEvent>((event, emit) async {
+      emit(HomeControllerInitial());
+
+    });
 
     on<GetCurrentCityWeatherInfo>((event, emit) async {
       emit(CurrentCityWeatherInfoLoading());

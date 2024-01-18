@@ -3,6 +3,16 @@ part of 'user_city_controller_bloc.dart';
 abstract class UserCityControllerEvent extends Equatable {
   const UserCityControllerEvent();
 }
+
+class UserCityInitial extends UserCityControllerEvent{
+
+  const UserCityInitial();
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+
+}
 /// insert
 class SaveUserCity extends UserCityControllerEvent{
   final WeatherModel weatherModel;

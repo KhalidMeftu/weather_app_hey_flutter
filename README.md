@@ -55,12 +55,11 @@ The Weather App is a feature-rich mobile application designed to provide users w
 
 ## Demo
 
-![demo one](demos/demo_one.jpg)
-![demo one](demos/demo_two.jpg)
-![demo one](demos/demo_three.jpg)
-![demo one](demos/demo_four.jpg)
-![demo one](demos/demo_five.jpg)
-![demo one](demos/demo_six.jpg)
-![demo one](demos/demo_seven.jpg)
-![demo one](demos/demo_eight.jpg)
+![demo one](demos/one.jpg)
+![demo one](demos/two.jpg)
+![demo one](demos/three.jpg)
+![demo one](demos/four.jpg)
+![demo one](demos/five.jpg)
+![demo one](demos/six.jpg)
+![demo one](demos/seven.jpg)
 
