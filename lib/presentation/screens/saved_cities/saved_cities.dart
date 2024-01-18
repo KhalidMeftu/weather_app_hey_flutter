@@ -18,18 +18,20 @@ import 'package:lottie/lottie.dart';
 
 class CitiesList extends StatelessWidget {
   final bool isCurrentCityNotFound;
+
   const CitiesList({super.key, required this.isCurrentCityNotFound});
 
   @override
   Widget build(BuildContext context) {
     final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
     userCityBloc.add(const FetchSavedCitiesData());
-    return  UserCities(isCurrentCityNotFound: isCurrentCityNotFound);
+    return UserCities(isCurrentCityNotFound: isCurrentCityNotFound);
   }
 }
 
 class UserCities extends StatefulWidget {
   final bool isCurrentCityNotFound;
+
   const UserCities({super.key, required this.isCurrentCityNotFound});
 
   @override
@@ -38,7 +40,7 @@ class UserCities extends StatefulWidget {
 
 class _UserCitiesState extends State<UserCities> {
   TextEditingController saveNewCityTextController = TextEditingController();
-  List<WeatherModel>cityNamesData = [];
+  List<WeatherModel> cityNamesData = [];
   bool isSyncing = false;
 
   @override
@@ -47,64 +49,53 @@ class _UserCitiesState extends State<UserCities> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<InternateConnectivityBloc,
-        InternateConnectivityState>(
-        builder: (context, state) {
-          if (state is ConnectedState) {
-            return BlocListener<SyncDatabaseBloc, SyncDatabaseState>(
-              listener: (context, state) {
-                if (state is SyncSuccessfull) {
-                  isSyncing = true;
-                  for (int i = 0; i <= state.newModel.length; i++) {
-                    AppUtils.saveUserCity(state.newModel[i], context);
-                  }
-                  cityNamesData = [];
-                  AppUtils.showToastMessage(
-                      WeatherAppString.syncDone, Toast.LENGTH_SHORT);
+    return BlocBuilder<InternateConnectivityBloc, InternateConnectivityState>(
+      builder: (context, state) {
+        if (state is ConnectedState) {
+          return BlocListener<SyncDatabaseBloc, SyncDatabaseState>(
+            listener: (context, state) {
+              if (state is SyncSuccessfull) {
+                isSyncing = true;
+                for (int i = 0; i <= state.newModel.length; i++) {
+                  AppUtils.saveUserCity(state.newModel[i], context);
+                }
+                cityNamesData = [];
+                AppUtils.showToastMessage(
+                    WeatherAppString.syncDone, Toast.LENGTH_SHORT);
+              }
+            },
+            child: WillPopScope(
+              onWillPop: () async {
+                cityNamesData = [];
+                if (widget.isCurrentCityNotFound) {
+                  return false;
+                } else {
+                  return true;
                 }
               },
-              child: WillPopScope(
-                onWillPop: () async {
-                  cityNamesData = [];
-                  if(widget.isCurrentCityNotFound)
-                    {
-                      return false;
-
-                    }
-                  else{
-                    return true;
-
-                  }
-                },
-                child: Scaffold(
-                    resizeToAvoidBottomInset: true,
-                    key: const ValueKey("user_city_widget"),
-                    body: Container(
-                      decoration: BoxDecoration(
-                        gradient: WeatherAppColor.linearGradientBackground,
-                      ),
-                      child:
-                      mainUI(context),
-                    )),
-              ),
-            );
-          }
-          else if (state is NotConnectedState) {
-
-
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Lottie.asset(WeatherAppResources.connectivityLottie),
-              ],
-            );
-          }
-          return Container();
-
+              child: Scaffold(
+                  resizeToAvoidBottomInset: true,
+                  key: const ValueKey("user_city_widget"),
+                  body: Container(
+                    decoration: BoxDecoration(
+                      gradient: WeatherAppColor.linearGradientBackground,
+                    ),
+                    child: mainUI(context),
+                  )),
+            ),
+          );
+        } else if (state is NotConnectedState) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Lottie.asset(WeatherAppResources.connectivityLottie),
+            ],
+          );
+        }
+        return Container();
       },
     );
   }
@@ -124,8 +115,8 @@ class _UserCitiesState extends State<UserCities> {
               WeatherAppString.savedLocations,
               style: WeatherAppFonts.medium(fontWeight: FontWeight.w400)
                   .copyWith(
-                  fontSize: WeatherAppFontSize.s18,
-                  color: WeatherAppColor.whiteColor),
+                      fontSize: WeatherAppFontSize.s18,
+                      color: WeatherAppColor.whiteColor),
             ),
             actions: [
               IconButton(
@@ -136,8 +127,7 @@ class _UserCitiesState extends State<UserCities> {
                 ),
                 onPressed: () {
                   if (cityNamesData.isNotEmpty) {
-                    final syncBloc = BlocProvider.of<SyncDatabaseBloc>(
-                        context);
+                    final syncBloc = BlocProvider.of<SyncDatabaseBloc>(context);
                     syncBloc.add(SyncMyData(cityNamesData));
                   }
                 },
@@ -146,65 +136,57 @@ class _UserCitiesState extends State<UserCities> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(
-              top: 80.h, left: 2.w, right: 0.w, bottom: 73.h),
+          padding:
+              EdgeInsets.only(top: 80.h, left: 2.w, right: 0.w, bottom: 73.h),
           child: Center(
-            child: BlocConsumer<UserCityControllerBloc,
-                UserCityControllerState>(
-              buildWhen: (previous, current) {
-                return previous != current;
-              },
-              listenWhen: (previous, current) {
-                return previous != current;
-              },
+            child:
+                BlocConsumer<UserCityControllerBloc, UserCityControllerState>(
+              //buildWhen: (previous, current) {
+
+               // return previous is UserCityLoading && current is  UserCityLoaded;
+             // },
+            //  listenWhen: (previous, current) {
+            //    return previous is UserCityLoading && current is  UserCityLoaded;
+           //   },
               builder: (context, state) {
                 if (state is UserCityLoading) {
                   return Center(child: AppUtils().loadingSpinner);
                 }
                 if (state is UserCityLoaded) {
                   if (isSyncing) {
-                    final currentCityWeatherModel = state.usermodel
-                        .firstWhere(
-                          (element) => element.isCurrentCity == true,
+                    final currentCityWeatherModel = state.usermodel.firstWhere(
+                      (element) => element.isCurrentCity == true,
                       orElse: () => state.usermodel.first,
                     );
 
-                    AppUtils.updateHomeScreenWidget(
-                        currentCityWeatherModel);
+                    AppUtils.updateHomeScreenWidget(currentCityWeatherModel);
                   }
                   return ListView.builder(
                     itemCount: state.usermodel.length,
                     itemBuilder: (context, index) {
                       cityNamesData.add(state.usermodel[index]);
                       return Padding(
-                        padding: EdgeInsets.only(
-                            left: 12.w, right: 12.w, top: 15.h),
+                        padding:
+                            EdgeInsets.only(left: 12.w, right: 12.w, top: 15.h),
                         child: GestureDetector(
                           onTap: () {
                             Navigator.pushNamed(
                                 context, WeatherRoutes.homePageRoute,
-                                arguments: [
-                                  true,
-                                  state.usermodel[index]
-                                ]);
+                                arguments: [true, state.usermodel[index]]);
                           },
                           child: SavedCitiesCard(
                             cityName: state.usermodel[index].name,
-                            weatherCondition: state
-                                .usermodel[index].weather[0]
-                                .description,
-                            humidity: state.usermodel[index].main
-                                .humidity
-                                .toString(),
-                            windSpeed: state.usermodel[index].wind.speed
-                                .toString(),
-                            statusImage:
-                            state.usermodel[index].weather[0].icon,
-                            temprature: state.usermodel[index].main.temp
-                                .toString(),
+                            weatherCondition:
+                                state.usermodel[index].weather[0].description,
+                            humidity:
+                                state.usermodel[index].main.humidity.toString(),
+                            windSpeed:
+                                state.usermodel[index].wind.speed.toString(),
+                            statusImage: state.usermodel[index].weather[0].icon,
+                            temprature:
+                                state.usermodel[index].main.temp.toString(),
                             isHomeCity:
-                            state.usermodel[index].isCurrentCity ??
-                                false,
+                                state.usermodel[index].isCurrentCity ?? false,
                           ),
                         ),
                         //),
@@ -218,36 +200,29 @@ class _UserCitiesState extends State<UserCities> {
                     itemCount: state.weatherModel.length,
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: EdgeInsets.only(
-                            left: 12.w, right: 12.w, top: 15.h),
+                        padding:
+                            EdgeInsets.only(left: 12.w, right: 12.w, top: 15.h),
                         child: GestureDetector(
                           onTap: () {
                             Navigator.pushNamed(
                                 context, WeatherRoutes.homePageRoute,
-                                arguments: [
-                                  true,
-                                  state.weatherModel[index]
-                                ]);
+                                arguments: [true, state.weatherModel[index]]);
                           },
                           child: SavedCitiesCard(
                             cityName: state.weatherModel[index].name,
                             weatherCondition: state
-                                .weatherModel[index].weather[0]
-                                .description,
-                            humidity: state.weatherModel[index].main
-                                .humidity
+                                .weatherModel[index].weather[0].description,
+                            humidity: state.weatherModel[index].main.humidity
                                 .toString(),
-                            windSpeed: state.weatherModel[index].wind
-                                .speed
-                                .toString(),
+                            windSpeed:
+                                state.weatherModel[index].wind.speed.toString(),
                             statusImage:
-                            state.weatherModel[index].weather[0].icon,
-                            temprature: state.weatherModel[index].main
-                                .temp
-                                .toString(),
+                                state.weatherModel[index].weather[0].icon,
+                            temprature:
+                                state.weatherModel[index].main.temp.toString(),
                             isHomeCity:
-                            state.weatherModel[index].isCurrentCity ??
-                                false,
+                                state.weatherModel[index].isCurrentCity ??
+                                    false,
                           ),
                         ),
                         //),
@@ -258,11 +233,11 @@ class _UserCitiesState extends State<UserCities> {
                 return Text(state.toString());
               },
               listener: (context, listenerState) {
+
                 if (listenerState is CityWeatherLoaded) {
                   saveNewCityTextController.clear();
                   WeatherModel newModel = listenerState.usermodel;
-                  newModel.cityImageURL =
-                      listenerState.usermodel.cityImageURL;
+                  newModel.cityImageURL = listenerState.usermodel.cityImageURL;
                   newModel.isCurrentCity = false;
                   AppUtils.saveUserCity(newModel, context);
                 }
@@ -270,8 +245,8 @@ class _UserCitiesState extends State<UserCities> {
                   saveNewCityTextController.clear();
                   AppUtils.showToastMessage(
                       WeatherAppString.noWeatherInfo, Toast.LENGTH_SHORT);
-                  final userCityBloc = BlocProvider.of<UserCityControllerBloc>(
-                      context);
+                  final userCityBloc =
+                      BlocProvider.of<UserCityControllerBloc>(context);
                   userCityBloc.add(const FetchSavedCitiesData());
                 }
               },
@@ -290,8 +265,7 @@ class _UserCitiesState extends State<UserCities> {
               height: 50.h,
               decoration: BoxDecoration(
                   color: WeatherAppColor.cardB,
-                  borderRadius:
-                  const BorderRadius.all(Radius.circular(24))),
+                  borderRadius: const BorderRadius.all(Radius.circular(24))),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -335,7 +309,9 @@ class _UserCitiesState extends State<UserCities> {
           ),
           actions: [
             TextButton(
-              child: Text(WeatherAppString.cancel,),
+              child: Text(
+                WeatherAppString.cancel,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -362,9 +338,7 @@ class _UserCitiesState extends State<UserCities> {
   int counter = 0;
 
   void getCityWeather(String result, BuildContext context) {
-    final userCityBloc =
-    BlocProvider.of<UserCityControllerBloc>(context);
+    final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
     userCityBloc.add(GetCityWeather(result));
   }
-
 }

@@ -120,38 +120,30 @@ class RemoteDataSource extends BaseRemoteDataSource {
     return name.toLowerCase().trim();
   }
 
-
-
-  /// unslplash scity images
+  /// unslplash city images
   Future<String> getCityImage(String cityName) async {
     try {
       final dio = Dio();
       final response = await dio.get(
         '${WeatherAppServices.unSplashBaseURL}?query=$cityName&client_id=${WeatherAppServices.unSplashApiKey}',
       );
-      print("Response");
-      print(response);
-
 
       if (response.statusCode == 200) {
         var responseData = response.data;
-        if (responseData['results'] != null && responseData['results'].isNotEmpty) {
+        if (responseData['results'] != null &&
+            responseData['results'].isNotEmpty) {
           var firstImage = responseData['results'][0];
           String imageUrl = firstImage['urls']['regular'];
           return imageUrl;
         } else {
           return "";
         }
-      }
-      else if (response.statusCode == 404) {
+      } else if (response.statusCode == 404) {
+        return "";
+      } else {
         return "";
       }
-      else {
-        return "";
-      }
-    }catch (e) {
-      print("Exception error");
-      print(e);
+    } catch (e) {
       if (e is DioException && e.response?.statusCode == 404) {
         return "";
       } else {

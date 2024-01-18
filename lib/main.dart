@@ -32,7 +32,8 @@ class MyApp extends StatelessWidget {
           return MultiBlocProvider(
             providers: [
               //
-              BlocProvider(create: (context) => LoadCurrentCityWeatherBloc(sLocator())),
+              BlocProvider(
+                  create: (context) => LoadCurrentCityWeatherBloc(sLocator())),
               BlocProvider(create: (context) => InternateConnectivityBloc()),
               BlocProvider(create: (context) => SyncDatabaseBloc(sLocator())),
               BlocProvider(
@@ -59,4 +60,3 @@ class MyApp extends StatelessWidget {
         });
   }
 }
-

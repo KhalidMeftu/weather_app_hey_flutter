@@ -6,8 +6,6 @@ import 'package:flutterweatherapp/const/app_strings.dart';
 import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_app_fonts.dart';
 import 'package:flutterweatherapp/const/weather_font_sizes.dart';
-import 'package:flutterweatherapp/const/weather_paddings.dart';
-import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 class SavedCitiesCard extends StatelessWidget {
@@ -38,17 +36,7 @@ class SavedCitiesCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            /*isHomeCity? Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(WeatherAppPaddings.s8),
-                  child: Icon(Icons.home, color: WeatherAppColor.whiteColor,),
-                ),
-              ],
-            ):Container(),
-            */
+
             
             Row(
               children: [
