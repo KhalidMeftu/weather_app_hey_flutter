@@ -7,6 +7,7 @@
 ![demo five](demos/five.jpg)
 ![demo six](demos/six.jpg)
 ![demo seven](demos/seven.jpg)
+![demo homescreen](demos/home_screen.jpg)
 
 
 
