@@ -7,6 +7,9 @@
 ![demo five](demos/five.jpg)
 ![demo six](demos/six.jpg)
 ![demo seven](demos/seven.jpg)
+
+
+
 The Weather App is a comprehensive mobile application that offers a wide range of features to provide users with accurate and up-to-date weather information for cities around the world. This app utilizes the OpenWeather API for retrieving real-time weather data and the Unsplash API to fetch stunning city images. The project is developed using Flutter and incorporates industry best practices, including BLoC state management, clean architecture, and strict adherence to Flutter development guidelines. It's worth mentioning that the design and project selection for this app were sourced from the competition hosted on heyflutter.com, with all credits going to HeyFlutter.
 
 ## Features
