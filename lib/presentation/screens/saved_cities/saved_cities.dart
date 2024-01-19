@@ -33,7 +33,7 @@ class CitiesList extends StatelessWidget {
 class UserCities extends StatefulWidget {
   final bool isCurrentCityNotFound;
 
-  const UserCities({Key? key, required this.isCurrentCityNotFound});
+  const UserCities({super.key, required this.isCurrentCityNotFound});
 
   @override
   State<UserCities> createState() => _UserCitiesState();
@@ -59,7 +59,21 @@ class _UserCitiesState extends State<UserCities> {
             listener: (context, state) {
               if (state is SyncSuccessfull) {
                 isSyncing = true;
+                int currentIndex = 0;
+
                 for (int i = 0; i < state.newModel.length; i++) {
+                  if (state.newModel[i].isCurrentCity == true) {
+                    currentIndex = i;
+                    AppUtils.updateHomeScreenWidget(state.newModel[currentIndex]);
+                  }
+                  else{
+                    if (currentIndex == 0 && state.newModel.isNotEmpty) {
+                      currentIndex = state.newModel.length - 1;
+                      AppUtils.updateHomeScreenWidget(state.newModel[currentIndex]);
+
+                    }
+                  }
+
                   AppUtils.saveUserCity(state.newModel[i], context);
                 }
                 cityNamesData = [];

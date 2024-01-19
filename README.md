@@ -22,6 +22,17 @@ The Weather App is a feature-rich mobile application designed to provide users w
 
 8. Loading Animations: Lottie animations are employed to display visually appealing loading animations during data fetching processes. This ensures that users are aware of ongoing tasks in the background, such as retrieving weather information or loading city images. The animations not only entertain users during waiting times but also indicate that the app is actively working to provide the requested data.
 
+
+
+
+## Unimplemented 1
+This feature aims to handle scenarios where there is no internet connection available. In such cases, the application should load the city data from the local database instead of making network requests. Additionally, the feature includes the ability to delete the saved city list and customize the user interface (UI) accordingly.
+
+## Functionality
+When the application detects no internet connection, it should retrieve city data from the local database.
+The local database serves as a fallback mechanism when internet connectivity is unavailable.
+Users have the option to delete the saved city list, providing a fresh start for adding new cities.
+The UI can be customized based on the requirements and design guidelines of the application.
 ## API Reference
 
 #### Get city weather condition

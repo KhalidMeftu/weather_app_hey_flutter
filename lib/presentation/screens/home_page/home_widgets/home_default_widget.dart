@@ -6,7 +6,8 @@ import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/const/weather_paddings.dart';
 
 class DefaultUIWidget extends StatelessWidget {
-  const DefaultUIWidget({super.key});
+  final bool isLocationServiceInitialized;
+  const DefaultUIWidget({super.key, required this.isLocationServiceInitialized});
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +20,11 @@ class DefaultUIWidget extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          Align(
+         Align(
             alignment: Alignment.center,
             child: AppUtils().loadingSpinner,
           ),
-          Align(
+          isLocationServiceInitialized? Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.all(WeatherAppPaddings.s30),
@@ -32,7 +33,7 @@ class DefaultUIWidget extends StatelessWidget {
                 style: TextStyle(color: WeatherAppColor.redColor),
               ),
             ),
-          ),
+          ):Container(),
         ],
       ),
     );

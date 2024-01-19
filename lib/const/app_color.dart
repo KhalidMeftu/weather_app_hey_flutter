@@ -5,7 +5,7 @@ class WeatherAppColor {
   static Color whiteColorWOpacity = const Color(0xffFFFFFF).withOpacity(0.25);
   static Color whiteColor = const Color(0xffFFFFFF);
   static Color colorForCard = const Color(0xffECECEC);
-  static Color russianViolateColorColor= const Color(0xff391A49);
+  static Color russianViolateColor= const Color(0xff391A49);
   static Color cardB=const Color(0xffaaa5a5).withOpacity(0.7);
   static LinearGradient linearGradientBackground = const LinearGradient(
     begin: Alignment.topLeft,

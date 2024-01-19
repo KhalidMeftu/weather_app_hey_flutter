@@ -43,7 +43,6 @@ class UserCityControllerBloc extends Bloc<UserCityControllerEvent, UserCityContr
         weatherResult.fold((leftWeatherError) {
           emit(UserCityFetchingError(leftWeatherError));
         }, (rightWeather) {
-          /// save it here
           WeatherModel newModel = rightWeather;
           newModel.cityImageURL = rightWeather.cityImageURL;
           newModel.isCurrentCity = false;

@@ -37,7 +37,7 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: WeatherAppColor.russianViolateColorColor,
+      backgroundColor: WeatherAppColor.russianViolateColor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -48,7 +48,7 @@ class _NewSplashState extends State<NewSplash> with TickerProviderStateMixin {
               WeatherAppString.weatherCast,
               style: WeatherAppFonts.large(
                       fontWeight: FontWeight.w700,
-                      color: WeatherAppColor.russianViolateColorColor)
+                      color: WeatherAppColor.russianViolateColor)
                   .copyWith(fontSize: WeatherAppFontSize.s30),
             ),
           ),

@@ -86,11 +86,11 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage> with WidgetsBin
                     );
                   }
 
-                  return const DefaultUIWidget();
+                  return DefaultUIWidget(isLocationServiceInitialized: isLocationServiceInitialized,);
                 },
                 listener: (BuildContext context, HomeControllerState state) {
                   if (state is CurrentCityWeatherInfoLoadingError) {
-                    AppUtils.showToastMessage(WeatherAppString.noCityData, Toast.LENGTH_LONG);
+                    AppUtils.showToastMessage(WeatherAppString.noCityData, Toast.LENGTH_SHORT);
                     final initInitialState = BlocProvider.of<HomeControllerBloc>(context);
                     initInitialState.add(GetInitialEvent());
                     Future.delayed(const Duration(seconds: 2), () {
@@ -175,6 +175,8 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage> with WidgetsBin
         break;
     }
     if (mounted) {
+      isLocationServiceInitialized = true;
+
       await  HomeUtils.getPosition(context, mounted, permissionDialogKey,
           isGettingUserPosition, widget.showDataFromSavedCities);
     }
