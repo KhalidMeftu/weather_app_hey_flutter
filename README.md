@@ -78,6 +78,6 @@ Multi language
 [unsplash](https://unsplash.com/developers)
 
 ## Demo
-![demo eight](demos/record.mp4)
+![video](demos/record.mp4)
 
 
