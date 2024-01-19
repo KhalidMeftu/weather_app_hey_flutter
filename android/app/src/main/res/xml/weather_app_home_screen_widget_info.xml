@@ -3,7 +3,7 @@
     android:description="@string/app_widget_description"
     android:initialKeyguardLayout="@layout/weather_app_home_screen_widget"
     android:initialLayout="@layout/weather_app_home_screen_widget"
-    android:minWidth="100dp"
+    android:minWidth="200dp"
     android:minHeight="150dp"
     android:previewImage="@drawable/example_appwidget_preview"
     android:previewLayout="@layout/weather_app_home_screen_widget"

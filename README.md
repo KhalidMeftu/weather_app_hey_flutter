@@ -1,8 +1,13 @@
 
 # Flutter Weather App
-
-The Weather App is a feature-rich mobile application designed to provide users with accurate and up-to-date weather information for cities worldwide. This app leverages the OpenWeather API to retrieve real-time weather data and the Unsplash API to fetch beautiful city images. The project is built with Flutter, employing best practices such as BLoC state management, clean architecture, and adhering to Flutter development guidelines.
-
+![demo one](demos/one.jpg)
+![demo two](demos/two.jpg)
+![demo three](demos/three.jpg)
+![demo four](demos/four.jpg)
+![demo five](demos/five.jpg)
+![demo six](demos/six.jpg)
+![demo seven](demos/seven.jpg)
+The Weather App is a comprehensive mobile application that offers a wide range of features to provide users with accurate and up-to-date weather information for cities around the world. This app utilizes the OpenWeather API for retrieving real-time weather data and the Unsplash API to fetch stunning city images. The project is developed using Flutter and incorporates industry best practices, including BLoC state management, clean architecture, and strict adherence to Flutter development guidelines. It's worth mentioning that the design and project selection for this app were sourced from the competition hosted on heyflutter.com, with all credits going to HeyFlutter.
 
 ## Features
 
@@ -33,6 +38,11 @@ When the application detects no internet connection, it should retrieve city dat
 The local database serves as a fallback mechanism when internet connectivity is unavailable.
 Users have the option to delete the saved city list, providing a fresh start for adding new cities.
 The UI can be customized based on the requirements and design guidelines of the application.
+
+## Unimplemented 2
+And also sync every couple of seconds
+## Unimplemented 3
+Multi language
 ## API Reference
 
 #### Get city weather condition
@@ -65,12 +75,6 @@ The UI can be customized based on the requirements and design guidelines of the 
 [unsplash](https://unsplash.com/developers)
 
 ## Demo
+![demo eight](demos/record.mp4)
 
-![demo one](demos/one.jpg)
-![demo one](demos/two.jpg)
-![demo one](demos/three.jpg)
-![demo one](demos/four.jpg)
-![demo one](demos/five.jpg)
-![demo one](demos/six.jpg)
-![demo one](demos/seven.jpg)
 

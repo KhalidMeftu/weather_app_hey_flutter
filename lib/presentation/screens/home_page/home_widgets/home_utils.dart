@@ -64,9 +64,7 @@ class HomeUtils {
             MaterialButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                //BuildContext context,bool mounted,GlobalKey<State<StatefulWidget>> permissionDialogKey,
-                // bool isGettingUserPosition,
-                // bool? showDataFromSavedCities
+
                 getPosition(context, mounted, permissionDialogKey,
                     isGettingUserPosition, showDataFromSavedCities);
               },
