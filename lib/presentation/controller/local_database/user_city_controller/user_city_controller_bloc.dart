@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/domian/usecases/weatherapp_usecases.dart';
 import 'package:flutterweatherapp/presentation/controller/get_user_city_controller/get_user_city_weather_controller_bloc.dart';
@@ -41,7 +43,15 @@ class UserCityControllerBloc extends Bloc<UserCityControllerEvent, UserCityContr
         weatherResult.fold((leftWeatherError) {
           emit(UserCityFetchingError(leftWeatherError));
         }, (rightWeather) {
-          emit(CityWeatherLoaded(rightWeather));
+          /// save it here
+          WeatherModel newModel = rightWeather;
+          newModel.cityImageURL = rightWeather.cityImageURL;
+          newModel.isCurrentCity = false;
+          AppUtils.saveUserCity(newModel, event.context);
+          if(event.cityNotFound)
+            {
+              AppUtils.updateHomeScreenWidget(newModel);
+            }
         });
       } catch (error) {
         emit(UserCityFetchingError(error.toString()));

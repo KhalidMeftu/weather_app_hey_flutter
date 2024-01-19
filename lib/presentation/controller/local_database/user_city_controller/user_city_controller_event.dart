@@ -62,10 +62,12 @@ class FetchSavedCitiesData extends UserCityControllerEvent{
 
 class GetCityWeather extends UserCityControllerEvent {
   final String cityName;
-  const GetCityWeather(this.cityName);
+  final BuildContext context;
+  final bool cityNotFound;
+  const GetCityWeather(this.cityName, this.context, this.cityNotFound);
   @override
   // TODO: implement props
-  List<Object?> get props => [cityName];
+  List<Object?> get props => [cityName,context,cityNotFound];
 
 }
 

@@ -55,6 +55,7 @@ class MainUIWidget extends StatelessWidget {
                 ),
                 onPressed: () {
                   if (cityNamesData.isNotEmpty) {
+                    print("Sync Started");
                     final syncBloc = BlocProvider.of<SyncDatabaseBloc>(context);
                     syncBloc.add(SyncMyData(cityNamesData));
                   }
@@ -91,7 +92,6 @@ class MainUIWidget extends StatelessWidget {
                             EdgeInsets.only(left: 12.w, right: 12.w, top: 15.h),
                         child: GestureDetector(
                           onTap: () {
-                            resetState(context);
                             Navigator.pushReplacementNamed(
                               context,
                               WeatherRoutes.homePageRoute,
@@ -127,16 +127,7 @@ class MainUIWidget extends StatelessWidget {
                   userCityBloc.add(const FetchSavedCitiesData());
                 }
 
-                if (listenerState is CityWeatherLoaded) {
-                  saveNewCityTextController.clear();
-                  WeatherModel newModel = listenerState.usermodel;
-                  newModel.cityImageURL = listenerState.usermodel.cityImageURL;
-                  newModel.isCurrentCity = false;
-                  AppUtils.saveUserCity(newModel, context);
-                  if (isCurrentCityNotFound == true) {
-                    AppUtils.updateHomeScreenWidget(newModel);
-                  }
-                }
+
                 if (listenerState is UserCityFetchingError) {
                   saveNewCityTextController.clear();
                   AppUtils.showToastMessage(
@@ -197,13 +188,10 @@ class MainUIWidget extends StatelessWidget {
 
   void getCityWeather(String result, BuildContext context) {
     final userCityBloc = BlocProvider.of<UserCityControllerBloc>(context);
-    userCityBloc.add(GetCityWeather(result));
+    userCityBloc.add(GetCityWeather(result,context,isCurrentCityNotFound));
   }
 
-  void resetState(BuildContext context) {
-    final resetState = BlocProvider.of<UserCityControllerBloc>(context);
-    resetState.add(const UserCityInitial());
-  }
+
 
   void _showSaveDialog(BuildContext context) async {
     final currentContext = context; // Store the current context

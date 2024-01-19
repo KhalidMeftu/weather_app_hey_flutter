@@ -12,12 +12,12 @@ class SyncDatabaseBloc extends Bloc<SyncDatabaseEvent, SyncDatabaseState> {
 
   SyncDatabaseBloc(this.getMedaUseCase) : super(SyncDatabaseInitial()) {
     on<SyncMyData>((event, emit) async {
-      List<WeatherModel> newModel=[];
+      List<WeatherModel> newModel = [];
       emit(SyncingWeatherData());
       bool allDataSynced = true;
       for (int i = 0; i < event.cityNames.length; i++) {
-        final result =
-            await getMedaUseCase.syncUserCitiesData(event.cityNames[i].name, event.cityNames[i].isCurrentCity??false);
+        final result = await getMedaUseCase.syncUserCitiesData(
+            event.cityNames[i].name, event.cityNames[i].isCurrentCity ?? false);
         result.fold(
           (left) {
             emit(DataSyncError(left));
@@ -25,8 +25,6 @@ class SyncDatabaseBloc extends Bloc<SyncDatabaseEvent, SyncDatabaseState> {
           },
           (right) {
             newModel.add(right);
-            allDataSynced = false;
-
           },
         );
       }
