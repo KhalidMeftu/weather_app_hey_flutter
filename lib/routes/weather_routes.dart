@@ -50,40 +50,6 @@ class RouteGenerator {
   }
 
   ///page transition animation]
-
-  static Route<dynamic> routingTransition(Widget page) {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = const Offset(1.0, 0.0);
-        var end = Offset.zero;
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: Curves.ease));
-        var offsetAnimation = animation.drive(tween);
-        var delayedAnimation = animation.drive(
-          Tween(begin: 0.0, end: 1.0).chain(
-            CurveTween(
-                curve: const Interval(0.2, 1.0,
-                    curve: Curves.ease)), ),
-        );
-
-        return AnimatedBuilder(
-          animation: delayedAnimation,
-          builder: (context, child) {
-            return SlideTransition(
-              position: offsetAnimation,
-              child: Opacity(
-                opacity: delayedAnimation.value,
-                // Apply the delay effect to the opacity
-                child: child,
-              ),
-            );
-          },
-          child: child,
-        );
-      },
-    );
-  }
 }
 
 class LeftToRightPageRoute extends PageRouteBuilder {
