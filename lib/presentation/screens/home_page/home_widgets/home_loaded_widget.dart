@@ -16,6 +16,8 @@ import 'package:flutterweatherapp/presentation/controller/get_daily_forecast_con
 import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:weather_icons/weather_icons.dart';
 
+import 'home_utils.dart';
+
 class CurrentCityLoadedUIWidget extends StatelessWidget {
   final WeatherModel weatherCityModel;
   final List<String> upcomingDays;
@@ -51,7 +53,7 @@ class CurrentCityLoadedUIWidget extends StatelessWidget {
           child: WeatherAppBar(
             cityNames: weatherCityModel.name,
             onTap: () {
-              AppUtils.goToSavedList(false, context);
+              HomeUtils.goToSavedList(false, context);
             },
           ),
         ),

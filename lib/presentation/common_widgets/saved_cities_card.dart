@@ -24,7 +24,8 @@ class SavedCitiesCard extends StatelessWidget {
       required this.humidity,
       required this.windSpeed,
       required this.statusImage,
-      required this.temprature, required this.isHomeCity,})
+      required this.temprature,
+        required this.isHomeCity,})
       : super(key: key);
 
   @override

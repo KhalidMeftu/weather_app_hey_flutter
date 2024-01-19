@@ -9,12 +9,13 @@ import 'package:flutterweatherapp/const/utils.dart';
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:flutterweatherapp/presentation/controller/HomeController/home_controller_bloc.dart';
 import 'package:flutterweatherapp/presentation/controller/connectivity/internate_connectivity_bloc.dart';
-import 'package:flutterweatherapp/presentation/screens/home_widgets/home_default_widget.dart';
-import 'package:flutterweatherapp/presentation/screens/home_widgets/home_loaded_widget.dart';
-import 'package:flutterweatherapp/presentation/screens/home_widgets/saved_city_widget.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'home_widgets/home_default_widget.dart';
+import 'home_widgets/home_loaded_widget.dart';
+import 'home_widgets/home_utils.dart';
+import 'home_widgets/saved_city_widget.dart';
 
 class WeatherAppHomePage extends StatefulWidget {
   bool? showDataFromSavedCities;
@@ -53,7 +54,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage> with WidgetsBin
 
   @override
   Widget build(BuildContext context) {
-    List<String> upcomingDays = AppUtils.getDailyForecast(context);
+    List<String> upcomingDays =  HomeUtils.getDailyForecast(context);
     return WillPopScope(
       onWillPop: () async {
         SystemNavigator.pop();
@@ -93,7 +94,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage> with WidgetsBin
                     final initInitialState = BlocProvider.of<HomeControllerBloc>(context);
                     initInitialState.add(GetInitialEvent());
                     Future.delayed(const Duration(seconds: 2), () {
-                      AppUtils.goToSavedList(true, context);
+                      HomeUtils.goToSavedList(true, context);
                     });
                   }
                 },
@@ -139,7 +140,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage> with WidgetsBin
   Future<void> initLocationService() async {
     if (!await Geolocator.isLocationServiceEnabled()) {
       if (mounted) {
-        await AppUtils.showLocationServiceDialog(context, mounted);
+        await  HomeUtils.showLocationServiceDialog(context, mounted);
       }
     } else {
       dismissPermissionDialog();
@@ -154,7 +155,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage> with WidgetsBin
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
           if (mounted) {
-            AppUtils.permissionDialog(context, permissionDialogKey, mounted,
+            HomeUtils.permissionDialog(context, permissionDialogKey, mounted,
                 isGettingUserPosition, widget.showDataFromSavedCities);
           }
           return;
@@ -174,7 +175,7 @@ class _WeatherAppHomePageState extends State<WeatherAppHomePage> with WidgetsBin
         break;
     }
     if (mounted) {
-      await AppUtils.getPosition(context, mounted, permissionDialogKey,
+      await  HomeUtils.getPosition(context, mounted, permissionDialogKey,
           isGettingUserPosition, widget.showDataFromSavedCities);
     }
   }
