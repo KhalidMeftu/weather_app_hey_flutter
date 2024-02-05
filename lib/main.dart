@@ -33,19 +33,19 @@ class MyApp extends StatelessWidget {
             providers: [
               //
               BlocProvider(
-                  create: (context) => LoadCurrentCityWeatherBloc(sLocator())),
+                  create: (context) => LoadCurrentCityWeatherBloc(appServiceLocator())),
               BlocProvider(create: (context) => InternateConnectivityBloc()),
-              BlocProvider(create: (context) => SyncDatabaseBloc(sLocator())),
+              BlocProvider(create: (context) => SyncDatabaseBloc(appServiceLocator())),
               BlocProvider(
-                  create: (context) => SaveCurrentCityBloc(sLocator())),
-              BlocProvider(create: (context) => HomeControllerBloc(sLocator())),
+                  create: (context) => SaveCurrentCityBloc(appServiceLocator())),
+              BlocProvider(create: (context) => HomeControllerBloc(appServiceLocator())),
               BlocProvider(
-                  create: (context) => GetDailyForecastBloc(sLocator())),
+                  create: (context) => GetDailyForecastBloc(appServiceLocator())),
               BlocProvider(
-                  create: (context) => UserCityControllerBloc(sLocator())),
+                  create: (context) => UserCityControllerBloc(appServiceLocator())),
               BlocProvider(
                   create: (context) =>
-                      GetUserCityWeatherControllerBloc(sLocator())),
+                      GetUserCityWeatherControllerBloc(appServiceLocator())),
             ],
             child: MaterialApp(
               title: WeatherAppString.weatherCast,

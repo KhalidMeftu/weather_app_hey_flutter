@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutterweatherapp/domian/entity/weather_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -14,24 +14,23 @@ import 'package:flutterweatherapp/presentation/controller/save_current_city%20co
 import 'package:flutterweatherapp/presentation/controller/sync_data_controller/sync_database_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-GetIt sLocator = GetIt.instance;
+GetIt appServiceLocator = GetIt.instance;
 
 class ServicesLocator {
   Future<void> init() async {
-//
-    sLocator.registerFactory(() => LoadCurrentCityWeatherBloc(sLocator()));
-    sLocator.registerFactory(() => SyncDatabaseBloc(sLocator()));
-    sLocator.registerFactory(() => SaveCurrentCityBloc(sLocator()));
-    sLocator.registerFactory(() => HomeControllerBloc(sLocator()));
-    sLocator.registerFactory(() => UserCityControllerBloc(sLocator()));
-    sLocator.registerFactory(() => GetDailyForecastBloc(sLocator()));
-    sLocator.registerFactory(() => GetUserCityWeatherControllerBloc(sLocator()));
-    sLocator.registerLazySingleton(() =>WeatherAppUseCases(sLocator()));
-    sLocator.registerLazySingleton<BaseRemoteRepository>(() => WeatherRepository(sLocator()));
-    sLocator.registerLazySingleton<BaseRemoteDataSource>(() => RemoteDataSource());
-    sLocator.registerLazySingleton(() => AppDatabase.instance);
+    appServiceLocator.registerFactory(() => LoadCurrentCityWeatherBloc(appServiceLocator()));
+    appServiceLocator.registerFactory(() => SyncDatabaseBloc(appServiceLocator()));
+    appServiceLocator.registerFactory(() => SaveCurrentCityBloc(appServiceLocator()));
+    appServiceLocator.registerFactory(() => HomeControllerBloc(appServiceLocator()));
+    appServiceLocator.registerFactory(() => UserCityControllerBloc(appServiceLocator()));
+    appServiceLocator.registerFactory(() => GetDailyForecastBloc(appServiceLocator()));
+    appServiceLocator.registerFactory(() => GetUserCityWeatherControllerBloc(appServiceLocator()));
+    appServiceLocator.registerLazySingleton(() =>WeatherAppUseCases(appServiceLocator()));
+    appServiceLocator.registerLazySingleton<BaseRemoteRepository>(() => WeatherRepository(appServiceLocator()));
+    appServiceLocator.registerLazySingleton<BaseRemoteDataSource>(() => RemoteDataSource());
+    appServiceLocator.registerLazySingleton(() => AppDatabase.instance);
     var instance = await LocalStorageServices.getinstance();
-    sLocator.registerLazySingleton<LocalStorageServices>(() => instance);
+    appServiceLocator.registerLazySingleton<LocalStorageServices>(() => instance);
 
   }
 }
